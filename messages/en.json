@@ -1,0 +1,106 @@
+{
+  "Brand": {
+    "name": "UNIREAL",
+    "tagline": "Real reviews and answers about universities worldwide"
+  },
+  "Nav": {
+    "home": "Home",
+    "universities": "Universities",
+    "reviews": "Reviews",
+    "questions": "Q&A",
+    "signIn": "Sign in",
+    "signOut": "Sign out"
+  },
+  "Home": {
+    "heroTitle": "Find the right university — with real student voices",
+    "heroSubtitle": "Explore thousands of universities worldwide. Read honest reviews, ask questions, and get verified answers.",
+    "ctaExplore": "Explore universities",
+    "ctaAsk": "Ask a question",
+    "featuresTitle": "Why UNIREAL",
+    "feature1Title": "Global coverage",
+    "feature1Body": "Thousands of universities across 200+ countries, with names in your language.",
+    "feature2Title": "Verified voices",
+    "feature2Body": "Reviews and answers from people verified through their university email domain.",
+    "feature3Title": "Honest & open",
+    "feature3Body": "Ratings, tuition data and outcomes — transparent and free to browse."
+  },
+  "Universities": {
+    "title": "Universities",
+    "searchPlaceholder": "Search by name…",
+    "filterCountry": "Country",
+    "allCountries": "All countries",
+    "resultsCount": "{count, plural, =0 {No universities found} one {# university} other {# universities}}",
+    "loading": "Loading…",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page} of {total}",
+    "viewDetails": "View details",
+    "noResults": "No universities match your search."
+  },
+  "University": {
+    "website": "Website",
+    "country": "Country",
+    "city": "City",
+    "established": "Established",
+    "students": "Students",
+    "tuition": "Tuition (yearly)",
+    "admissionRate": "Admission rate",
+    "researchScore": "Research activity",
+    "reviewsTab": "Reviews",
+    "questionsTab": "Q&A",
+    "overviewTab": "Overview",
+    "notFound": "University not found",
+    "verifiedBadge": "Verified",
+    "sources": "Data sources"
+  },
+  "Reviews": {
+    "title": "Reviews",
+    "writeReview": "Write a review",
+    "rating": "Rating",
+    "yourReview": "Your review",
+    "namePlaceholder": "Your name",
+    "bodyPlaceholder": "Share your honest experience…",
+    "submit": "Submit review",
+    "empty": "No reviews yet. Be the first to write one.",
+    "averageRating": "Average rating",
+    "demoNotice": "Demo mode: reviews are stored in memory and reset on reload."
+  },
+  "Questions": {
+    "title": "Questions & Answers",
+    "askQuestion": "Ask a question",
+    "questionPlaceholder": "What would you like to know?",
+    "submit": "Post question",
+    "answer": "Answer",
+    "answerPlaceholder": "Write an answer…",
+    "submitAnswer": "Post answer",
+    "empty": "No questions yet. Ask the first one.",
+    "answersCount": "{count, plural, =0 {No answers} one {# answer} other {# answers}}",
+    "demoNotice": "Demo mode: questions are stored in memory and reset on reload."
+  },
+  "Auth": {
+    "signInTitle": "Sign in to UNIREAL",
+    "signUpTitle": "Create your account",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "continueWithGoogle": "Continue with Google",
+    "or": "or",
+    "signInButton": "Sign in",
+    "signUpButton": "Sign up",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "demoNotice": "Demo mode: authentication is mocked. Use any email to sign in.",
+    "verifiedHint": "Use your university email to get a Verified badge."
+  },
+  "Common": {
+    "search": "Search",
+    "clear": "Clear",
+    "back": "Back",
+    "loading": "Loading…",
+    "error": "Something went wrong."
+  },
+  "Footer": {
+    "rights": "All rights reserved.",
+    "dataCredit": "University data from Hipolabs, ROR, OpenAlex, College Scorecard and Wikidata."
+  }
+}

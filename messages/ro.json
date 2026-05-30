@@ -1,0 +1,106 @@
+{
+  "Brand": {
+    "name": "UNIREAL",
+    "tagline": "Recenzii și răspunsuri reale despre universități din întreaga lume"
+  },
+  "Nav": {
+    "home": "Acasă",
+    "universities": "Universități",
+    "reviews": "Recenzii",
+    "questions": "Întrebări",
+    "signIn": "Autentificare",
+    "signOut": "Deconectare"
+  },
+  "Home": {
+    "heroTitle": "Găsește universitatea potrivită — cu voci reale ale studenților",
+    "heroSubtitle": "Explorează mii de universități din întreaga lume. Citește recenzii oneste, pune întrebări și primește răspunsuri verificate.",
+    "ctaExplore": "Explorează universități",
+    "ctaAsk": "Pune o întrebare",
+    "featuresTitle": "De ce UNIREAL",
+    "feature1Title": "Acoperire globală",
+    "feature1Body": "Mii de universități din peste 200 de țări, cu nume în limba ta.",
+    "feature2Title": "Voci verificate",
+    "feature2Body": "Recenzii și răspunsuri de la persoane verificate prin domeniul de e-mail universitar.",
+    "feature3Title": "Onest și deschis",
+    "feature3Body": "Evaluări, date despre taxe și rezultate — transparente și gratuite de consultat."
+  },
+  "Universities": {
+    "title": "Universități",
+    "searchPlaceholder": "Caută după nume…",
+    "filterCountry": "Țară",
+    "allCountries": "Toate țările",
+    "resultsCount": "{count, plural, =0 {Nicio universitate găsită} one {# universitate} other {# universități}}",
+    "loading": "Se încarcă…",
+    "previous": "Anterior",
+    "next": "Următor",
+    "page": "Pagina {page} din {total}",
+    "viewDetails": "Vezi detalii",
+    "noResults": "Nicio universitate nu corespunde căutării tale."
+  },
+  "University": {
+    "website": "Site web",
+    "country": "Țară",
+    "city": "Oraș",
+    "established": "Înființată",
+    "students": "Studenți",
+    "tuition": "Taxă (anuală)",
+    "admissionRate": "Rata de admitere",
+    "researchScore": "Activitate de cercetare",
+    "reviewsTab": "Recenzii",
+    "questionsTab": "Întrebări",
+    "overviewTab": "Prezentare",
+    "notFound": "Universitatea nu a fost găsită",
+    "verifiedBadge": "Verificat",
+    "sources": "Surse de date"
+  },
+  "Reviews": {
+    "title": "Recenzii",
+    "writeReview": "Scrie o recenzie",
+    "rating": "Evaluare",
+    "yourReview": "Recenzia ta",
+    "namePlaceholder": "Numele tău",
+    "bodyPlaceholder": "Împărtășește experiența ta onestă…",
+    "submit": "Trimite recenzia",
+    "empty": "Încă nu există recenzii. Fii primul care scrie una.",
+    "averageRating": "Evaluare medie",
+    "demoNotice": "Mod demo: recenziile sunt păstrate în memorie și se resetează la reîncărcare."
+  },
+  "Questions": {
+    "title": "Întrebări și răspunsuri",
+    "askQuestion": "Pune o întrebare",
+    "questionPlaceholder": "Ce ai vrea să afli?",
+    "submit": "Publică întrebarea",
+    "answer": "Răspuns",
+    "answerPlaceholder": "Scrie un răspuns…",
+    "submitAnswer": "Publică răspunsul",
+    "empty": "Încă nu există întrebări. Pune prima.",
+    "answersCount": "{count, plural, =0 {Niciun răspuns} one {# răspuns} other {# răspunsuri}}",
+    "demoNotice": "Mod demo: întrebările sunt păstrate în memorie și se resetează la reîncărcare."
+  },
+  "Auth": {
+    "signInTitle": "Autentifică-te în UNIREAL",
+    "signUpTitle": "Creează-ți contul",
+    "email": "E-mail",
+    "password": "Parolă",
+    "name": "Nume",
+    "continueWithGoogle": "Continuă cu Google",
+    "or": "sau",
+    "signInButton": "Autentificare",
+    "signUpButton": "Înregistrare",
+    "noAccount": "Nu ai un cont?",
+    "haveAccount": "Ai deja un cont?",
+    "demoNotice": "Mod demo: autentificarea este simulată. Folosește orice e-mail pentru a intra.",
+    "verifiedHint": "Folosește e-mailul universitar pentru a primi insigna Verificat."
+  },
+  "Common": {
+    "search": "Caută",
+    "clear": "Șterge",
+    "back": "Înapoi",
+    "loading": "Se încarcă…",
+    "error": "A apărut o eroare."
+  },
+  "Footer": {
+    "rights": "Toate drepturile rezervate.",
+    "dataCredit": "Date despre universități de la Hipolabs, ROR, OpenAlex, College Scorecard și Wikidata."
+  }
+}

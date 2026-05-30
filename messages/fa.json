@@ -1,0 +1,106 @@
+{
+  "Brand": {
+    "name": "یونی‌ریل",
+    "tagline": "نقد و پاسخ‌های واقعی درباره‌ی دانشگاه‌های سراسر جهان"
+  },
+  "Nav": {
+    "home": "خانه",
+    "universities": "دانشگاه‌ها",
+    "reviews": "نقدها",
+    "questions": "پرسش و پاسخ",
+    "signIn": "ورود",
+    "signOut": "خروج"
+  },
+  "Home": {
+    "heroTitle": "دانشگاه مناسب را پیدا کن — با صدای واقعی دانشجویان",
+    "heroSubtitle": "هزاران دانشگاه از سراسر جهان را کاوش کن. نقدهای صادقانه بخوان، پرسش بپرس و پاسخ‌های تأییدشده بگیر.",
+    "ctaExplore": "کاوش دانشگاه‌ها",
+    "ctaAsk": "یک پرسش بپرس",
+    "featuresTitle": "چرا یونی‌ریل",
+    "feature1Title": "پوشش جهانی",
+    "feature1Body": "هزاران دانشگاه در بیش از ۲۰۰ کشور، با نام به زبان خودت.",
+    "feature2Title": "صداهای تأییدشده",
+    "feature2Body": "نقد و پاسخ از افرادی که با دامنه‌ی ایمیل دانشگاهی‌شان تأیید شده‌اند.",
+    "feature3Title": "صادقانه و آزاد",
+    "feature3Body": "امتیازها، اطلاعات شهریه و نتایج — شفاف و رایگان برای مرور."
+  },
+  "Universities": {
+    "title": "دانشگاه‌ها",
+    "searchPlaceholder": "جست‌وجو بر اساس نام…",
+    "filterCountry": "کشور",
+    "allCountries": "همه‌ی کشورها",
+    "resultsCount": "{count, plural, =0 {دانشگاهی یافت نشد} other {# دانشگاه}}",
+    "loading": "در حال بارگذاری…",
+    "previous": "قبلی",
+    "next": "بعدی",
+    "page": "صفحه‌ی {page} از {total}",
+    "viewDetails": "مشاهده‌ی جزئیات",
+    "noResults": "هیچ دانشگاهی با جست‌وجوی شما مطابقت ندارد."
+  },
+  "University": {
+    "website": "وب‌سایت",
+    "country": "کشور",
+    "city": "شهر",
+    "established": "سال تأسیس",
+    "students": "دانشجویان",
+    "tuition": "شهریه (سالانه)",
+    "admissionRate": "نرخ پذیرش",
+    "researchScore": "فعالیت پژوهشی",
+    "reviewsTab": "نقدها",
+    "questionsTab": "پرسش و پاسخ",
+    "overviewTab": "نمای کلی",
+    "notFound": "دانشگاه یافت نشد",
+    "verifiedBadge": "تأییدشده",
+    "sources": "منابع داده"
+  },
+  "Reviews": {
+    "title": "نقدها",
+    "writeReview": "نوشتن نقد",
+    "rating": "امتیاز",
+    "yourReview": "نقد شما",
+    "namePlaceholder": "نام شما",
+    "bodyPlaceholder": "تجربه‌ی صادقانه‌ات را به اشتراک بگذار…",
+    "submit": "ثبت نقد",
+    "empty": "هنوز نقدی نیست. اولین نفر باش.",
+    "averageRating": "میانگین امتیاز",
+    "demoNotice": "حالت نمایشی: نقدها در حافظه ذخیره می‌شوند و با بارگذاری مجدد پاک می‌شوند."
+  },
+  "Questions": {
+    "title": "پرسش و پاسخ",
+    "askQuestion": "پرسیدن سؤال",
+    "questionPlaceholder": "دوست داری چه چیزی بدانی؟",
+    "submit": "ثبت پرسش",
+    "answer": "پاسخ",
+    "answerPlaceholder": "یک پاسخ بنویس…",
+    "submitAnswer": "ثبت پاسخ",
+    "empty": "هنوز پرسشی نیست. اولین را بپرس.",
+    "answersCount": "{count, plural, =0 {بدون پاسخ} other {# پاسخ}}",
+    "demoNotice": "حالت نمایشی: پرسش‌ها در حافظه ذخیره می‌شوند و با بارگذاری مجدد پاک می‌شوند."
+  },
+  "Auth": {
+    "signInTitle": "ورود به یونی‌ریل",
+    "signUpTitle": "ساخت حساب کاربری",
+    "email": "ایمیل",
+    "password": "گذرواژه",
+    "name": "نام",
+    "continueWithGoogle": "ادامه با گوگل",
+    "or": "یا",
+    "signInButton": "ورود",
+    "signUpButton": "ثبت‌نام",
+    "noAccount": "حساب کاربری نداری؟",
+    "haveAccount": "از قبل حساب داری؟",
+    "demoNotice": "حالت نمایشی: احراز هویت شبیه‌سازی شده است. با هر ایمیلی وارد شو.",
+    "verifiedHint": "از ایمیل دانشگاهی‌ات استفاده کن تا نشان «تأییدشده» بگیری."
+  },
+  "Common": {
+    "search": "جست‌وجو",
+    "clear": "پاک کردن",
+    "back": "بازگشت",
+    "loading": "در حال بارگذاری…",
+    "error": "مشکلی پیش آمد."
+  },
+  "Footer": {
+    "rights": "همه‌ی حقوق محفوظ است.",
+    "dataCredit": "داده‌های دانشگاه‌ها از Hipolabs، ROR، OpenAlex، College Scorecard و Wikidata."
+  }
+}
