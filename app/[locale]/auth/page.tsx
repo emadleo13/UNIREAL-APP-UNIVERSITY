@@ -20,7 +20,7 @@ export default function AuthPage() {
     return (
       <div className="mx-auto max-w-md px-4 py-16">
         <Card className="p-6 text-center">
-          <p className="text-slate-700">
+          <p className="text-foreground">
             {user.name} · {user.email}
           </p>
           <Button className="mt-4" variant="secondary" onClick={signOut}>
@@ -41,8 +41,8 @@ export default function AuthPage() {
   return (
     <div className="mx-auto max-w-md px-4 py-16">
       <Card className="p-6">
-        <h1 className="text-xl font-bold text-slate-900">{t('signInTitle')}</h1>
-        <p className="mt-1 text-sm text-slate-500">{t('verifiedHint')}</p>
+        <h1 className="text-xl font-bold text-foreground">{t('signInTitle')}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">{t('verifiedHint')}</p>
 
         <Button
           variant="secondary"
@@ -52,10 +52,10 @@ export default function AuthPage() {
           {t('continueWithGoogle')}
         </Button>
 
-        <div className="my-4 flex items-center gap-3 text-xs text-slate-400">
-          <span className="h-px flex-1 bg-slate-200" />
+        <div className="my-4 flex items-center gap-3 text-xs text-muted-foreground">
+          <span className="h-px flex-1 bg-border" />
           {t('or')}
-          <span className="h-px flex-1 bg-slate-200" />
+          <span className="h-px flex-1 bg-border" />
         </div>
 
         <form onSubmit={submit} className="space-y-3">
@@ -76,7 +76,7 @@ export default function AuthPage() {
           </Button>
         </form>
 
-        <p className="mt-4 text-xs text-slate-400">{t('demoNotice')}</p>
+        <p className="mt-4 text-xs text-muted-foreground">{t('demoNotice')}</p>
       </Card>
     </div>
   );

@@ -124,13 +124,13 @@ export default async function UniversityDetailPage({
             className="h-16 w-16 flex-none rounded-lg object-contain"
           />
         ) : (
-          <div className="flex h-16 w-16 flex-none items-center justify-center rounded-lg bg-brand-50 text-2xl font-bold text-brand-600">
+          <div className="flex h-16 w-16 flex-none items-center justify-center rounded-lg bg-accent text-2xl font-bold text-primary">
             {name.charAt(0)}
           </div>
         )}
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold text-slate-900">{name}</h1>
-          <p className="mt-1 text-slate-500">
+          <h1 className="text-2xl font-bold text-foreground">{name}</h1>
+          <p className="mt-1 text-muted-foreground">
             {[uni.city, uni.country].filter(Boolean).join(', ')}
           </p>
           <div className="mt-2 flex flex-wrap gap-1.5">
@@ -139,7 +139,7 @@ export default async function UniversityDetailPage({
                 href={uni.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm font-medium text-brand-600 hover:text-brand-700"
+                className="text-sm font-medium text-primary hover:opacity-80"
               >
                 {t('website')} ↗
               </a>
@@ -155,17 +155,17 @@ export default async function UniversityDetailPage({
             .filter((f) => f.value !== undefined && f.value !== '')
             .map((f) => (
               <div key={f.label}>
-                <dt className="text-xs uppercase tracking-wide text-slate-400">
+                <dt className="text-xs uppercase tracking-wide text-muted-foreground">
                   {f.label}
                 </dt>
-                <dd className="mt-0.5 font-medium text-slate-800">{f.value}</dd>
+                <dd className="mt-0.5 font-medium text-foreground">{f.value}</dd>
               </div>
             ))}
         </dl>
-        <div className="mt-4 flex flex-wrap gap-1.5 border-t border-slate-100 pt-4">
-          <span className="text-xs text-slate-400">{t('sources')}:</span>
+        <div className="mt-4 flex flex-wrap gap-1.5 border-t border-border pt-4">
+          <span className="text-xs text-muted-foreground">{t('sources')}:</span>
           {uni.source.map((s) => (
-            <Badge key={s} tone="slate">
+            <Badge key={s} tone="muted">
               {s}
             </Badge>
           ))}

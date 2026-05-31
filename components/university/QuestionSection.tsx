@@ -43,7 +43,7 @@ export function QuestionSection({
 
   return (
     <section id="questions" className="scroll-mt-20">
-      <h2 className="text-xl font-bold text-slate-900">{t('title')}</h2>
+      <h2 className="text-xl font-bold text-foreground">{t('title')}</h2>
 
       <Card className="mt-4 p-4">
         <form onSubmit={submitQuestion} className="space-y-3">
@@ -61,7 +61,7 @@ export function QuestionSection({
             rows={2}
           />
           <div className="flex items-center justify-between">
-            <p className="text-xs text-slate-400">{t('demoNotice')}</p>
+            <p className="text-xs text-muted-foreground">{t('demoNotice')}</p>
             <Button type="submit" disabled={pending}>
               {t('submit')}
             </Button>
@@ -71,7 +71,7 @@ export function QuestionSection({
 
       <ul className="mt-4 space-y-3">
         {questions.length === 0 && (
-          <li className="text-sm text-slate-500">{t('empty')}</li>
+          <li className="text-sm text-muted-foreground">{t('empty')}</li>
         )}
         {questions.map((q) => (
           <li key={q.id}>
@@ -126,19 +126,19 @@ function QuestionItem({
 
   return (
     <Card className="p-4">
-      <p className="font-medium text-slate-800">{question.body}</p>
-      <p className="mt-1 text-xs text-slate-400">
+      <p className="font-medium text-foreground">{question.body}</p>
+      <p className="mt-1 text-xs text-muted-foreground">
         {question.authorName} · {t('answersCount', { count: question.answers.length })}
       </p>
 
-      <ul className="mt-3 space-y-2 border-s-2 border-slate-100 ps-3">
+      <ul className="mt-3 space-y-2 border-s-2 border-border ps-3">
         {question.answers.map((a) => (
           <li key={a.id} className="text-sm">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-slate-700">{a.authorName}</span>
+              <span className="font-medium text-foreground">{a.authorName}</span>
               {a.verified && <VerifiedBadge label="✓" />}
             </div>
-            <p className="text-slate-600">{a.body}</p>
+            <p className="text-muted-foreground">{a.body}</p>
           </li>
         ))}
       </ul>
@@ -166,7 +166,7 @@ function QuestionItem({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="mt-3 text-sm font-medium text-brand-600 hover:text-brand-700"
+          className="mt-3 text-sm font-medium text-primary hover:opacity-80"
         >
           {t('answer')}
         </button>

@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/lib/i18n/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { LocaleSwitcher } from './LocaleSwitcher';
+import { ThemeToggle } from './ThemeToggle';
 
 export function Header() {
   const t = useTranslations();
@@ -16,10 +17,16 @@ export function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3">
-        <Link href="/" className="text-lg font-bold text-brand-700">
-          {t('Brand.name')}
+    <header className="sticky top-0 z-20 border-b border-border bg-card/90 backdrop-blur">
+      <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-2.5">
+        <Link href="/" className="flex items-center gap-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/UNIREAL logo 2.png"
+            alt={t('Brand.name')}
+            className="h-9 w-9 rounded-md object-contain"
+          />
+          <span className="text-lg font-bold text-primary">{t('Brand.name')}</span>
         </Link>
 
         <nav className="hidden items-center gap-1 sm:flex">
@@ -32,8 +39,8 @@ export function Header() {
                 href={l.href}
                 className={`rounded-md px-3 py-1.5 text-sm font-medium ${
                   active
-                    ? 'bg-brand-50 text-brand-700'
-                    : 'text-slate-600 hover:bg-slate-100'
+                    ? 'bg-accent text-accent-foreground'
+                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
                 }`}
               >
                 {l.label}
@@ -44,18 +51,19 @@ export function Header() {
 
         <div className="ms-auto flex items-center gap-2">
           <LocaleSwitcher />
+          <ThemeToggle />
           {user ? (
             <button
               type="button"
               onClick={signOut}
-              className="rounded-md px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"
+              className="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
             >
               {t('Nav.signOut')}
             </button>
           ) : (
             <Link
               href="/auth"
-              className="rounded-md bg-brand-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-brand-700"
+              className="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:opacity-90"
             >
               {t('Nav.signIn')}
             </Link>

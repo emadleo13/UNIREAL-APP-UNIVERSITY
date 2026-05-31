@@ -18,7 +18,7 @@ export function Stars({ value, onChange, size = 18 }: Props) {
             viewBox="0 0 20 20"
             fill={filled ? 'currentColor' : 'none'}
             stroke="currentColor"
-            className={filled ? 'text-amber-400' : 'text-slate-300'}
+            className={filled ? 'text-amber-500' : 'text-border'}
             style={{ width: size, height: size }}
             aria-hidden
           >

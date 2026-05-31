@@ -16,7 +16,7 @@ export function LocaleSwitcher() {
   const router = useRouter();
 
   return (
-    <div className="inline-flex overflow-hidden rounded-lg border border-slate-300 text-xs">
+    <div className="inline-flex overflow-hidden rounded-lg border border-border text-xs">
       {locales.map((loc) => (
         <button
           key={loc}
@@ -25,8 +25,8 @@ export function LocaleSwitcher() {
           aria-current={loc === locale}
           className={
             loc === locale
-              ? 'bg-brand-600 px-2.5 py-1 font-semibold text-white'
-              : 'bg-white px-2.5 py-1 text-slate-600 hover:bg-slate-50'
+              ? 'bg-primary px-2.5 py-1 font-semibold text-primary-foreground'
+              : 'bg-card px-2.5 py-1 text-muted-foreground hover:bg-accent hover:text-accent-foreground'
           }
         >
           {labels[loc]}

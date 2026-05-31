@@ -42,7 +42,7 @@ export default async function UniversitiesPage({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className="text-2xl font-bold text-slate-900">{t('title')}</h1>
+      <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
 
       <div className="mt-4">
         <SearchFilters
@@ -52,12 +52,12 @@ export default async function UniversitiesPage({
         />
       </div>
 
-      <p className="mt-4 text-sm text-slate-500">
+      <p className="mt-4 text-sm text-muted-foreground">
         {t('resultsCount', { count: total })}
       </p>
 
       {items.length === 0 ? (
-        <p className="mt-12 text-center text-slate-500">{t('noResults')}</p>
+        <p className="mt-12 text-center text-muted-foreground">{t('noResults')}</p>
       ) : (
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {items.map((u) => (
@@ -71,20 +71,20 @@ export default async function UniversitiesPage({
           {page > 1 ? (
             <Link
               href={pageHref(page - 1)}
-              className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-50"
+              className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-accent"
             >
               ← {t('previous')}
             </Link>
           ) : (
             <span />
           )}
-          <span className="text-sm text-slate-500">
+          <span className="text-sm text-muted-foreground">
             {t('page', { page, total: totalPages })}
           </span>
           {page < totalPages ? (
             <Link
               href={pageHref(page + 1)}
-              className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium hover:bg-slate-50"
+              className="rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-accent"
             >
               {t('next')} →
             </Link>

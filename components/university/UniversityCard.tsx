@@ -22,31 +22,31 @@ export function UniversityCard({ university }: { university: University }) {
             loading="lazy"
           />
         ) : (
-          <div className="flex h-10 w-10 flex-none items-center justify-center rounded bg-brand-50 text-sm font-bold text-brand-600">
+          <div className="flex h-10 w-10 flex-none items-center justify-center rounded bg-accent text-sm font-bold text-primary">
             {name.charAt(0)}
           </div>
         )}
         <div className="min-w-0">
-          <h3 className="truncate font-semibold text-slate-900">{name}</h3>
-          <p className="truncate text-sm text-slate-500">
+          <h3 className="truncate font-semibold text-foreground">{name}</h3>
+          <p className="truncate text-sm text-muted-foreground">
             {[university.city, university.country].filter(Boolean).join(', ')}
           </p>
         </div>
       </div>
 
       <div className="mt-3 flex flex-wrap gap-1.5">
-        <Badge tone="slate">{university.countryCode}</Badge>
+        <Badge tone="muted">{university.countryCode}</Badge>
         {university.researchScore != null && (
-          <Badge tone="brand">★ {university.researchScore}</Badge>
+          <Badge tone="primary">★ {university.researchScore}</Badge>
         )}
         {university.establishedYear && (
-          <Badge tone="slate">{university.establishedYear}</Badge>
+          <Badge tone="muted">{university.establishedYear}</Badge>
         )}
       </div>
 
       <Link
         href={`/universities/${university.slug}`}
-        className="mt-4 text-sm font-medium text-brand-600 hover:text-brand-700"
+        className="mt-4 text-sm font-medium text-primary hover:opacity-80"
       >
         {t('viewDetails')} →
       </Link>

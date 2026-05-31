@@ -1,19 +1,19 @@
 import type { HTMLAttributes } from 'react';
 
 type Props = HTMLAttributes<HTMLSpanElement> & {
-  tone?: 'brand' | 'green' | 'slate';
+  tone?: 'primary' | 'green' | 'muted';
 };
 
 const tones = {
-  brand: 'bg-brand-50 text-brand-700 ring-brand-200',
-  green: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  slate: 'bg-slate-100 text-slate-600 ring-slate-200',
+  primary: 'bg-accent text-accent-foreground',
+  green: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300',
+  muted: 'bg-muted text-muted-foreground',
 };
 
-export function Badge({ tone = 'slate', className = '', ...props }: Props) {
+export function Badge({ tone = 'muted', className = '', ...props }: Props) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${tones[tone]} ${className}`}
+      className={`inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-xs font-medium ${tones[tone]} ${className}`}
       {...props}
     />
   );

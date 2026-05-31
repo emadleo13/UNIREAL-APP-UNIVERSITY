@@ -1,22 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&family=Merriweather:wght@300;400;700&family=Fira+Code&family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji';
+  --card: #f8f4ee;
+  --ring: #b45309;
+  --input: #e4d9bc;
+  --muted: #f1e9da;
+  --accent: #f2daba;
+  --border: #e4d9bc;
+  --radius: 0.3rem;
+  --popover: #f8f4ee;
+  --primary: #b45309;
+  --secondary: #e4c090;
+  --background: #fdfbf7;
+  --foreground: #4a3b33;
+  --destructive: #991b1b;
+  --card-foreground: #4a3b33;
+  --muted-foreground: #78716c;
+  --accent-foreground: #57534e;
+  --popover-foreground: #4a3b33;
+  --primary-foreground: #ffffff;
+  --secondary-foreground: #57534e;
+  --destructive-foreground: #ffffff;
+
+  --font-sans: 'Oxanium', 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Merriweather', Georgia, serif;
+  --font-mono: 'Fira Code', ui-monospace, monospace;
+
+  --shadow-color: 28 18% 25%;
+  --shadow: 0px 2px 3px 0px hsl(var(--shadow-color) / 0.18);
 }
 
-html {
-  -webkit-text-size-adjust: 100%;
+.dark {
+  --card: #292524;
+  --ring: #f97316;
+  --input: #44403c;
+  --muted: #292524;
+  --accent: #1e4252;
+  --border: #44403c;
+  --popover: #292524;
+  --primary: #f97316;
+  --secondary: #57534e;
+  --background: #1c1917;
+  --foreground: #f5f5f4;
+  --destructive: #dc2626;
+  --card-foreground: #f5f5f4;
+  --muted-foreground: #a8a29e;
+  --accent-foreground: #e7e5e4;
+  --popover-foreground: #f5f5f4;
+  --primary-foreground: #ffffff;
+  --secondary-foreground: #e7e5e4;
+  --destructive-foreground: #ffffff;
+
+  --shadow-color: 0 0% 5%;
 }
 
-body {
-  font-family: var(--font-sans);
-  @apply bg-slate-50 text-slate-900 antialiased;
+/* Persian uses Vazirmatn for both body and headings (Oxanium/Merriweather
+   have no Persian glyphs). Scoped to the fa locale via <html lang="fa">. */
+html[lang='fa'] {
+  --font-sans: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Logical-property helpers so spacing flips correctly under RTL. */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--background);
+    color: var(--foreground);
+    @apply antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-serif);
+  }
+}
+
+/* Logical-property helper so decorative flips work under RTL. */
 [dir='rtl'] .flip-x {
   transform: scaleX(-1);
 }

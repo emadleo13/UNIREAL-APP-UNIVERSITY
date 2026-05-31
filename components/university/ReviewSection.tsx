@@ -53,9 +53,9 @@ export function ReviewSection({
   return (
     <section id="reviews" className="scroll-mt-20">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold text-slate-900">{t('title')}</h2>
+        <h2 className="text-xl font-bold text-foreground">{t('title')}</h2>
         {reviews.length > 0 && (
-          <div className="flex items-center gap-2 text-sm text-slate-600">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Stars value={avg} />
             <span>{avg.toFixed(1)}</span>
           </div>
@@ -65,7 +65,7 @@ export function ReviewSection({
       <Card className="mt-4 p-4">
         <form onSubmit={submit} className="space-y-3">
           <div className="flex items-center gap-3">
-            <span className="text-sm text-slate-600">{t('rating')}:</span>
+            <span className="text-sm text-muted-foreground">{t('rating')}:</span>
             <Stars value={rating} onChange={setRating} />
           </div>
           {!user && (
@@ -82,7 +82,7 @@ export function ReviewSection({
             rows={3}
           />
           <div className="flex items-center justify-between">
-            <p className="text-xs text-slate-400">{t('demoNotice')}</p>
+            <p className="text-xs text-muted-foreground">{t('demoNotice')}</p>
             <Button type="submit" disabled={pending}>
               {t('submit')}
             </Button>
@@ -92,19 +92,19 @@ export function ReviewSection({
 
       <ul className="mt-4 space-y-3">
         {reviews.length === 0 && (
-          <li className="text-sm text-slate-500">{t('empty')}</li>
+          <li className="text-sm text-muted-foreground">{t('empty')}</li>
         )}
         {reviews.map((r) => (
           <li key={r.id}>
             <Card className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-slate-800">{r.authorName}</span>
+                  <span className="font-medium text-foreground">{r.authorName}</span>
                   {r.verified && <VerifiedBadge label="✓" />}
                 </div>
                 <Stars value={r.rating} />
               </div>
-              <p className="mt-2 text-sm text-slate-600">{r.body}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{r.body}</p>
             </Card>
           </li>
         ))}

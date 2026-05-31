@@ -6,6 +6,7 @@ import { routing, dirForLocale, type Locale } from '@/lib/i18n/routing';
 import { AuthProvider } from '@/lib/auth/AuthContext';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { BottomNav } from '@/components/layout/BottomNav';
 import { ServiceWorkerRegister } from '@/components/ServiceWorkerRegister';
 import '../globals.css';
 
@@ -48,13 +49,21 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale} dir={dirForLocale(locale)}>
+    <html lang={locale} dir={dirForLocale(locale)} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('unireal.theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark');}}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
             <Header />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1 pb-28 sm:pb-0">{children}</main>
             <Footer />
+            <BottomNav />
             <ServiceWorkerRegister />
           </AuthProvider>
         </NextIntlClientProvider>
