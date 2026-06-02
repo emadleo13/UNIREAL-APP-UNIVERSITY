@@ -1,31 +1,73 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/lib/i18n/navigation';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { Badge } from '@/components/ui/Badge';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { SubscribeButton } from '@/components/billing/SubscribeButton';
+import { ManageBillingButton } from '@/components/billing/ManageBillingButton';
+import { fetchMySubscription } from '@/app/billing-actions';
+import type { MySubscription } from '@/lib/subscription';
 
 export default function AuthPage() {
   const t = useTranslations('Auth');
   const tNav = useTranslations('Nav');
-  const { user, signIn, signOut } = useAuth();
+  const { user, configured, signInWithPassword, signUp, signInWithGoogle, signOut } =
+    useAuth();
   const router = useRouter();
+  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+  const [sub, setSub] = useState<MySubscription | null>(null);
+
+  useEffect(() => {
+    if (user && configured) {
+      fetchMySubscription().then(setSub);
+    }
+  }, [user, configured]);
 
   if (user) {
     return (
       <div className="mx-auto max-w-md px-4 py-16">
         <Card className="p-6 text-center">
-          <p className="text-foreground">
-            {user.name} · {user.email}
+          <p className="font-medium text-foreground">{user.name}</p>
+          <p className="text-sm text-muted-foreground" dir="ltr">
+            {user.email}
           </p>
-          <Button className="mt-4" variant="secondary" onClick={signOut}>
-            {tNav('signOut')}
-          </Button>
+
+          <div className="mt-4 flex items-center justify-center gap-2">
+            <span className="text-sm text-muted-foreground">{t('plan')}:</span>
+            {sub?.isActive ? (
+              <Badge tone="green">{t('proPlan')}</Badge>
+            ) : (
+              <Badge tone="muted">{t('freePlan')}</Badge>
+            )}
+          </div>
+          {sub?.currentPeriodEnd && sub.isActive && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              {sub.cancelAtPeriodEnd ? t('endsOn') : t('renewsOn')}:{' '}
+              {new Date(sub.currentPeriodEnd).toLocaleDateString()}
+            </p>
+          )}
+
+          <div className="mt-5 flex flex-col items-center gap-2">
+            {sub?.isActive ? (
+              <ManageBillingButton label={t('manageBilling')} />
+            ) : (
+              <SubscribeButton label={t('upgradePro')} size="md" />
+            )}
+            <Button variant="ghost" onClick={() => signOut()}>
+              {tNav('signOut')}
+            </Button>
+          </div>
         </Card>
       </div>
     );
@@ -33,21 +75,38 @@ export default function AuthPage() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email.trim()) return;
-    signIn(email, name);
-    router.push('/universities');
+    if (!email.trim() || (configured && !password)) return;
+    setError(null);
+    setInfo(null);
+    startTransition(async () => {
+      const res =
+        mode === 'signup'
+          ? await signUp(email, password, name)
+          : await signInWithPassword(email, password);
+      if (res.error) {
+        setError(res.error);
+        return;
+      }
+      if (mode === 'signup' && configured) {
+        setInfo(t('checkEmail'));
+        return;
+      }
+      router.push('/universities');
+    });
   }
 
   return (
     <div className="mx-auto max-w-md px-4 py-16">
       <Card className="p-6">
-        <h1 className="text-xl font-bold text-foreground">{t('signInTitle')}</h1>
+        <h1 className="text-xl font-bold text-foreground">
+          {mode === 'signup' ? t('signUpTitle') : t('signInTitle')}
+        </h1>
         <p className="mt-1 text-sm text-muted-foreground">{t('verifiedHint')}</p>
 
         <Button
           variant="secondary"
           className="mt-5 w-full"
-          onClick={() => signIn('demo@gmail.com', 'Demo User')}
+          onClick={() => signInWithGoogle()}
         >
           {t('continueWithGoogle')}
         </Button>
@@ -59,11 +118,13 @@ export default function AuthPage() {
         </div>
 
         <form onSubmit={submit} className="space-y-3">
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder={t('name')}
-          />
+          {mode === 'signup' && (
+            <Input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t('name')}
+            />
+          )}
           <Input
             type="email"
             value={email}
@@ -71,12 +132,37 @@ export default function AuthPage() {
             placeholder={t('email')}
             required
           />
-          <Button type="submit" className="w-full">
-            {t('signInButton')}
+          {configured && (
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={t('password')}
+              required
+            />
+          )}
+          {error && <p className="text-sm text-destructive">{error}</p>}
+          {info && <p className="text-sm text-primary">{info}</p>}
+          <Button type="submit" className="w-full" disabled={pending}>
+            {mode === 'signup' ? t('signUpButton') : t('signInButton')}
           </Button>
         </form>
 
-        <p className="mt-4 text-xs text-muted-foreground">{t('demoNotice')}</p>
+        <button
+          type="button"
+          onClick={() => {
+            setMode((m) => (m === 'signin' ? 'signup' : 'signin'));
+            setError(null);
+            setInfo(null);
+          }}
+          className="mt-4 text-sm text-primary hover:opacity-80"
+        >
+          {mode === 'signin' ? t('noAccount') : t('haveAccount')}
+        </button>
+
+        {!configured && (
+          <p className="mt-4 text-xs text-muted-foreground">{t('demoNotice')}</p>
+        )}
       </Card>
     </div>
   );

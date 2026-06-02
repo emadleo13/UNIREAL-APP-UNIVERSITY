@@ -1,0 +1,250 @@
+{
+  "_README": "Curated editorial overlay merged onto data/universities.json by slug. Sample data for a flagship set; safe to extend or replace with a DB-backed source later. External reviews are illustrative samples until live aggregation is wired up.",
+  "harvard-university": {
+    "ranking": 3,
+    "programsCount": 134,
+    "awards": 161,
+    "medals": 48,
+    "eliteStudents": 420,
+    "description_i18n": {
+      "en": "Harvard University is a private Ivy League research university in Cambridge, Massachusetts. Founded in 1636, it is the oldest institution of higher learning in the United States and one of the most prestigious in the world, renowned for its faculty, research output and global alumni network.",
+      "fa": "دانشگاه هاروارد یک دانشگاه پژوهشی خصوصی از لیگ آیوی در کمبریج ماساچوست است. این دانشگاه که در سال ۱۶۳۶ تأسیس شده، قدیمی‌ترین مؤسسه آموزش عالی ایالات متحده و یکی از معتبرترین دانشگاه‌های جهان است.",
+      "ro": "Universitatea Harvard este o universitate privată de cercetare din Ivy League, situată în Cambridge, Massachusetts. Fondată în 1636, este cea mai veche instituție de învățământ superior din SUA și una dintre cele mai prestigioase din lume."
+    },
+    "admission": { "period": "Sep 1 – Jan 1", "deadline": "2027-01-01" },
+    "internationalUrl": "https://college.harvard.edu/admissions/apply/international-applicants",
+    "international": {
+      "admissionPeriod": "Sep 1 – Jan 1",
+      "deadline": "2027-01-01",
+      "tuition": 56550,
+      "programsCount": 134,
+      "languages": ["English"]
+    },
+    "externalReviews": [
+      { "authorName": "Daniel R.", "rating": 5, "body": "The research opportunities are unmatched and the alumni network opens doors everywhere. Demanding but worth it.", "source": "Google", "sourceUrl": "https://maps.google.com", "createdAt": "2026-02-18T10:00:00.000Z", "verified": false },
+      { "authorName": "u/grad_life", "rating": 4, "body": "World-class faculty, but the cost of living in Cambridge is brutal. Financial aid is generous if you qualify.", "source": "Reddit", "sourceUrl": "https://reddit.com/r/college", "createdAt": "2026-01-09T08:30:00.000Z", "verified": false },
+      { "authorName": "Aisha M.", "rating": 5, "body": "As an international student I felt supported from day one. The international office helped with visa and housing.", "source": "Niche", "sourceUrl": "https://niche.com", "createdAt": "2025-11-22T14:00:00.000Z", "verified": true }
+    ]
+  },
+  "stanford-university": {
+    "ranking": 4,
+    "programsCount": 90,
+    "awards": 122,
+    "medals": 39,
+    "eliteStudents": 360,
+    "description_i18n": {
+      "en": "Stanford University is a private research university in Stanford, California, at the heart of Silicon Valley. It is widely regarded as a global leader in engineering, computer science and entrepreneurship.",
+      "fa": "دانشگاه استنفورد یک دانشگاه پژوهشی خصوصی در استنفورد کالیفرنیا و در قلب سیلیکون‌ولی است. این دانشگاه به‌عنوان یکی از پیشروان جهانی در مهندسی، علوم کامپیوتر و کارآفرینی شناخته می‌شود.",
+      "ro": "Universitatea Stanford este o universitate privată de cercetare din Stanford, California, în inima Silicon Valley. Este considerată un lider global în inginerie, informatică și antreprenoriat."
+    },
+    "admission": { "period": "Oct 1 – Jan 5", "deadline": "2027-01-05" },
+    "internationalUrl": "https://admission.stanford.edu/apply/international/",
+    "international": {
+      "admissionPeriod": "Oct 1 – Jan 5",
+      "deadline": "2027-01-05",
+      "tuition": 62484,
+      "programsCount": 90,
+      "languages": ["English"]
+    },
+    "externalReviews": [
+      { "authorName": "Kevin L.", "rating": 5, "body": "If you want to build a startup, there is no better place. The network and the weather are both unbeatable.", "source": "Google", "sourceUrl": "https://maps.google.com", "createdAt": "2026-03-02T12:00:00.000Z", "verified": false },
+      { "authorName": "u/cs_applicant", "rating": 4, "body": "Insanely competitive admissions, but once you're in the CS resources are incredible.", "source": "Reddit", "sourceUrl": "https://reddit.com/r/ApplyingToCollege", "createdAt": "2026-02-14T09:15:00.000Z", "verified": false }
+    ]
+  },
+  "massachusetts-institute-of-technology": {
+    "ranking": 1,
+    "programsCount": 120,
+    "awards": 101,
+    "medals": 55,
+    "eliteStudents": 410,
+    "description_i18n": {
+      "en": "The Massachusetts Institute of Technology (MIT) is a private research university in Cambridge, Massachusetts, consistently ranked among the top universities in the world for science, engineering and technology.",
+      "fa": "مؤسسه فناوری ماساچوست (MIT) یک دانشگاه پژوهشی خصوصی در کمبریج ماساچوست است که همواره در میان برترین دانشگاه‌های جهان در علوم، مهندسی و فناوری قرار دارد.",
+      "ro": "Institutul de Tehnologie din Massachusetts (MIT) este o universitate privată de cercetare din Cambridge, Massachusetts, clasată constant printre primele universități din lume pentru știință, inginerie și tehnologie."
+    },
+    "admission": { "period": "Aug 1 – Jan 4", "deadline": "2027-01-04" },
+    "internationalUrl": "https://mitadmissions.org/apply/firstyear/international-students/",
+    "international": {
+      "admissionPeriod": "Aug 1 – Jan 4",
+      "deadline": "2027-01-04",
+      "tuition": 59750,
+      "programsCount": 120,
+      "languages": ["English"]
+    },
+    "externalReviews": [
+      { "authorName": "Priya S.", "rating": 5, "body": "The most intellectually intense place I've ever been. Professors treat undergrads like real researchers.", "source": "Niche", "sourceUrl": "https://niche.com", "createdAt": "2026-04-01T10:00:00.000Z", "verified": true },
+      { "authorName": "u/mech_e", "rating": 4, "body": "Workload is no joke — be ready to grind. But the labs and maker spaces are a dream.", "source": "Reddit", "sourceUrl": "https://reddit.com/r/mit", "createdAt": "2026-01-28T18:00:00.000Z", "verified": false }
+    ]
+  },
+  "university-of-oxford": {
+    "ranking": 2,
+    "programsCount": 350,
+    "awards": 72,
+    "medals": 31,
+    "eliteStudents": 300,
+    "description_i18n": {
+      "en": "The University of Oxford is a collegiate research university in Oxford, England. It is the oldest university in the English-speaking world and a global leader across the humanities, sciences and medicine.",
+      "fa": "دانشگاه آکسفورد یک دانشگاه پژوهشی کالجی در آکسفورد انگلستان است. این دانشگاه قدیمی‌ترین دانشگاه جهان انگلیسی‌زبان و پیشرو جهانی در علوم انسانی، علوم پایه و پزشکی است.",
+      "ro": "Universitatea Oxford este o universitate colegială de cercetare din Oxford, Anglia. Este cea mai veche universitate din lumea anglofonă și un lider global în domeniul umanist, științe și medicină."
+    },
+    "admission": { "period": "Sep 1 – Oct 15", "deadline": "2026-10-15" },
+    "internationalUrl": "https://www.ox.ac.uk/admissions/undergraduate/international-students",
+    "international": {
+      "admissionPeriod": "Sep 1 – Oct 15",
+      "deadline": "2026-10-15",
+      "tuition": 39740,
+      "programsCount": 48,
+      "languages": ["English"]
+    },
+    "externalReviews": [
+      { "authorName": "James W.", "rating": 5, "body": "The tutorial system is unique — one-on-one teaching with leading academics. Tradition meets world-class research.", "source": "Google", "sourceUrl": "https://maps.google.com", "createdAt": "2026-03-19T11:00:00.000Z", "verified": false },
+      { "authorName": "Mei T.", "rating": 4, "body": "Beautiful city and incredible libraries. As an overseas student the terms are short and intense.", "source": "StudentRoom", "sourceUrl": "https://thestudentroom.co.uk", "createdAt": "2026-02-05T09:00:00.000Z", "verified": true }
+    ]
+  },
+  "university-of-cambridge": {
+    "ranking": 5,
+    "programsCount": 320,
+    "awards": 121,
+    "medals": 34,
+    "eliteStudents": 310,
+    "description_i18n": {
+      "en": "The University of Cambridge is a collegiate research university in Cambridge, England. Founded in 1209, it is one of the world's oldest and most prestigious universities, with particular strength in mathematics and the sciences.",
+      "fa": "دانشگاه کمبریج یک دانشگاه پژوهشی کالجی در کمبریج انگلستان است. این دانشگاه که در سال ۱۲۰۹ تأسیس شده، یکی از قدیمی‌ترین و معتبرترین دانشگاه‌های جهان، به‌ویژه در ریاضیات و علوم پایه است.",
+      "ro": "Universitatea Cambridge este o universitate colegială de cercetare din Cambridge, Anglia. Fondată în 1209, este una dintre cele mai vechi și prestigioase universități din lume, cu punct forte în matematică și științe."
+    },
+    "admission": { "period": "Sep 1 – Oct 15", "deadline": "2026-10-15" },
+    "internationalUrl": "https://www.undergraduate.study.cam.ac.uk/international-students",
+    "international": {
+      "admissionPeriod": "Sep 1 – Oct 15",
+      "deadline": "2026-10-15",
+      "tuition": 42000,
+      "programsCount": 30,
+      "languages": ["English"]
+    },
+    "externalReviews": [
+      { "authorName": "Oliver H.", "rating": 5, "body": "Supervisions push you hard but you learn more in a term than most do in a year. Stunning colleges.", "source": "Google", "sourceUrl": "https://maps.google.com", "createdAt": "2026-02-27T13:00:00.000Z", "verified": false }
+    ]
+  },
+  "ethz-eth-zurich": {
+    "ranking": 7,
+    "programsCount": 100,
+    "awards": 22,
+    "medals": 26,
+    "eliteStudents": 180,
+    "description_i18n": {
+      "en": "ETH Zurich is a public research university in Zurich, Switzerland, focused on science, technology, engineering and mathematics. It is consistently the top-ranked university in continental Europe.",
+      "fa": "دانشگاه ای‌تی‌اچ زوریخ یک دانشگاه پژوهشی دولتی در زوریخ سوئیس با تمرکز بر علوم، فناوری، مهندسی و ریاضیات است و همواره برترین دانشگاه اروپای قاره‌ای محسوب می‌شود.",
+      "ro": "ETH Zürich este o universitate publică de cercetare din Zürich, Elveția, axată pe știință, tehnologie, inginerie și matematică. Este constant cea mai bine clasată universitate din Europa continentală."
+    },
+    "admission": { "period": "Nov 1 – Apr 30", "deadline": "2027-04-30" },
+    "internationalUrl": "https://ethz.ch/en/studies/international-students.html",
+    "international": {
+      "admissionPeriod": "Nov 1 – Apr 30",
+      "deadline": "2027-04-30",
+      "tuition": 1600,
+      "programsCount": 40,
+      "languages": ["English", "German"]
+    },
+    "externalReviews": [
+      { "authorName": "Lukas B.", "rating": 5, "body": "Astonishingly low tuition for the quality. Bachelor's is mostly in German, but many master's programs are in English.", "source": "Reddit", "sourceUrl": "https://reddit.com/r/ETHZurich", "createdAt": "2026-03-11T10:00:00.000Z", "verified": false },
+      { "authorName": "Sofia G.", "rating": 4, "body": "Rigorous and very international at master's level. Zurich is expensive to live in, plan your budget.", "source": "Quora", "sourceUrl": "https://quora.com", "createdAt": "2026-01-15T12:00:00.000Z", "verified": false }
+    ]
+  },
+  "university-of-toronto": {
+    "ranking": 21,
+    "programsCount": 700,
+    "awards": 10,
+    "medals": 18,
+    "eliteStudents": 150,
+    "description_i18n": {
+      "en": "The University of Toronto is a public research university in Toronto, Canada. It is Canada's leading university and a major global research institution, offering one of the widest ranges of programs in North America.",
+      "fa": "دانشگاه تورنتو یک دانشگاه پژوهشی دولتی در تورنتو کانادا است. این دانشگاه برترین دانشگاه کانادا و یک مؤسسه پژوهشی بزرگ جهانی است که یکی از گسترده‌ترین مجموعه رشته‌ها را در آمریکای شمالی ارائه می‌دهد.",
+      "ro": "Universitatea din Toronto este o universitate publică de cercetare din Toronto, Canada. Este principala universitate din Canada și o instituție majoră de cercetare la nivel global, cu una dintre cele mai variate oferte de programe din America de Nord."
+    },
+    "admission": { "period": "Sep 1 – Jan 15", "deadline": "2027-01-15" },
+    "internationalUrl": "https://future.utoronto.ca/international-students/",
+    "international": {
+      "admissionPeriod": "Sep 1 – Jan 15",
+      "deadline": "2027-01-15",
+      "tuition": 45900,
+      "programsCount": 700,
+      "languages": ["English"]
+    },
+    "externalReviews": [
+      { "authorName": "Rohan P.", "rating": 4, "body": "Huge school with endless options. It can feel impersonal, but the breadth of courses is amazing.", "source": "Niche", "sourceUrl": "https://niche.com", "createdAt": "2026-02-20T15:00:00.000Z", "verified": true },
+      { "authorName": "u/uoft_eng", "rating": 3, "body": "Academically strong but grade deflation is real. Toronto itself is a fantastic city for students.", "source": "Reddit", "sourceUrl": "https://reddit.com/r/UofT", "createdAt": "2026-01-30T11:00:00.000Z", "verified": false }
+    ]
+  },
+  "national-university-of-singapore": {
+    "ranking": 8,
+    "programsCount": 200,
+    "awards": 6,
+    "medals": 22,
+    "eliteStudents": 170,
+    "description_i18n": {
+      "en": "The National University of Singapore (NUS) is a public research university in Singapore and the top-ranked university in Asia. It is highly international, with English as the language of instruction across all programs.",
+      "fa": "دانشگاه ملی سنگاپور (NUS) یک دانشگاه پژوهشی دولتی در سنگاپور و برترین دانشگاه آسیا است. این دانشگاه بسیار بین‌المللی است و زبان تدریس در همه‌ی رشته‌ها انگلیسی است.",
+      "ro": "Universitatea Națională din Singapore (NUS) este o universitate publică de cercetare din Singapore și cea mai bine clasată universitate din Asia. Este puternic internațională, cu limba engleză ca limbă de predare."
+    },
+    "admission": { "period": "Oct 1 – Feb 28", "deadline": "2027-02-28" },
+    "internationalUrl": "https://www.nus.edu.sg/oam/apply-to-nus/international-qualifications",
+    "international": {
+      "admissionPeriod": "Oct 1 – Feb 28",
+      "deadline": "2027-02-28",
+      "tuition": 29350,
+      "programsCount": 200,
+      "languages": ["English"]
+    },
+    "externalReviews": [
+      { "authorName": "Wei C.", "rating": 5, "body": "Top university in Asia for a reason. Strong industry links and a very global student body.", "source": "Google", "sourceUrl": "https://maps.google.com", "createdAt": "2026-03-25T10:00:00.000Z", "verified": false }
+    ]
+  },
+  "university-of-tokyo": {
+    "ranking": 28,
+    "programsCount": 130,
+    "awards": 18,
+    "medals": 20,
+    "eliteStudents": 160,
+    "description_i18n": {
+      "en": "The University of Tokyo is a public research university in Tokyo, Japan, and the country's most prestigious institution. It offers a growing number of degree programs taught entirely in English for international students.",
+      "fa": "دانشگاه توکیو یک دانشگاه پژوهشی دولتی در توکیو ژاپن و معتبرترین مؤسسه‌ی این کشور است. این دانشگاه تعداد رو به رشدی از رشته‌ها را به‌طور کامل به زبان انگلیسی برای دانشجویان بین‌المللی ارائه می‌دهد.",
+      "ro": "Universitatea din Tokyo este o universitate publică de cercetare din Tokyo, Japonia, și cea mai prestigioasă instituție a țării. Oferă un număr tot mai mare de programe predate integral în engleză pentru studenții internaționali."
+    },
+    "admission": { "period": "Jun 1 – Dec 5", "deadline": "2026-12-05" },
+    "internationalUrl": "https://www.u-tokyo.ac.jp/en/prospective-students/index.html",
+    "international": {
+      "admissionPeriod": "Jun 1 – Dec 5",
+      "deadline": "2026-12-05",
+      "tuition": 5350,
+      "programsCount": 20,
+      "languages": ["English", "Japanese"]
+    },
+    "externalReviews": [
+      { "authorName": "Haruki N.", "rating": 4, "body": "Prestige carries weight across Asia. English-taught programs (PEAK, GSC) are great for internationals.", "source": "Quora", "sourceUrl": "https://quora.com", "createdAt": "2026-02-09T08:00:00.000Z", "verified": false }
+    ]
+  },
+  "university-of-melbourne": {
+    "ranking": 13,
+    "programsCount": 400,
+    "awards": 4,
+    "medals": 12,
+    "eliteStudents": 120,
+    "description_i18n": {
+      "en": "The University of Melbourne is a public research university in Melbourne, Australia. It is Australia's leading university and a popular destination for international students across all disciplines.",
+      "fa": "دانشگاه ملبورن یک دانشگاه پژوهشی دولتی در ملبورن استرالیا است. این دانشگاه برترین دانشگاه استرالیا و مقصدی محبوب برای دانشجویان بین‌المللی در همه‌ی رشته‌هاست.",
+      "ro": "Universitatea din Melbourne este o universitate publică de cercetare din Melbourne, Australia. Este principala universitate din Australia și o destinație populară pentru studenții internaționali."
+    },
+    "admission": { "period": "Aug 1 – Oct 31", "deadline": "2026-10-31" },
+    "internationalUrl": "https://study.unimelb.edu.au/how-to-apply/international-students",
+    "international": {
+      "admissionPeriod": "Aug 1 – Oct 31",
+      "deadline": "2026-10-31",
+      "tuition": 35000,
+      "programsCount": 400,
+      "languages": ["English"]
+    },
+    "externalReviews": [
+      { "authorName": "Emily K.", "rating": 4, "body": "Great teaching and a vibrant, livable city. Lots of support services for international students.", "source": "Niche", "sourceUrl": "https://niche.com", "createdAt": "2026-03-08T14:00:00.000Z", "verified": true }
+    ]
+  }
+}

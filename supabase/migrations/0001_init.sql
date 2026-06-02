@@ -2,6 +2,8 @@
 -- Apply via the Supabase SQL editor or `supabase db push`.
 
 create extension if not exists "pgcrypto";
+-- Required for the trigram index on university names (must exist BEFORE the index).
+create extension if not exists pg_trgm;
 
 -- ── Universities ─────────────────────────────────────────────────────────────
 create table if not exists public.universities (
@@ -32,8 +34,6 @@ create table if not exists public.universities (
 
 create index if not exists universities_country_idx on public.universities (country);
 create index if not exists universities_name_trgm_idx on public.universities using gin (name gin_trgm_ops);
--- (requires: create extension if not exists pg_trgm;)
-create extension if not exists pg_trgm;
 
 -- ── Reviews ──────────────────────────────────────────────────────────────────
 create table if not exists public.reviews (

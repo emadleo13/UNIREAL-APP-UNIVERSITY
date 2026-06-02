@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/lib/i18n/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { isAdminEmail } from '@/lib/supabase/env';
 import { LocaleSwitcher } from './LocaleSwitcher';
 import { ThemeToggle } from './ThemeToggle';
 
@@ -14,6 +15,9 @@ export function Header() {
   const links = [
     { href: '/', label: t('Nav.home') },
     { href: '/universities', label: t('Nav.universities') },
+    { href: '/calendar', label: t('Nav.calendar') },
+    { href: '/contact', label: t('Nav.contact') },
+    ...(isAdminEmail(user?.email) ? [{ href: '/admin', label: t('Nav.admin') }] : []),
   ];
 
   return (
@@ -22,9 +26,9 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/UNIREAL logo 2.png"
+            src="/logo-unireal.png"
             alt={t('Brand.name')}
-            className="h-9 w-9 rounded-md object-contain"
+            className="h-9 w-9 rounded-md object-contain dark:bg-white dark:p-0.5"
           />
           <span className="text-lg font-bold text-primary">{t('Brand.name')}</span>
         </Link>

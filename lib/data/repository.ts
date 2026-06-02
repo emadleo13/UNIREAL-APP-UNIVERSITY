@@ -1,4 +1,5 @@
 import type {
+  AdmissionEvent,
   CreateAnswerInput,
   CreateQuestionInput,
   CreateReviewInput,
@@ -20,6 +21,9 @@ export interface DataRepository {
   getUniversityBySlug(slug: string): Promise<University | null>;
   /** Distinct country list for the filter dropdown. */
   listCountries(): Promise<string[]>;
+
+  /** Admission deadlines for the calendar (curated overlay data). */
+  listAdmissionEvents(): Promise<AdmissionEvent[]>;
 
   listReviews(universityId: string): Promise<Review[]>;
   createReview(input: CreateReviewInput): Promise<Review>;

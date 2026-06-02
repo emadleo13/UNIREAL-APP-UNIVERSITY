@@ -3,41 +3,47 @@ import { Link } from '@/lib/i18n/navigation';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { universityName } from '@/lib/data/display';
+import { computeUniversityScore } from '@/lib/data/score';
 import type { University } from '@/lib/data/types';
 
 export function UniversityCard({ university }: { university: University }) {
   const t = useTranslations('Universities');
   const locale = useLocale();
   const name = universityName(university, locale);
+  const score = computeUniversityScore(university);
 
   return (
-    <Card className="flex flex-col p-4 transition-shadow hover:shadow-md">
-      <div className="flex items-start gap-3">
+    <Card className="group flex flex-col p-4 transition-all hover:border-primary hover:shadow-md">
+      <Link href={`/universities/${university.slug}`} className="flex items-start gap-3">
         {university.logoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={university.logoUrl}
             alt=""
-            className="h-10 w-10 flex-none rounded object-contain"
+            className="h-10 w-10 flex-none rounded object-contain transition-transform duration-200 group-hover:scale-110"
             loading="lazy"
           />
         ) : (
-          <div className="flex h-10 w-10 flex-none items-center justify-center rounded bg-accent text-sm font-bold text-primary">
+          <div className="flex h-10 w-10 flex-none items-center justify-center rounded bg-accent text-sm font-bold text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
             {name.charAt(0)}
           </div>
         )}
         <div className="min-w-0">
-          <h3 className="truncate font-semibold text-foreground">{name}</h3>
+          <h3 className="truncate font-semibold text-foreground transition-colors group-hover:text-primary">
+            {name}
+          </h3>
           <p className="truncate text-sm text-muted-foreground">
             {[university.city, university.country].filter(Boolean).join(', ')}
           </p>
         </div>
-      </div>
+      </Link>
 
       <div className="mt-3 flex flex-wrap gap-1.5">
         <Badge tone="muted">{university.countryCode}</Badge>
-        {university.researchScore != null && (
-          <Badge tone="primary">★ {university.researchScore}</Badge>
+        {score && (
+          <Badge tone="primary" title={t('unirealScore')}>
+            ★ {score.total}
+          </Badge>
         )}
         {university.establishedYear && (
           <Badge tone="muted">{university.establishedYear}</Badge>

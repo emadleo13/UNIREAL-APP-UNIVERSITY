@@ -52,9 +52,63 @@ export type University = {
   admissionRate?: number;
   size?: number;
 
+  // --- Editorial / curated fields (overlay) -------------------------------
+  /** Localized free-text description of the university. */
+  description_i18n?: LocalizedNames;
+  /** Number of degree programs / majors offered. */
+  programsCount?: number;
+  /** General (domestic) admission info. */
+  admission?: AdmissionInfo;
+  /** Direct URL to the university's international students section. */
+  internationalUrl?: string;
+  /** Admission facts that specifically matter to international students. */
+  international?: InternationalInfo;
+
+  // --- Scoring inputs (curated, optional) ---------------------------------
+  /** Notable awards (e.g. Nobel/Fields/Turing affiliations). */
+  awards?: number;
+  /** Medals won in world student competitions (olympiads, ICPC, etc.). */
+  medals?: number;
+  /** Count of elite / medal-winning students. */
+  eliteStudents?: number;
+
+  /** When this record's editorial/AI-refreshed info was last updated (ISO). */
+  updatedAt?: string;
+  /** True once the AI live-data provider has refreshed this record. */
+  aiEnriched?: boolean;
+
   /** Which sources contributed to this record. */
   source: DataSource[];
 };
+
+export type AdmissionInfo = {
+  /** Human-readable admission window, e.g. "Sep 1 – Jan 5". */
+  period?: string;
+  /** Main application deadline as ISO date (YYYY-MM-DD) — used by the calendar. */
+  deadline?: string;
+};
+
+export type InternationalInfo = {
+  /** Admission window for international students. */
+  admissionPeriod?: string;
+  /** Application deadline for international students (ISO YYYY-MM-DD). */
+  deadline?: string;
+  /** Yearly tuition for international students (USD). */
+  tuition?: number;
+  /** Number of programs taught in an international language. */
+  programsCount?: number;
+  /** Languages of instruction available to international students. */
+  languages?: string[];
+};
+
+/** Where an aggregated review originally came from. */
+export type ReviewSource =
+  | 'UNIREAL'
+  | 'Google'
+  | 'Reddit'
+  | 'Niche'
+  | 'StudentRoom'
+  | 'Quora';
 
 export type Review = {
   id: string;
@@ -64,6 +118,10 @@ export type Review = {
   body: string;
   verified: boolean;
   createdAt: string; // ISO
+  /** Origin of the review. Defaults to 'UNIREAL' (written on-site). */
+  source?: ReviewSource;
+  /** Link back to the original review on the source platform. */
+  sourceUrl?: string;
 };
 
 export type Answer = {
@@ -81,6 +139,16 @@ export type Question = {
   body: string;
   answers: Answer[];
   createdAt: string;
+};
+
+/** An admission-related date surfaced on the calendar. */
+export type AdmissionEvent = {
+  /** ISO date (YYYY-MM-DD). */
+  date: string;
+  universitySlug: string;
+  universityName: string;
+  /** Domestic vs international application deadline. */
+  kind: 'domestic' | 'international';
 };
 
 export type User = {

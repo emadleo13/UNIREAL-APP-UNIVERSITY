@@ -7,6 +7,7 @@ import { AuthProvider } from '@/lib/auth/AuthContext';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { BottomNav } from '@/components/layout/BottomNav';
+import { ChatWidget } from '@/components/chat/ChatWidget';
 import { ServiceWorkerRegister } from '@/components/ServiceWorkerRegister';
 import '../globals.css';
 
@@ -64,6 +65,7 @@ export default async function LocaleLayout({
             <main className="flex-1 pb-28 sm:pb-0">{children}</main>
             <Footer />
             <BottomNav />
+            <ChatWidget />
             <ServiceWorkerRegister />
           </AuthProvider>
         </NextIntlClientProvider>

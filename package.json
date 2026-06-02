@@ -12,18 +12,25 @@
     "data:scorecard": "tsx scripts/03-enrich-scorecard.ts",
     "data:wikidata": "tsx scripts/04-enrich-wikidata.ts",
     "data:merge": "tsx scripts/merge.ts",
-    "data:build": "npm run data:hipolabs && npm run data:enrich && npm run data:merge"
+    "data:build": "npm run data:hipolabs && npm run data:enrich && npm run data:merge",
+    "data:seed": "tsx scripts/05-seed-supabase.ts"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "^2.106.2",
     "next": "^15.1.6",
     "next-intl": "^3.26.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "resend": "^6.12.4",
+    "stripe": "^22.2.0",
+    "ws": "^8.21.0"
   },
   "devDependencies": {
     "@types/node": "^20.17.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@types/ws": "^8.18.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",

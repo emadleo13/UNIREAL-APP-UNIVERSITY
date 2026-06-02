@@ -1,5 +1,6 @@
 import type { DataRepository } from '../repository';
 import type {
+  AdmissionEvent,
   CreateAnswerInput,
   CreateQuestionInput,
   CreateReviewInput,
@@ -9,57 +10,261 @@ import type {
   Review,
   University,
 } from '../types';
+import { createSupabaseServerClient } from '@/lib/supabase/server';
 
-/**
- * Supabase-backed repository. Skeleton only — wired up but not yet implemented.
- *
- * Activation steps (later):
- *  1. Create a Supabase project, run supabase/migrations/0001_init.sql.
- *  2. Seed the `universities` table from data/universities.json.
- *  3. Set NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.
- *  4. Set NEXT_PUBLIC_DATA_SOURCE=supabase.
- *  5. Implement each method below with the supabase-js client (see lib/supabase.ts).
- */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/** Map a DB universities row (snake_case) to the app University model. */
+function toUniversity(r: any): University {
+  return {
+    id: r.id,
+    slug: r.slug,
+    name: r.name,
+    names_i18n: r.names_i18n ?? undefined,
+    country: r.country,
+    countryCode: r.country_code,
+    city: r.city ?? undefined,
+    region: r.region ?? undefined,
+    website: r.website ?? undefined,
+    domains: r.domains ?? [],
+    geo: r.geo ?? undefined,
+    logoUrl: r.logo_url ?? undefined,
+    establishedYear: r.established_year ?? undefined,
+    rorId: r.ror_id ?? undefined,
+    wikidataId: r.wikidata_id ?? undefined,
+    openAlexId: r.openalex_id ?? undefined,
+    ranking: r.ranking ?? undefined,
+    researchScore: r.research_score ?? undefined,
+    tuition: r.tuition ?? undefined,
+    admissionRate: r.admission_rate ?? undefined,
+    size: r.size ?? undefined,
+    description_i18n: r.description_i18n ?? undefined,
+    programsCount: r.programs_count ?? undefined,
+    admission: r.admission ?? undefined,
+    internationalUrl: r.international_url ?? undefined,
+    international: r.international ?? undefined,
+    awards: r.awards ?? undefined,
+    medals: r.medals ?? undefined,
+    eliteStudents: r.elite_students ?? undefined,
+    updatedAt: r.updated_at ?? undefined,
+    source: r.source ?? [],
+  };
+}
+
+function toReview(r: any): Review {
+  return {
+    id: r.id,
+    universityId: r.university_id,
+    authorName: r.author_name,
+    rating: r.rating,
+    body: r.body,
+    verified: r.verified,
+    createdAt: r.created_at,
+    source: r.source ?? undefined,
+    sourceUrl: r.source_url ?? undefined,
+  };
+}
+
+function toQuestion(r: any): Question {
+  return {
+    id: r.id,
+    universityId: r.university_id,
+    authorName: r.author_name,
+    body: r.body,
+    createdAt: r.created_at,
+    answers: (r.answers ?? [])
+      .map((a: any) => ({
+        id: a.id,
+        authorName: a.author_name,
+        body: a.body,
+        verified: a.verified,
+        createdAt: a.created_at,
+      }))
+      .sort((a: any, b: any) => a.createdAt.localeCompare(b.createdAt)),
+  };
+}
+
 export const supabaseRepository: DataRepository = {
   async listUniversities(
-    _opts?: ListUniversitiesOptions
+    opts: ListUniversitiesOptions = {}
   ): Promise<Paginated<University>> {
-    // TODO(supabase): select from `universities` with ilike(name) + eq(country) + range().
-    throw new Error('SupabaseRepository.listUniversities not implemented yet.');
+    const { q, country, page = 1, pageSize = 24 } = opts;
+    const supabase = await createSupabaseServerClient();
+    let query = supabase
+      .from('universities')
+      .select('*', { count: 'exact' })
+      .order('research_score', { ascending: false, nullsFirst: false });
+
+    if (country) query = query.eq('country', country);
+    if (q && q.trim()) query = query.ilike('name', `%${q.trim()}%`);
+
+    const from = (page - 1) * pageSize;
+    query = query.range(from, from + pageSize - 1);
+
+    const { data, count, error } = await query;
+    if (error) throw error;
+    return {
+      items: (data ?? []).map(toUniversity),
+      total: count ?? 0,
+      page,
+      pageSize,
+    };
   },
 
-  async getUniversityBySlug(_slug: string): Promise<University | null> {
-    // TODO(supabase): select * from universities where slug = _slug single().
-    throw new Error('SupabaseRepository.getUniversityBySlug not implemented yet.');
+  async getUniversityBySlug(slug: string): Promise<University | null> {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from('universities')
+      .select('*')
+      .eq('slug', slug)
+      .maybeSingle();
+    if (error) throw error;
+    return data ? toUniversity(data) : null;
   },
 
   async listCountries(): Promise<string[]> {
-    // TODO(supabase): select distinct country (or a materialized view).
-    throw new Error('SupabaseRepository.listCountries not implemented yet.');
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase.rpc('distinct_countries');
+    if (error) throw error;
+    return (data ?? []).map((r: any) => r.country ?? r).filter(Boolean).sort();
   },
 
-  async listReviews(_universityId: string): Promise<Review[]> {
-    // TODO(supabase): select from reviews where university_id = _universityId.
-    throw new Error('SupabaseRepository.listReviews not implemented yet.');
+  async listAdmissionEvents(): Promise<AdmissionEvent[]> {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from('universities')
+      .select('slug, name, admission, international')
+      .or('admission->>deadline.not.is.null,international->>deadline.not.is.null');
+    if (error) throw error;
+    const events: AdmissionEvent[] = [];
+    for (const u of data ?? []) {
+      if (u.admission?.deadline) {
+        events.push({
+          date: u.admission.deadline,
+          universitySlug: u.slug,
+          universityName: u.name,
+          kind: 'domestic',
+        });
+      }
+      if (u.international?.deadline) {
+        events.push({
+          date: u.international.deadline,
+          universitySlug: u.slug,
+          universityName: u.name,
+          kind: 'international',
+        });
+      }
+    }
+    return events.sort((a, b) => a.date.localeCompare(b.date));
   },
 
-  async createReview(_input: CreateReviewInput): Promise<Review> {
-    // TODO(supabase): insert into reviews; verified computed via RLS/RPC.
-    throw new Error('SupabaseRepository.createReview not implemented yet.');
+  async listReviews(universityId: string): Promise<Review[]> {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from('reviews')
+      .select('*')
+      .eq('university_id', universityId)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return (data ?? []).map(toReview);
   },
 
-  async listQuestions(_universityId: string): Promise<Question[]> {
-    // TODO(supabase): select questions + nested answers.
-    throw new Error('SupabaseRepository.listQuestions not implemented yet.');
+  async createReview(input: CreateReviewInput): Promise<Review> {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error('Must be signed in to review.');
+
+    const { data: verified } = await supabase.rpc('is_verified_for_university', {
+      p_email: user.email,
+      p_university_id: input.universityId,
+    });
+
+    const { data, error } = await supabase
+      .from('reviews')
+      .insert({
+        university_id: input.universityId,
+        author_id: user.id,
+        author_name: input.authorName,
+        rating: Math.max(1, Math.min(5, input.rating)),
+        body: input.body,
+        verified: Boolean(verified),
+        source: 'UNIREAL',
+      })
+      .select('*')
+      .single();
+    if (error) throw error;
+    return toReview(data);
   },
 
-  async createQuestion(_input: CreateQuestionInput): Promise<Question> {
-    // TODO(supabase): insert into questions.
-    throw new Error('SupabaseRepository.createQuestion not implemented yet.');
+  async listQuestions(universityId: string): Promise<Question[]> {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase
+      .from('questions')
+      .select('*, answers(*)')
+      .eq('university_id', universityId)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return (data ?? []).map(toQuestion);
   },
 
-  async createAnswer(_input: CreateAnswerInput): Promise<Question> {
-    // TODO(supabase): insert into answers; return parent question.
-    throw new Error('SupabaseRepository.createAnswer not implemented yet.');
+  async createQuestion(input: CreateQuestionInput): Promise<Question> {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error('Must be signed in to ask a question.');
+
+    const { data, error } = await supabase
+      .from('questions')
+      .insert({
+        university_id: input.universityId,
+        author_id: user.id,
+        author_name: input.authorName,
+        body: input.body,
+      })
+      .select('*, answers(*)')
+      .single();
+    if (error) throw error;
+    return toQuestion(data);
+  },
+
+  async createAnswer(input: CreateAnswerInput): Promise<Question> {
+    const supabase = await createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error('Must be signed in to answer.');
+
+    const { data: q } = await supabase
+      .from('questions')
+      .select('university_id')
+      .eq('id', input.questionId)
+      .single();
+
+    const { data: verified } = q
+      ? await supabase.rpc('is_verified_for_university', {
+          p_email: user.email,
+          p_university_id: q.university_id,
+        })
+      : { data: false };
+
+    const { error } = await supabase.from('answers').insert({
+      question_id: input.questionId,
+      author_id: user.id,
+      author_name: input.authorName,
+      body: input.body,
+      verified: Boolean(verified),
+    });
+    if (error) throw error;
+
+    const { data, error: qErr } = await supabase
+      .from('questions')
+      .select('*, answers(*)')
+      .eq('id', input.questionId)
+      .single();
+    if (qErr) throw qErr;
+    return toQuestion(data);
   },
 };

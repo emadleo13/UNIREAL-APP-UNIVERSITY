@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/Badge';
 import { ReviewSection } from '@/components/university/ReviewSection';
 import { QuestionSection } from '@/components/university/QuestionSection';
 import { repo } from '@/lib/data';
-import { universityName } from '@/lib/data/display';
+import { universityName, universityDescription } from '@/lib/data/display';
+import { computeUniversityScore, type ScoreComponent } from '@/lib/data/score';
 import { locales } from '@/lib/i18n/routing';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
@@ -45,6 +46,14 @@ export async function generateMetadata({
   };
 }
 
+const SCORE_LABEL_KEY: Record<ScoreComponent['key'], string> = {
+  ranking: 'scoreRanking',
+  research: 'scoreResearch',
+  awards: 'scoreAwards',
+  medals: 'scoreMedals',
+  eliteStudents: 'scoreEliteStudents',
+};
+
 export default async function UniversityDetailPage({
   params,
 }: {
@@ -57,15 +66,27 @@ export default async function UniversityDetailPage({
 
   const t = await getTranslations('University');
   const name = universityName(uni, locale);
+  const description = universityDescription(uni, locale);
+  const score = computeUniversityScore(uni);
+  const intl = uni.international;
   const [reviews, questions] = await Promise.all([
     repo.listReviews(uni.id),
     repo.listQuestions(uni.id),
   ]);
 
+  const updatedLabel = uni.updatedAt
+    ? new Date(uni.updatedAt).toLocaleDateString(locale, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
+    : null;
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollegeOrUniversity',
     name,
+    description,
     url: uni.website,
     logo: uni.logoUrl,
     foundingDate: uni.establishedYear?.toString(),
@@ -94,6 +115,7 @@ export default async function UniversityDetailPage({
     { label: t('city'), value: uni.city },
     { label: t('established'), value: uni.establishedYear },
     { label: t('students'), value: uni.size?.toLocaleString(locale) },
+    { label: t('programs'), value: uni.programsCount?.toLocaleString(locale) },
     {
       label: t('tuition'),
       value: uni.tuition ? `$${uni.tuition.toLocaleString(locale)}` : undefined,
@@ -105,8 +127,26 @@ export default async function UniversityDetailPage({
           ? `${Math.round(uni.admissionRate * 100)}%`
           : undefined,
     },
-    { label: t('researchScore'), value: uni.researchScore },
+    { label: t('admissionPeriod'), value: uni.admission?.period },
   ];
+
+  const intlFacts: Array<{ label: string; value: string | number | undefined }> =
+    intl
+      ? [
+          { label: t('intlAdmission'), value: intl.admissionPeriod },
+          {
+            label: t('intlTuition'),
+            value: intl.tuition
+              ? `$${intl.tuition.toLocaleString(locale)}`
+              : undefined,
+          },
+          {
+            label: t('intlPrograms'),
+            value: intl.programsCount?.toLocaleString(locale),
+          },
+          { label: t('intlLanguages'), value: intl.languages?.join(', ') },
+        ]
+      : [];
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8">
@@ -133,7 +173,7 @@ export default async function UniversityDetailPage({
           <p className="mt-1 text-muted-foreground">
             {[uni.city, uni.country].filter(Boolean).join(', ')}
           </p>
-          <div className="mt-2 flex flex-wrap gap-1.5">
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5">
             {uni.website && (
               <a
                 href={uni.website}
@@ -144,9 +184,67 @@ export default async function UniversityDetailPage({
                 {t('website')} ↗
               </a>
             )}
+            {uni.internationalUrl && (
+              <a
+                href={uni.internationalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium text-primary hover:opacity-80"
+              >
+                {t('intlWebsite')} ↗
+              </a>
+            )}
           </div>
         </div>
       </header>
+
+      {updatedLabel && (
+        <p className="mt-3 text-xs text-muted-foreground">
+          {t('updatedAt', { date: updatedLabel })} · {t('freshnessNote')}
+        </p>
+      )}
+
+      {description && (
+        <Card className="mt-6 p-5">
+          <h2 className="font-semibold text-foreground">{t('about')}</h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            {description}
+          </p>
+        </Card>
+      )}
+
+      {score && (
+        <Card className="mt-6 p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-foreground">{t('unirealScore')}</h2>
+            <span className="text-2xl font-bold text-primary">
+              {score.total}
+              <span className="text-base text-muted-foreground">/100</span>
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">{t('scoreNote')}</p>
+          <dl className="mt-4 space-y-2.5">
+            {score.components.map((c) => (
+              <div key={c.key}>
+                <div className="flex items-center justify-between text-sm">
+                  <dt className="text-muted-foreground">
+                    {t(SCORE_LABEL_KEY[c.key])}
+                  </dt>
+                  <dd className="font-medium text-foreground">
+                    {Math.round(c.value)}
+                  </dd>
+                </div>
+                <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                  <div
+                    className="h-full rounded-full bg-primary"
+                    style={{ width: `${Math.round(c.value)}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </dl>
+        </Card>
+      )}
 
       <Card className="mt-6 p-5">
         <h2 className="sr-only">{t('overviewTab')}</h2>
@@ -171,6 +269,37 @@ export default async function UniversityDetailPage({
           ))}
         </div>
       </Card>
+
+      {intl && intlFacts.some((f) => f.value !== undefined && f.value !== '') && (
+        <Card className="mt-6 border-primary/30 p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-foreground">{t('intlTitle')}</h2>
+            {uni.internationalUrl && (
+              <a
+                href={uni.internationalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium text-primary hover:opacity-80"
+              >
+                {t('intlWebsite')} ↗
+              </a>
+            )}
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">{t('intlNote')}</p>
+          <dl className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3">
+            {intlFacts
+              .filter((f) => f.value !== undefined && f.value !== '')
+              .map((f) => (
+                <div key={f.label}>
+                  <dt className="text-xs uppercase tracking-wide text-muted-foreground">
+                    {f.label}
+                  </dt>
+                  <dd className="mt-0.5 font-medium text-foreground">{f.value}</dd>
+                </div>
+              ))}
+          </dl>
+        </Card>
+      )}
 
       <div className="mt-10 space-y-10">
         <ReviewSection universityId={uni.id} initialReviews={reviews} />

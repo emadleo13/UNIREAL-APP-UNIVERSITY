@@ -1,6 +1,8 @@
 import universitiesData from '@/data/universities.json';
+import detailsData from '@/data/university-details.json';
 import type { DataRepository } from '../repository';
 import type {
+  AdmissionEvent,
   CreateAnswerInput,
   CreateQuestionInput,
   CreateReviewInput,
@@ -8,11 +10,49 @@ import type {
   Paginated,
   Question,
   Review,
+  ReviewSource,
   University,
 } from '../types';
 import { isVerifiedForUniversity } from '../verify';
+import { fetchAggregatedReviews, fetchFreshUniversityInfo } from '../ai-provider';
 
-const universities = universitiesData as unknown as University[];
+/** One curated review as stored in the details overlay (no id/universityId). */
+type ExternalReviewSeed = {
+  authorName: string;
+  rating: number;
+  body: string;
+  source: ReviewSource;
+  sourceUrl?: string;
+  createdAt: string;
+  verified?: boolean;
+};
+
+/** A curated overlay entry: extra University fields + sample external reviews. */
+type OverlayEntry = Partial<University> & { externalReviews?: ExternalReviewSeed[] };
+
+/**
+ * Date the curated overlay was last reviewed. Once the AI live-data provider is
+ * wired up, `updatedAt` will instead come from each fresh fetch.
+ */
+const CURATED_UPDATED_AT = '2026-05-20';
+
+const overlay = detailsData as unknown as Record<string, OverlayEntry>;
+
+const baseUniversities = universitiesData as unknown as University[];
+
+/** Merge curated overlay fields (description, admission, scoring inputs, …). */
+function withOverlay(uni: University): University {
+  const entry = overlay[uni.slug];
+  if (!entry) return uni;
+  const { externalReviews: _drop, ...fields } = entry;
+  return {
+    ...uni,
+    ...fields,
+    updatedAt: fields.updatedAt ?? CURATED_UPDATED_AT,
+  };
+}
+
+const universities = baseUniversities.map(withOverlay);
 const bySlug = new Map(universities.map((u) => [u.slug, u]));
 const byId = new Map(universities.map((u) => [u.id, u]));
 
@@ -25,6 +65,7 @@ const reviewsByUni = new Map<string, Review[]>();
 const questionsByUni = new Map<string, Question[]>();
 const questionsById = new Map<string, Question>();
 
+seedExternalReviews();
 seedDemoContent();
 
 function uid(prefix: string): string {
@@ -60,14 +101,50 @@ export const mockRepository: DataRepository = {
   },
 
   async getUniversityBySlug(slug: string): Promise<University | null> {
-    return bySlug.get(slug) ?? null;
+    const uni = bySlug.get(slug);
+    if (!uni) return null;
+    // Prefer fresh AI data when available; fall back to the curated overlay.
+    const fresh = await fetchFreshUniversityInfo(uni);
+    if (fresh) {
+      return { ...uni, ...fresh, aiEnriched: true, updatedAt: fresh.updatedAt };
+    }
+    return uni;
   },
 
   async listCountries(): Promise<string[]> {
     return Array.from(new Set(universities.map((u) => u.country))).sort();
   },
 
+  async listAdmissionEvents(): Promise<AdmissionEvent[]> {
+    const events: AdmissionEvent[] = [];
+    for (const uni of universities) {
+      if (uni.admission?.deadline) {
+        events.push({
+          date: uni.admission.deadline,
+          universitySlug: uni.slug,
+          universityName: uni.name,
+          kind: 'domestic',
+        });
+      }
+      if (uni.international?.deadline) {
+        events.push({
+          date: uni.international.deadline,
+          universitySlug: uni.slug,
+          universityName: uni.name,
+          kind: 'international',
+        });
+      }
+    }
+    return events.sort((a, b) => a.date.localeCompare(b.date));
+  },
+
   async listReviews(universityId: string): Promise<Review[]> {
+    const uni = byId.get(universityId);
+    // Prefer fresh AI-aggregated reviews when available.
+    if (uni) {
+      const fresh = await fetchAggregatedReviews(uni);
+      if (fresh) return fresh;
+    }
     return [...(reviewsByUni.get(universityId) ?? [])].sort((a, b) =>
       b.createdAt.localeCompare(a.createdAt)
     );
@@ -85,6 +162,7 @@ export const mockRepository: DataRepository = {
         ? isVerifiedForUniversity(input.authorEmail, uni)
         : false,
       createdAt: new Date().toISOString(),
+      source: 'UNIREAL',
     };
     const list = reviewsByUni.get(input.universityId) ?? [];
     list.push(review);
@@ -133,30 +211,30 @@ export const mockRepository: DataRepository = {
   },
 };
 
+/** Seed the curated multi-source sample reviews from the overlay. */
+function seedExternalReviews(): void {
+  for (const [slug, entry] of Object.entries(overlay)) {
+    if (!entry.externalReviews?.length) continue;
+    const uni = bySlug.get(slug);
+    if (!uni) continue;
+    const seeded: Review[] = entry.externalReviews.map((r, i) => ({
+      id: `ext_${slug}_${i}`,
+      universityId: uni.id,
+      authorName: r.authorName,
+      rating: r.rating,
+      body: r.body,
+      verified: r.verified ?? false,
+      createdAt: r.createdAt,
+      source: r.source,
+      sourceUrl: r.sourceUrl,
+    }));
+    reviewsByUni.set(uni.id, seeded);
+  }
+}
+
 function seedDemoContent(): void {
   const first = universities[0];
   if (!first) return;
-
-  reviewsByUni.set(first.id, [
-    {
-      id: 'rev_seed1',
-      universityId: first.id,
-      authorName: 'Alex',
-      rating: 5,
-      body: 'Incredible research opportunities and a beautiful campus. Highly recommend.',
-      verified: true,
-      createdAt: '2026-04-10T10:00:00.000Z',
-    },
-    {
-      id: 'rev_seed2',
-      universityId: first.id,
-      authorName: 'Maria',
-      rating: 4,
-      body: 'Great academics, though cost of living nearby is high.',
-      verified: false,
-      createdAt: '2026-03-22T09:00:00.000Z',
-    },
-  ]);
 
   const q: Question = {
     id: 'q_seed1',

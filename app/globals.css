@@ -89,3 +89,32 @@ html[lang='fa'] {
 [dir='rtl'] .flip-x {
   transform: scaleX(-1);
 }
+
+/* --- Chat assistant (SAMI) animations ----------------------------------- */
+@keyframes bot-drop {
+  0% { transform: translateY(-140%); opacity: 0; }
+  70% { transform: translateY(8%); opacity: 1; }
+  100% { transform: translateY(0); }
+}
+@keyframes bot-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes bot-wave {
+  0%, 60%, 100% { transform: rotate(0deg); }
+  20%, 40% { transform: rotate(-22deg); }
+}
+@keyframes bubble-in {
+  0% { transform: scale(0.9) translateY(6px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.animate-bot-drop { animation: bot-drop 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-bot-bob { animation: bot-bob 3s ease-in-out infinite; }
+.animate-bubble-in { animation: bubble-in 0.25s ease-out both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-bot-drop,
+  .animate-bot-bob,
+  .animate-bubble-in { animation: none; }
+}

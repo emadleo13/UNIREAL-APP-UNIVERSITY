@@ -6,10 +6,29 @@ import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Input, Textarea } from '@/components/ui/Input';
 import { Stars } from '@/components/ui/Stars';
-import { VerifiedBadge } from '@/components/ui/Badge';
+import { Badge, VerifiedBadge } from '@/components/ui/Badge';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { addReview } from '@/app/actions';
-import type { Review } from '@/lib/data/types';
+import type { Review, ReviewSource } from '@/lib/data/types';
+
+function SourceBadge({
+  source,
+  url,
+  t,
+}: {
+  source: ReviewSource;
+  url?: string;
+  t: (key: string, values?: Record<string, string>) => string;
+}) {
+  const badge = <Badge tone="muted">{t('viaSource', { source })}</Badge>;
+  return url ? (
+    <a href={url} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
+      {badge}
+    </a>
+  ) : (
+    badge
+  );
+}
 
 export function ReviewSection({
   universityId,
@@ -62,6 +81,8 @@ export function ReviewSection({
         )}
       </div>
 
+      <p className="mt-1 text-sm text-muted-foreground">{t('aggregatedNotice')}</p>
+
       <Card className="mt-4 p-4">
         <form onSubmit={submit} className="space-y-3">
           <div className="flex items-center gap-3">
@@ -97,10 +118,13 @@ export function ReviewSection({
         {reviews.map((r) => (
           <li key={r.id}>
             <Card className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <span className="font-medium text-foreground">{r.authorName}</span>
                   {r.verified && <VerifiedBadge label="✓" />}
+                  {r.source && r.source !== 'UNIREAL' && (
+                    <SourceBadge source={r.source} url={r.sourceUrl} t={t} />
+                  )}
                 </div>
                 <Stars value={r.rating} />
               </div>
