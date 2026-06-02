@@ -159,9 +159,16 @@ export type User = {
   verifiedDomains: string[];
 };
 
+export type UniversitySort = 'score' | 'ranking' | 'tuition' | 'name';
+
 export type ListUniversitiesOptions = {
   q?: string;
   country?: string;
+  /** Minimum research/score proxy (0–100). */
+  minScore?: number;
+  /** Maximum yearly tuition (USD); only matches universities with tuition data. */
+  maxTuition?: number;
+  sort?: UniversitySort;
   page?: number;
   pageSize?: number;
 };

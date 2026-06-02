@@ -72,11 +72,30 @@ function uid(prefix: string): string {
   return `${prefix}_${Math.random().toString(36).slice(2, 10)}`;
 }
 
+function sortUniversities(
+  items: University[],
+  sort: NonNullable<ListUniversitiesOptions['sort']>
+): University[] {
+  const arr = [...items];
+  switch (sort) {
+    case 'ranking':
+      return arr.sort((a, b) => (a.ranking ?? Infinity) - (b.ranking ?? Infinity));
+    case 'tuition':
+      return arr.sort((a, b) => (a.tuition ?? Infinity) - (b.tuition ?? Infinity));
+    case 'name':
+      return arr.sort((a, b) => a.name.localeCompare(b.name));
+    case 'score':
+    default:
+      return arr.sort((a, b) => (b.researchScore ?? -1) - (a.researchScore ?? -1));
+  }
+}
+
 export const mockRepository: DataRepository = {
   async listUniversities(
     opts: ListUniversitiesOptions = {}
   ): Promise<Paginated<University>> {
-    const { q, country, page = 1, pageSize = 24 } = opts;
+    const { q, country, minScore, maxTuition, sort = 'score', page = 1, pageSize = 24 } =
+      opts;
     let items = universities;
 
     if (country) {
@@ -89,6 +108,14 @@ export const mockRepository: DataRepository = {
         return names.some((n) => n?.toLowerCase().includes(needle));
       });
     }
+    if (minScore != null) {
+      items = items.filter((u) => (u.researchScore ?? 0) >= minScore);
+    }
+    if (maxTuition != null) {
+      items = items.filter((u) => u.tuition != null && u.tuition <= maxTuition);
+    }
+
+    items = sortUniversities(items, sort);
 
     const total = items.length;
     const start = (page - 1) * pageSize;

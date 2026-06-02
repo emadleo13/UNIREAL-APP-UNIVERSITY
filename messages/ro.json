@@ -45,7 +45,22 @@
     "page": "Pagina {page} din {total}",
     "viewDetails": "Vezi detalii",
     "noResults": "Nicio universitate nu corespunde căutării tale.",
-    "unirealScore": "Scor UNIREAL"
+    "unirealScore": "Scor UNIREAL",
+    "sortLabel": "Sortează după",
+    "sortScore": "Scor maxim",
+    "sortRanking": "Clasament",
+    "sortTuition": "Taxă minimă",
+    "sortName": "Nume (A–Z)",
+    "minScore": "Scor minim",
+    "anyScore": "Orice scor",
+    "score60": "60+",
+    "score75": "75+",
+    "score90": "90+",
+    "maxTuition": "Taxă maximă",
+    "anyTuition": "Orice taxă",
+    "tuition10k": "Sub 10.000 $",
+    "tuition30k": "Sub 30.000 $",
+    "tuition50k": "Sub 50.000 $"
   },
   "University": {
     "website": "Site web",
@@ -186,6 +201,18 @@
     "subscriberNote": "Dacă ai plătit pentru UNIREAL Pro și ceva nu funcționează, scrie-ne pe Telegram sau email cu adresa contului tău și o rezolvăm rapid.",
     "chatTitle": "Întreabă asistentul",
     "chatSubtitle": "Primește răspunsuri instant despre universități, scoruri, termene și abonament."
+  },
+  "Compare": {
+    "compare": "Compară",
+    "added": "Adăugat",
+    "full": "Poți compara până la 4 universități.",
+    "barLabel": "{count} selectate",
+    "view": "Compară",
+    "clear": "Șterge",
+    "title": "Compară universități",
+    "empty": "Nicio universitate selectată pentru comparare.",
+    "browse": "Vezi universități",
+    "ranking": "Clasament mondial"
   },
   "Common": {
     "search": "Caută",

@@ -2,6 +2,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/lib/i18n/navigation';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
+import { CompareButton } from '@/components/university/CompareButton';
 import { universityName } from '@/lib/data/display';
 import { computeUniversityScore } from '@/lib/data/score';
 import type { University } from '@/lib/data/types';
@@ -50,12 +51,15 @@ export function UniversityCard({ university }: { university: University }) {
         )}
       </div>
 
-      <Link
-        href={`/universities/${university.slug}`}
-        className="mt-4 text-sm font-medium text-primary hover:opacity-80"
-      >
-        {t('viewDetails')} →
-      </Link>
+      <div className="mt-4 flex items-center justify-between">
+        <Link
+          href={`/universities/${university.slug}`}
+          className="text-sm font-medium text-primary hover:opacity-80"
+        >
+          {t('viewDetails')} →
+        </Link>
+        <CompareButton slug={university.slug} />
+      </div>
     </Card>
   );
 }

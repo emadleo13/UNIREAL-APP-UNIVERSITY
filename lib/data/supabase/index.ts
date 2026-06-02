@@ -88,15 +88,31 @@ export const supabaseRepository: DataRepository = {
   async listUniversities(
     opts: ListUniversitiesOptions = {}
   ): Promise<Paginated<University>> {
-    const { q, country, page = 1, pageSize = 24 } = opts;
+    const { q, country, minScore, maxTuition, sort = 'score', page = 1, pageSize = 24 } =
+      opts;
     const supabase = await createSupabaseServerClient();
-    let query = supabase
-      .from('universities')
-      .select('*', { count: 'exact' })
-      .order('research_score', { ascending: false, nullsFirst: false });
+    let query = supabase.from('universities').select('*', { count: 'exact' });
 
     if (country) query = query.eq('country', country);
     if (q && q.trim()) query = query.ilike('name', `%${q.trim()}%`);
+    if (minScore != null) query = query.gte('research_score', minScore);
+    if (maxTuition != null) {
+      query = query.not('tuition', 'is', null).lte('tuition', maxTuition);
+    }
+
+    switch (sort) {
+      case 'ranking':
+        query = query.order('ranking', { ascending: true, nullsFirst: false });
+        break;
+      case 'tuition':
+        query = query.order('tuition', { ascending: true, nullsFirst: false });
+        break;
+      case 'name':
+        query = query.order('name', { ascending: true });
+        break;
+      default:
+        query = query.order('research_score', { ascending: false, nullsFirst: false });
+    }
 
     const from = (page - 1) * pageSize;
     query = query.range(from, from + pageSize - 1);

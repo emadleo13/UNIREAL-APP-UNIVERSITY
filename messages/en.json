@@ -45,7 +45,22 @@
     "page": "Page {page} of {total}",
     "viewDetails": "View details",
     "noResults": "No universities match your search.",
-    "unirealScore": "UNIREAL Score"
+    "unirealScore": "UNIREAL Score",
+    "sortLabel": "Sort by",
+    "sortScore": "Top score",
+    "sortRanking": "Ranking",
+    "sortTuition": "Lowest tuition",
+    "sortName": "Name (A–Z)",
+    "minScore": "Min score",
+    "anyScore": "Any score",
+    "score60": "60+",
+    "score75": "75+",
+    "score90": "90+",
+    "maxTuition": "Max tuition",
+    "anyTuition": "Any tuition",
+    "tuition10k": "Under $10k",
+    "tuition30k": "Under $30k",
+    "tuition50k": "Under $50k"
   },
   "University": {
     "website": "Website",
@@ -186,6 +201,18 @@
     "subscriberNote": "If you've paid for UNIREAL Pro and something isn't working, message us on Telegram or by email with your account email and we'll sort it out fast.",
     "chatTitle": "Ask the assistant",
     "chatSubtitle": "Get instant answers about universities, scores, deadlines and your subscription."
+  },
+  "Compare": {
+    "compare": "Compare",
+    "added": "Added",
+    "full": "You can compare up to 4 universities.",
+    "barLabel": "{count} selected",
+    "view": "Compare",
+    "clear": "Clear",
+    "title": "Compare universities",
+    "empty": "No universities selected to compare.",
+    "browse": "Browse universities",
+    "ranking": "World ranking"
   },
   "Common": {
     "search": "Search",

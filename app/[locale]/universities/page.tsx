@@ -6,7 +6,14 @@ import { repo } from '@/lib/data';
 
 const PAGE_SIZE = 24;
 
-type SearchParams = { q?: string; country?: string; page?: string };
+type SearchParams = {
+  q?: string;
+  country?: string;
+  sort?: string;
+  minScore?: string;
+  maxTuition?: string;
+  page?: string;
+};
 
 export default async function UniversitiesPage({
   params,
@@ -22,10 +29,13 @@ export default async function UniversitiesPage({
 
   const q = sp.q ?? '';
   const country = sp.country ?? '';
+  const sort = (sp.sort as 'score' | 'ranking' | 'tuition' | 'name') || 'score';
+  const minScore = sp.minScore ? Number(sp.minScore) : undefined;
+  const maxTuition = sp.maxTuition ? Number(sp.maxTuition) : undefined;
   const page = Math.max(1, Number(sp.page ?? '1') || 1);
 
   const [{ items, total }, countries] = await Promise.all([
-    repo.listUniversities({ q, country, page, pageSize: PAGE_SIZE }),
+    repo.listUniversities({ q, country, sort, minScore, maxTuition, page, pageSize: PAGE_SIZE }),
     repo.listCountries(),
   ]);
 
@@ -35,6 +45,9 @@ export default async function UniversitiesPage({
     const params = new URLSearchParams();
     if (q) params.set('q', q);
     if (country) params.set('country', country);
+    if (sort && sort !== 'score') params.set('sort', sort);
+    if (sp.minScore) params.set('minScore', sp.minScore);
+    if (sp.maxTuition) params.set('maxTuition', sp.maxTuition);
     if (p > 1) params.set('page', String(p));
     const qs = params.toString();
     return qs ? `/universities?${qs}` : '/universities';
@@ -49,6 +62,9 @@ export default async function UniversitiesPage({
           countries={countries}
           initialQuery={q}
           initialCountry={country}
+          initialSort={sort}
+          initialMinScore={sp.minScore ?? ''}
+          initialMaxTuition={sp.maxTuition ?? ''}
         />
       </div>
 
