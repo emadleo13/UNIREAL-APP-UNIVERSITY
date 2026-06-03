@@ -40,6 +40,7 @@ function toUniversity(r: any): University {
     size: r.size ?? undefined,
     description_i18n: r.description_i18n ?? undefined,
     programsCount: r.programs_count ?? undefined,
+    programs: r.programs ?? undefined,
     admission: r.admission ?? undefined,
     internationalUrl: r.international_url ?? undefined,
     international: r.international ?? undefined,
@@ -136,6 +137,23 @@ export const supabaseRepository: DataRepository = {
       .maybeSingle();
     if (error) throw error;
     return data ? toUniversity(data) : null;
+  },
+
+  async saveUniversityFresh(slug, data): Promise<void> {
+    // Service-role write — bypasses RLS (universities is read-only to clients).
+    const { createSupabaseAdminClient } = await import('@/lib/supabase/admin');
+    const admin = createSupabaseAdminClient();
+    const row: Record<string, unknown> = {};
+    if (data.description_i18n) row.description_i18n = data.description_i18n;
+    if (data.programsCount != null) row.programs_count = data.programsCount;
+    if (data.programs) row.programs = data.programs;
+    if (data.tuition != null) row.tuition = data.tuition;
+    if (data.admission) row.admission = data.admission;
+    if (data.internationalUrl) row.international_url = data.internationalUrl;
+    if (data.international) row.international = data.international;
+    if (data.updatedAt) row.updated_at = data.updatedAt;
+    if (Object.keys(row).length === 0) return;
+    await admin.from('universities').update(row).eq('slug', slug);
   },
 
   async listCountries(): Promise<string[]> {

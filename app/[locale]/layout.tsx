@@ -4,6 +4,7 @@ import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server
 import { notFound } from 'next/navigation';
 import { routing, dirForLocale, type Locale } from '@/lib/i18n/routing';
 import { AuthProvider } from '@/lib/auth/AuthContext';
+import { FavoritesProvider } from '@/lib/favorites/FavoritesContext';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { BottomNav } from '@/components/layout/BottomNav';
@@ -62,6 +63,7 @@ export default async function LocaleLayout({
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
+            <FavoritesProvider>
             <Header />
             <main className="flex-1 pb-28 sm:pb-0">{children}</main>
             <Footer />
@@ -69,6 +71,7 @@ export default async function LocaleLayout({
             <CompareBar />
             <ChatWidget />
             <ServiceWorkerRegister />
+            </FavoritesProvider>
           </AuthProvider>
         </NextIntlClientProvider>
       </body>

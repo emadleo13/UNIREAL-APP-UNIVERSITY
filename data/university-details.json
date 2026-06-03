@@ -6,6 +6,7 @@
     "awards": 161,
     "medals": 48,
     "eliteStudents": 420,
+    "programs": ["Computer Science", "Economics", "Law", "Medicine", "Government", "Biology", "Business Administration", "Public Health"],
     "description_i18n": {
       "en": "Harvard University is a private Ivy League research university in Cambridge, Massachusetts. Founded in 1636, it is the oldest institution of higher learning in the United States and one of the most prestigious in the world, renowned for its faculty, research output and global alumni network.",
       "fa": "دانشگاه هاروارد یک دانشگاه پژوهشی خصوصی از لیگ آیوی در کمبریج ماساچوست است. این دانشگاه که در سال ۱۶۳۶ تأسیس شده، قدیمی‌ترین مؤسسه آموزش عالی ایالات متحده و یکی از معتبرترین دانشگاه‌های جهان است.",
@@ -32,6 +33,7 @@
     "awards": 122,
     "medals": 39,
     "eliteStudents": 360,
+    "programs": ["Computer Science", "Engineering", "Business (MBA)", "Artificial Intelligence", "Economics", "Medicine", "Symbolic Systems", "Management Science"],
     "description_i18n": {
       "en": "Stanford University is a private research university in Stanford, California, at the heart of Silicon Valley. It is widely regarded as a global leader in engineering, computer science and entrepreneurship.",
       "fa": "دانشگاه استنفورد یک دانشگاه پژوهشی خصوصی در استنفورد کالیفرنیا و در قلب سیلیکون‌ولی است. این دانشگاه به‌عنوان یکی از پیشروان جهانی در مهندسی، علوم کامپیوتر و کارآفرینی شناخته می‌شود.",
@@ -57,6 +59,7 @@
     "awards": 101,
     "medals": 55,
     "eliteStudents": 410,
+    "programs": ["Electrical Engineering & Computer Science", "Mechanical Engineering", "Physics", "Mathematics", "Aeronautics & Astronautics", "Economics", "Management", "Brain & Cognitive Sciences"],
     "description_i18n": {
       "en": "The Massachusetts Institute of Technology (MIT) is a private research university in Cambridge, Massachusetts, consistently ranked among the top universities in the world for science, engineering and technology.",
       "fa": "مؤسسه فناوری ماساچوست (MIT) یک دانشگاه پژوهشی خصوصی در کمبریج ماساچوست است که همواره در میان برترین دانشگاه‌های جهان در علوم، مهندسی و فناوری قرار دارد.",

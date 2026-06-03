@@ -16,6 +16,8 @@ export function Header() {
     { href: '/', label: t('Nav.home') },
     { href: '/universities', label: t('Nav.universities') },
     { href: '/calendar', label: t('Nav.calendar') },
+    { href: '/blog', label: t('Nav.blog') },
+    ...(user ? [{ href: '/saved', label: t('Nav.saved') }] : []),
     { href: '/contact', label: t('Nav.contact') },
     ...(isAdminEmail(user?.email) ? [{ href: '/admin', label: t('Nav.admin') }] : []),
   ];

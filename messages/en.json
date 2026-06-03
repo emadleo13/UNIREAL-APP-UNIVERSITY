@@ -7,7 +7,9 @@
     "home": "Home",
     "universities": "Universities",
     "calendar": "Calendar",
+    "blog": "Blog",
     "contact": "Contact",
+    "saved": "Saved",
     "admin": "Admin",
     "reviews": "Reviews",
     "questions": "Q&A",
@@ -90,6 +92,7 @@
     "intlTuition": "Tuition (international)",
     "intlPrograms": "Programs in English",
     "intlLanguages": "Languages of instruction",
+    "location": "Location",
     "reviewsTab": "Reviews",
     "questionsTab": "Q&A",
     "overviewTab": "Overview",
@@ -201,6 +204,21 @@
     "subscriberNote": "If you've paid for UNIREAL Pro and something isn't working, message us on Telegram or by email with your account email and we'll sort it out fast.",
     "chatTitle": "Ask the assistant",
     "chatSubtitle": "Get instant answers about universities, scores, deadlines and your subscription."
+  },
+  "Blog": {
+    "title": "Blog",
+    "subtitle": "Daily news on scholarships, admissions and student olympiads worldwide.",
+    "empty": "No posts yet. Check back soon.",
+    "back": "All posts",
+    "source": "Read the source"
+  },
+  "Favorites": {
+    "title": "Saved universities",
+    "empty": "You haven't saved any universities yet. Tap the heart on any university to save it.",
+    "save": "Save",
+    "remove": "Remove from saved",
+    "signInPrompt": "Sign in to save universities and see them here.",
+    "signIn": "Sign in"
   },
   "Compare": {
     "compare": "Compare",

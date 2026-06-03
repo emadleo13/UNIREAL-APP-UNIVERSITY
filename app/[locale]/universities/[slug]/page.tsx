@@ -5,6 +5,9 @@ import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { ReviewSection } from '@/components/university/ReviewSection';
 import { QuestionSection } from '@/components/university/QuestionSection';
+import { FavoriteButton } from '@/components/university/FavoriteButton';
+import { MapCard } from '@/components/university/MapCard';
+import { FreshnessRefresher } from '@/components/university/FreshnessRefresher';
 import { repo } from '@/lib/data';
 import { universityName, universityDescription } from '@/lib/data/display';
 import { computeUniversityScore, type ScoreComponent } from '@/lib/data/score';
@@ -155,6 +158,8 @@ export default async function UniversityDetailPage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
+      <FreshnessRefresher slug={uni.slug} />
+
       <header className="flex items-start gap-4">
         {uni.logoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -168,8 +173,11 @@ export default async function UniversityDetailPage({
             {name.charAt(0)}
           </div>
         )}
-        <div className="min-w-0">
-          <h1 className="text-2xl font-bold text-foreground">{name}</h1>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-2">
+            <h1 className="text-2xl font-bold text-foreground">{name}</h1>
+            <FavoriteButton slug={uni.slug} size={22} />
+          </div>
           <p className="mt-1 text-muted-foreground">
             {[uni.city, uni.country].filter(Boolean).join(', ')}
           </p>
@@ -270,6 +278,19 @@ export default async function UniversityDetailPage({
         </div>
       </Card>
 
+      {uni.programs && uni.programs.length > 0 && (
+        <Card className="mt-6 p-5">
+          <h2 className="font-semibold text-foreground">{t('programs')}</h2>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {uni.programs.map((p) => (
+              <Badge key={p} tone="muted">
+                {p}
+              </Badge>
+            ))}
+          </div>
+        </Card>
+      )}
+
       {intl && intlFacts.some((f) => f.value !== undefined && f.value !== '') && (
         <Card className="mt-6 border-primary/30 p-5">
           <div className="flex items-center justify-between">
@@ -298,6 +319,13 @@ export default async function UniversityDetailPage({
                 </div>
               ))}
           </dl>
+        </Card>
+      )}
+
+      {uni.geo && (
+        <Card className="mt-6 p-5">
+          <h2 className="mb-3 font-semibold text-foreground">{t('location')}</h2>
+          <MapCard lat={uni.geo.lat} lng={uni.geo.lng} label={name} />
         </Card>
       )}
 

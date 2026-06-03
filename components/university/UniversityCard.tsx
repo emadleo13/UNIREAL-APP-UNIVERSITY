@@ -3,6 +3,7 @@ import { Link } from '@/lib/i18n/navigation';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { CompareButton } from '@/components/university/CompareButton';
+import { FavoriteButton } from '@/components/university/FavoriteButton';
 import { universityName } from '@/lib/data/display';
 import { computeUniversityScore } from '@/lib/data/score';
 import type { University } from '@/lib/data/types';
@@ -14,8 +15,11 @@ export function UniversityCard({ university }: { university: University }) {
   const score = computeUniversityScore(university);
 
   return (
-    <Card className="group flex flex-col p-4 transition-all hover:border-primary hover:shadow-md">
-      <Link href={`/universities/${university.slug}`} className="flex items-start gap-3">
+    <Card className="group relative flex flex-col p-4 transition-all hover:border-primary hover:shadow-md">
+      <div className="absolute top-2 ltr:right-2 rtl:left-2">
+        <FavoriteButton slug={university.slug} />
+      </div>
+      <Link href={`/universities/${university.slug}`} className="flex items-start gap-3 pe-8">
         {university.logoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img

@@ -57,6 +57,8 @@ export type University = {
   description_i18n?: LocalizedNames;
   /** Number of degree programs / majors offered. */
   programsCount?: number;
+  /** Sample of notable programs / majors / faculties. */
+  programs?: string[];
   /** General (domestic) admission info. */
   admission?: AdmissionInfo;
   /** Direct URL to the university's international students section. */

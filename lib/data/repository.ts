@@ -19,6 +19,8 @@ export interface DataRepository {
     opts?: ListUniversitiesOptions
   ): Promise<Paginated<University>>;
   getUniversityBySlug(slug: string): Promise<University | null>;
+  /** Persist AI-refreshed editorial fields (used by the on-view refresh). */
+  saveUniversityFresh(slug: string, data: Partial<University>): Promise<void>;
   /** Distinct country list for the filter dropdown. */
   listCountries(): Promise<string[]>;
 

@@ -70,6 +70,7 @@ function toRow(u: any): Row {
     source: u.source ?? [],
     description_i18n: o.description_i18n ?? null,
     programs_count: o.programsCount ?? null,
+    programs: o.programs ?? null,
     admission: o.admission ?? null,
     international_url: o.internationalUrl ?? null,
     international: o.international ?? null,

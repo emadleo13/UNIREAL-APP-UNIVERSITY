@@ -7,7 +7,9 @@
     "home": "Acasă",
     "universities": "Universități",
     "calendar": "Calendar",
+    "blog": "Blog",
     "contact": "Contact",
+    "saved": "Salvate",
     "admin": "Admin",
     "reviews": "Recenzii",
     "questions": "Întrebări",
@@ -90,6 +92,7 @@
     "intlTuition": "Taxă (internațional)",
     "intlPrograms": "Programe în engleză",
     "intlLanguages": "Limbi de predare",
+    "location": "Locație",
     "reviewsTab": "Recenzii",
     "questionsTab": "Întrebări",
     "overviewTab": "Prezentare",
@@ -201,6 +204,21 @@
     "subscriberNote": "Dacă ai plătit pentru UNIREAL Pro și ceva nu funcționează, scrie-ne pe Telegram sau email cu adresa contului tău și o rezolvăm rapid.",
     "chatTitle": "Întreabă asistentul",
     "chatSubtitle": "Primește răspunsuri instant despre universități, scoruri, termene și abonament."
+  },
+  "Blog": {
+    "title": "Blog",
+    "subtitle": "Știri zilnice despre burse, admiteri și olimpiade studențești din întreaga lume.",
+    "empty": "Încă nicio postare. Revino în curând.",
+    "back": "Toate postările",
+    "source": "Citește sursa"
+  },
+  "Favorites": {
+    "title": "Universități salvate",
+    "empty": "Nu ai salvat încă nicio universitate. Apasă inima de pe orice universitate pentru a o salva.",
+    "save": "Salvează",
+    "remove": "Elimină din salvate",
+    "signInPrompt": "Autentifică-te pentru a salva universități și a le vedea aici.",
+    "signIn": "Autentificare"
   },
   "Compare": {
     "compare": "Compară",

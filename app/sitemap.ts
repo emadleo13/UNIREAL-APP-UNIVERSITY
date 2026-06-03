@@ -13,7 +13,7 @@ function withLocales(path: string) {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { items } = await repo.listUniversities({ page: 1, pageSize: 100000 });
 
-  const staticPaths = ['', '/universities', '/calendar', '/contact'];
+  const staticPaths = ['', '/universities', '/calendar', '/blog', '/contact'];
   const entries: MetadataRoute.Sitemap = [];
 
   for (const path of staticPaths) {

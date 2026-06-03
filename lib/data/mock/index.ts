@@ -14,7 +14,7 @@ import type {
   University,
 } from '../types';
 import { isVerifiedForUniversity } from '../verify';
-import { fetchAggregatedReviews, fetchFreshUniversityInfo } from '../ai-provider';
+import { fetchAggregatedReviews } from '../ai-provider';
 
 /** One curated review as stored in the details overlay (no id/universityId). */
 type ExternalReviewSeed = {
@@ -128,14 +128,14 @@ export const mockRepository: DataRepository = {
   },
 
   async getUniversityBySlug(slug: string): Promise<University | null> {
+    // Returns cached data immediately; freshness is refreshed out-of-band by
+    // the on-view refresh server action (see app/university-actions.ts).
+    return bySlug.get(slug) ?? null;
+  },
+
+  async saveUniversityFresh(slug, data): Promise<void> {
     const uni = bySlug.get(slug);
-    if (!uni) return null;
-    // Prefer fresh AI data when available; fall back to the curated overlay.
-    const fresh = await fetchFreshUniversityInfo(uni);
-    if (fresh) {
-      return { ...uni, ...fresh, aiEnriched: true, updatedAt: fresh.updatedAt };
-    }
-    return uni;
+    if (uni) Object.assign(uni, data); // bySlug/byId share the object reference
   },
 
   async listCountries(): Promise<string[]> {
