@@ -12,7 +12,11 @@ export async function fetchMySubscription(): Promise<MySubscription | null> {
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
-type ActionResult = { url?: string; error?: 'auth' | 'config' | 'unknown' };
+type ActionResult = {
+  url?: string;
+  error?: 'auth' | 'config' | 'unknown';
+  message?: string;
+};
 
 /** Create a Stripe Checkout session for the signed-in user, return its URL. */
 export async function createCheckoutSession(): Promise<ActionResult> {
@@ -63,7 +67,10 @@ export async function createCheckoutSession(): Promise<ActionResult> {
     return { url: session.url ?? undefined };
   } catch (e) {
     console.error('createCheckoutSession failed:', e);
-    return { error: 'unknown' };
+    return {
+      error: 'unknown',
+      message: e instanceof Error ? e.message : String(e),
+    };
   }
 }
 

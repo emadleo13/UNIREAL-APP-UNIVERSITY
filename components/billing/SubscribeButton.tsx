@@ -29,6 +29,11 @@ export function SubscribeButton({
       } else if (res.error === 'config') {
         // Stripe not wired yet — fall back to the account page.
         router.push('/auth');
+      } else if (res.error === 'auth') {
+        router.push('/auth');
+      } else {
+        // Surface the real failure instead of silently doing nothing.
+        alert(res.message || 'Could not start checkout. Please try again.');
       }
     });
   }
