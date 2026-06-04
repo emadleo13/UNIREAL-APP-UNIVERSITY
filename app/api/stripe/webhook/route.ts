@@ -27,7 +27,10 @@ export async function POST(req: Request) {
   const admin = createSupabaseAdminClient();
 
   async function upsertFromSubscription(sub: Stripe.Subscription, userId?: string) {
-    const periodEnd = (sub as any).current_period_end as number | undefined;
+    // Stripe moved `current_period_end` from the subscription onto each
+    // subscription item in newer API versions — fall back to the item.
+    const periodEnd = ((sub as any).current_period_end ??
+      (sub.items.data[0] as any)?.current_period_end) as number | undefined;
     const plan = sub.items.data[0]?.price.nickname ?? 'pro';
     const row: Record<string, unknown> = {
       status: mapStripeStatus(sub.status),
