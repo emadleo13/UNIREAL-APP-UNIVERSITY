@@ -59,13 +59,25 @@ export function Header() {
           <LocaleSwitcher />
           <ThemeToggle />
           {user ? (
-            <button
-              type="button"
-              onClick={signOut}
-              className="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-            >
-              {t('Nav.signOut')}
-            </button>
+            <>
+              <Link
+                href="/auth"
+                className={`rounded-md px-3 py-1.5 text-sm font-medium ${
+                  pathname.startsWith('/auth')
+                    ? 'bg-accent text-accent-foreground'
+                    : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                }`}
+              >
+                {t('Nav.account')}
+              </Link>
+              <button
+                type="button"
+                onClick={signOut}
+                className="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+              >
+                {t('Nav.signOut')}
+              </button>
+            </>
           ) : (
             <Link
               href="/auth"
