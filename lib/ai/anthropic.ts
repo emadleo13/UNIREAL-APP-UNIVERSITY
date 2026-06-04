@@ -81,11 +81,29 @@ export async function researchWithWebSearch(opts: {
   }
 }
 
-/** Extract the first JSON object from a model response (handles code fences). */
+/**
+ * Extract the first JSON value (object OR array) from a model response.
+ * Handles code fences and surrounding prose. If an array starts before any
+ * object, it is parsed as an array; otherwise as an object.
+ */
 export function extractJson<T = any>(text: string): T | null {
-  const start = text.indexOf('{');
-  const end = text.lastIndexOf('}');
-  if (start === -1 || end === -1 || end < start) return null;
+  const firstObj = text.indexOf('{');
+  const firstArr = text.indexOf('[');
+
+  let start: number;
+  let close: string;
+  if (firstArr !== -1 && (firstObj === -1 || firstArr < firstObj)) {
+    start = firstArr;
+    close = ']';
+  } else if (firstObj !== -1) {
+    start = firstObj;
+    close = '}';
+  } else {
+    return null;
+  }
+
+  const end = text.lastIndexOf(close);
+  if (end === -1 || end < start) return null;
   try {
     return JSON.parse(text.slice(start, end + 1)) as T;
   } catch {
