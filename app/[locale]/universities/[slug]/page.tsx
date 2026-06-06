@@ -9,11 +9,16 @@ import { FavoriteButton } from '@/components/university/FavoriteButton';
 import { MapCard } from '@/components/university/MapCard';
 import { FreshnessRefresher } from '@/components/university/FreshnessRefresher';
 import { repo } from '@/lib/data';
+import { getEnrichedUniversity } from '@/lib/data/enrich-on-view';
 import { universityName, universityDescription } from '@/lib/data/display';
 import { computeUniversityScore, type ScoreComponent } from '@/lib/data/score';
 import { locales } from '@/lib/i18n/routing';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
+// Allow time for the first-view AI enrichment to complete server-side so the
+// page is never rendered empty. Subsequent views are instant (cached in the DB).
+export const maxDuration = 60;
 
 export async function generateMetadata({
   params,
@@ -64,7 +69,9 @@ export default async function UniversityDetailPage({
 }) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const uni = await repo.getUniversityBySlug(slug);
+  // First-view enrichment: research + persist before render so the page is
+  // never empty. Already-enriched records return immediately.
+  const uni = await getEnrichedUniversity(slug);
   if (!uni) notFound();
 
   const t = await getTranslations('University');
@@ -121,7 +128,9 @@ export default async function UniversityDetailPage({
     { label: t('programs'), value: uni.programsCount?.toLocaleString(locale) },
     {
       label: t('tuition'),
-      value: uni.tuition ? `$${uni.tuition.toLocaleString(locale)}` : undefined,
+      value: uni.tuition
+        ? `${uni.tuitionCurrency === 'USD' ? '$' : '€'}${uni.tuition.toLocaleString(locale)}`
+        : undefined,
     },
     {
       label: t('admissionRate'),

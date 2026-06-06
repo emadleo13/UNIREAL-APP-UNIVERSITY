@@ -94,12 +94,16 @@ export const mockRepository: DataRepository = {
   async listUniversities(
     opts: ListUniversitiesOptions = {}
   ): Promise<Paginated<University>> {
-    const { q, country, minScore, maxTuition, sort = 'score', page = 1, pageSize = 24 } =
+    const { q, country, countries, minScore, maxTuition, sort = 'score', page = 1, pageSize = 24 } =
       opts;
     let items = universities;
 
     if (country) {
       items = items.filter((u) => u.country === country);
+    }
+    if (countries?.length) {
+      const set = new Set(countries);
+      items = items.filter((u) => set.has(u.country));
     }
     if (q && q.trim()) {
       const needle = q.trim().toLowerCase();

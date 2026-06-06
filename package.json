@@ -13,7 +13,8 @@
     "data:wikidata": "tsx scripts/04-enrich-wikidata.ts",
     "data:merge": "tsx scripts/merge.ts",
     "data:build": "npm run data:hipolabs && npm run data:enrich && npm run data:merge",
-    "data:seed": "tsx scripts/05-seed-supabase.ts"
+    "data:seed": "tsx scripts/05-seed-supabase.ts",
+    "data:enrich-ai": "tsx scripts/06-enrich-ai.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.1",

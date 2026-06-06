@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/Card';
 import { UniversityCard } from '@/components/university/UniversityCard';
 import { SubscribeButton } from '@/components/billing/SubscribeButton';
 import { repo } from '@/lib/data';
+import { EASTERN_EUROPE_COUNTRIES } from '@/lib/data/regions';
 
 export default async function HomePage({
   params,
@@ -15,7 +16,12 @@ export default async function HomePage({
   setRequestLocale(locale);
   const t = await getTranslations('Home');
 
-  const { items: featured } = await repo.listUniversities({ page: 1, pageSize: 6 });
+  // Homepage focuses on Eastern-European universities.
+  const { items: featured } = await repo.listUniversities({
+    countries: EASTERN_EUROPE_COUNTRIES,
+    page: 1,
+    pageSize: 6,
+  });
 
   const features = [
     { title: t('feature1Title'), body: t('feature1Body') },

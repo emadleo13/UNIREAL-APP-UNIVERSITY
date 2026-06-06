@@ -36,6 +36,7 @@ function toUniversity(r: any): University {
     ranking: r.ranking ?? undefined,
     researchScore: r.research_score ?? undefined,
     tuition: r.tuition ?? undefined,
+    tuitionCurrency: r.tuition_currency ?? undefined,
     admissionRate: r.admission_rate ?? undefined,
     size: r.size ?? undefined,
     description_i18n: r.description_i18n ?? undefined,
@@ -89,12 +90,21 @@ export const supabaseRepository: DataRepository = {
   async listUniversities(
     opts: ListUniversitiesOptions = {}
   ): Promise<Paginated<University>> {
-    const { q, country, minScore, maxTuition, sort = 'score', page = 1, pageSize = 24 } =
-      opts;
+    const {
+      q,
+      country,
+      countries,
+      minScore,
+      maxTuition,
+      sort = 'score',
+      page = 1,
+      pageSize = 24,
+    } = opts;
     const supabase = await createSupabaseServerClient();
     let query = supabase.from('universities').select('*', { count: 'exact' });
 
     if (country) query = query.eq('country', country);
+    if (countries?.length) query = query.in('country', countries);
     if (q && q.trim()) query = query.ilike('name', `%${q.trim()}%`);
     if (minScore != null) query = query.gte('research_score', minScore);
     if (maxTuition != null) {
@@ -147,7 +157,9 @@ export const supabaseRepository: DataRepository = {
     if (data.description_i18n) row.description_i18n = data.description_i18n;
     if (data.programsCount != null) row.programs_count = data.programsCount;
     if (data.programs) row.programs = data.programs;
+    if (data.size != null) row.size = data.size;
     if (data.tuition != null) row.tuition = data.tuition;
+    if (data.tuitionCurrency) row.tuition_currency = data.tuitionCurrency;
     if (data.admission) row.admission = data.admission;
     if (data.internationalUrl) row.international_url = data.internationalUrl;
     if (data.international) row.international = data.international;

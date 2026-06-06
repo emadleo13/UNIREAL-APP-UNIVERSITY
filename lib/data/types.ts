@@ -47,8 +47,10 @@ export type University = {
   /** Legal CC0 proxy derived from OpenAlex works/citations. */
   researchScore?: number;
 
-  /** Mostly US, from College Scorecard. */
+  /** Yearly tuition amount, in the currency given by `tuitionCurrency`. */
   tuition?: number;
+  /** Currency of `tuition`. AI enrichment uses EUR; legacy scorecard data is USD. */
+  tuitionCurrency?: 'EUR' | 'USD';
   admissionRate?: number;
   size?: number;
 
@@ -166,6 +168,8 @@ export type UniversitySort = 'score' | 'ranking' | 'tuition' | 'name';
 export type ListUniversitiesOptions = {
   q?: string;
   country?: string;
+  /** Restrict to a set of countries (e.g. an Eastern-Europe focus list). */
+  countries?: string[];
   /** Minimum research/score proxy (0–100). */
   minScore?: number;
   /** Maximum yearly tuition (USD); only matches universities with tuition data. */

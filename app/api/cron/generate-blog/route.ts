@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { generateDailyPosts } from '@/lib/blog/generate';
+import { generateLatestPost } from '@/lib/blog/generate';
 import { isAIConfigured } from '@/lib/ai/anthropic';
 
 export const runtime = 'nodejs';
@@ -8,8 +8,8 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 300;
 
 /**
- * Daily cron (vercel.json): generates 1–3 fresh blog posts via Claude + web
- * search and publishes them. Protected by CRON_SECRET (Vercel sends it as a
+ * Cron (vercel.json, every ~10 days): generates one fresh blog post via Claude
+ * + web search and publishes it. Protected by CRON_SECRET (Vercel sends it as a
  * Bearer token; manual calls can pass ?secret=...).
  */
 export async function GET(req: Request) {
@@ -26,7 +26,7 @@ export async function GET(req: Request) {
   }
 
   try {
-    const created = await generateDailyPosts();
+    const created = await generateLatestPost();
     return NextResponse.json({ ok: true, created });
   } catch (e) {
     console.error('generate-blog cron failed:', e);
