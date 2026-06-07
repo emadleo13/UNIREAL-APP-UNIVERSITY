@@ -12,7 +12,9 @@ import { repo } from '@/lib/data';
 import { getEnrichedUniversity } from '@/lib/data/enrich-on-view';
 import { universityName, universityDescription } from '@/lib/data/display';
 import { computeUniversityScore, type ScoreComponent } from '@/lib/data/score';
+import { STUDY_COUNTRIES, countryName } from '@/lib/data/countries';
 import { SITE_URL, localeAlternates } from '@/lib/seo';
+import { Link } from '@/lib/i18n/navigation';
 
 // Allow time for the first-view AI enrichment to complete server-side so the
 // page is never rendered empty. Subsequent views are instant (cached in the DB).
@@ -71,14 +73,19 @@ export default async function UniversityDetailPage({
   if (!uni) notFound();
 
   const t = await getTranslations('University');
+  const tStudy = await getTranslations('StudyIn');
   const name = universityName(uni, locale);
   const description = universityDescription(uni, locale);
   const score = computeUniversityScore(uni);
   const intl = uni.international;
-  const [reviews, questions] = await Promise.all([
+  const [reviews, questions, siblingsPage] = await Promise.all([
     repo.listReviews(uni.id),
     repo.listQuestions(uni.id),
+    // Related universities in the same country → internal-link hub-and-spoke.
+    repo.listUniversities({ country: uni.country, sort: 'score', pageSize: 9 }),
   ]);
+  const siblings = siblingsPage.items.filter((u) => u.slug !== uni.slug).slice(0, 6);
+  const studyCountry = STUDY_COUNTRIES.find((c) => c.match.includes(uni.country));
 
   const updatedLabel = uni.updatedAt
     ? new Date(uni.updatedAt).toLocaleDateString(locale, {
@@ -112,8 +119,7 @@ export default async function UniversityDetailPage({
     reviewBody: r.body,
   }));
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
+  const college = {
     '@type': 'CollegeOrUniversity',
     name,
     description,
@@ -140,6 +146,32 @@ export default async function UniversityDetailPage({
       : undefined,
     aggregateRating,
     review: reviewLd.length ? reviewLd : undefined,
+  };
+
+  // Breadcrumb: UNIREAL → (Study in <country>) → <name>.
+  const crumbs = [{ name: 'UNIREAL', item: `${SITE_URL}/${locale}` }];
+  if (studyCountry) {
+    crumbs.push({
+      name: tStudy('heroTitle', { country: countryName(studyCountry, locale) }),
+      item: `${SITE_URL}/${locale}/study-in/${studyCountry.slug}`,
+    });
+  }
+  crumbs.push({ name, item: `${SITE_URL}/${locale}/universities/${uni.slug}` });
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      college,
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: crumbs.map((c, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: c.name,
+          item: c.item,
+        })),
+      },
+    ],
   };
 
   const facts: Array<{ label: string; value: string | number | undefined }> = [
@@ -190,6 +222,32 @@ export default async function UniversityDetailPage({
       />
 
       <FreshnessRefresher slug={uni.slug} />
+
+      <nav className="mb-4 flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground">
+        <Link href="/" className="hover:text-primary">
+          UNIREAL
+        </Link>
+        <span>/</span>
+        {studyCountry ? (
+          <>
+            <Link
+              href={`/study-in/${studyCountry.slug}`}
+              className="hover:text-primary"
+            >
+              {countryName(studyCountry, locale)}
+            </Link>
+            <span>/</span>
+          </>
+        ) : (
+          <>
+            <Link href="/universities" className="hover:text-primary">
+              {tStudy('browseAll')}
+            </Link>
+            <span>/</span>
+          </>
+        )}
+        <span className="text-foreground">{name}</span>
+      </nav>
 
       <header className="flex items-start gap-4">
         {uni.logoUrl ? (
@@ -364,6 +422,35 @@ export default async function UniversityDetailPage({
         <ReviewSection universityId={uni.id} initialReviews={reviews} />
         <QuestionSection universityId={uni.id} initialQuestions={questions} />
       </div>
+
+      {siblings.length > 0 && (
+        <section className="mt-12">
+          <h2 className="font-semibold text-foreground">
+            {tStudy('listHeading', {
+              country: studyCountry ? countryName(studyCountry, locale) : uni.country,
+            })}
+          </h2>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {siblings.map((s) => (
+              <Link
+                key={s.id}
+                href={`/universities/${s.slug}`}
+                className="rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition-colors hover:border-primary hover:text-primary"
+              >
+                {universityName(s, locale)}
+              </Link>
+            ))}
+          </div>
+          {studyCountry && (
+            <Link
+              href={`/study-in/${studyCountry.slug}`}
+              className="mt-3 inline-block text-sm font-medium text-primary hover:opacity-80"
+            >
+              {tStudy('heroTitle', { country: countryName(studyCountry, locale) })} →
+            </Link>
+          )}
+        </section>
+      )}
     </div>
   );
 }
