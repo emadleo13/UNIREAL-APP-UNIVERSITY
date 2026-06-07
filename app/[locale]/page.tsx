@@ -7,6 +7,7 @@ import { UniversityCard } from '@/components/university/UniversityCard';
 import { SubscribeButton } from '@/components/billing/SubscribeButton';
 import { repo } from '@/lib/data';
 import { EASTERN_EUROPE_COUNTRIES } from '@/lib/data/regions';
+import { STUDY_COUNTRIES, countryName } from '@/lib/data/countries';
 import { SITE_URL, localeAlternates } from '@/lib/seo';
 
 export async function generateMetadata({
@@ -42,6 +43,7 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('Home');
+  const tStudy = await getTranslations('StudyIn');
 
   // Homepage focuses on Eastern-European universities.
   const { items: featured } = await repo.listUniversities({
@@ -122,10 +124,27 @@ export default async function HomePage({
         </Card>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-16">
+      <section className="mx-auto max-w-6xl px-4 pb-12">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {featured.map((u) => (
             <UniversityCard key={u.id} university={u} />
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-16">
+        <h2 className="text-xl font-bold text-foreground">
+          {tStudy('otherDestinations')}
+        </h2>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {STUDY_COUNTRIES.map((c) => (
+            <Link
+              key={c.slug}
+              href={`/study-in/${c.slug}`}
+              className="rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
+            >
+              {countryName(c, locale)}
+            </Link>
           ))}
         </div>
       </section>

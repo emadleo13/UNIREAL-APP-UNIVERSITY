@@ -1,10 +1,37 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Badge } from '@/components/ui/Badge';
 import { Link } from '@/lib/i18n/navigation';
 import { getPost } from '@/lib/blog/data';
+import { SITE_URL, localeAlternates } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const post = await getPost(slug);
+  if (!post) return {};
+  const description = post.summary ?? post.body.slice(0, 160);
+  return {
+    title: post.title,
+    description,
+    alternates: localeAlternates(`/blog/${slug}`, locale),
+    openGraph: {
+      title: post.title,
+      description,
+      type: 'article',
+      publishedTime: post.createdAt,
+      url: `${SITE_URL}/${locale}/blog/${slug}`,
+      siteName: 'UNIREAL',
+    },
+    twitter: { card: 'summary_large_image', title: post.title, description },
+  };
+}
 
 export default async function BlogPostPage({
   params,
@@ -23,8 +50,26 @@ export default async function BlogPostPage({
     day: 'numeric',
   });
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.summary ?? undefined,
+    datePublished: post.createdAt,
+    dateModified: post.createdAt,
+    inLanguage: locale,
+    articleSection: post.category ?? undefined,
+    author: { '@type': 'Organization', name: 'UNIREAL' },
+    publisher: { '@type': 'Organization', name: 'UNIREAL' },
+    mainEntityOfPage: `${SITE_URL}/${locale}/blog/${slug}`,
+  };
+
   return (
     <article className="mx-auto max-w-3xl px-4 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Link href="/blog" className="text-sm font-medium text-primary hover:opacity-80">
         ← {t('back')}
       </Link>

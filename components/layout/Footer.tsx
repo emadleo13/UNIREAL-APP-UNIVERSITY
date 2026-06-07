@@ -1,10 +1,13 @@
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/lib/i18n/navigation';
 import { SUPPORT_EMAIL, SUPPORT_EMAIL_URL, SUPPORT_TELEGRAM_URL } from '@/lib/contact';
+import { STUDY_COUNTRIES, countryName } from '@/lib/data/countries';
 
 export function Footer() {
   const t = useTranslations();
+  const locale = useLocale();
   const year = new Date().getFullYear();
+  const destinations = STUDY_COUNTRIES.slice(0, 6);
   return (
     <footer className="mt-16 border-t border-border bg-card">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:justify-between">
@@ -25,6 +28,21 @@ export function Footer() {
           <p className="mt-1">
             © {year} {t('Brand.name')}. {t('Footer.rights')}
           </p>
+        </div>
+
+        <div>
+          <p className="font-semibold text-foreground">
+            {t('Footer.studyDestinations')}
+          </p>
+          <ul className="mt-2 space-y-1.5">
+            {destinations.map((c) => (
+              <li key={c.slug}>
+                <Link href={`/study-in/${c.slug}`} className="hover:text-primary">
+                  {countryName(c, locale)}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div>

@@ -1,0 +1,177 @@
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Link } from '@/lib/i18n/navigation';
+import { Card } from '@/components/ui/Card';
+import { UniversityCard } from '@/components/university/UniversityCard';
+import { repo } from '@/lib/data';
+import { universityName } from '@/lib/data/display';
+import {
+  STUDY_COUNTRIES,
+  findStudyCountry,
+  countryName,
+} from '@/lib/data/countries';
+import { SITE_URL, localeAlternates } from '@/lib/seo';
+import { locales } from '@/lib/i18n/routing';
+
+// Rebuild daily so new universities / data appear without a redeploy.
+export const revalidate = 86400;
+
+export function generateStaticParams() {
+  return locales.flatMap((locale) =>
+    STUDY_COUNTRIES.map((c) => ({ locale, country: c.slug }))
+  );
+}
+
+async function load(slug: string) {
+  const c = findStudyCountry(slug);
+  if (!c) return null;
+  const { items } = await repo.listUniversities({
+    countries: c.match,
+    sort: 'score',
+    page: 1,
+    pageSize: 200,
+  });
+  return { c, items };
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; country: string }>;
+}): Promise<Metadata> {
+  const { locale, country } = await params;
+  const data = await load(country);
+  if (!data) return {};
+  const t = await getTranslations({ locale, namespace: 'StudyIn' });
+  const name = countryName(data.c, locale);
+  const title = t('metaTitle', { country: name });
+  const description = t('metaDescription', {
+    country: name,
+    count: data.items.length,
+  });
+  return {
+    title: { absolute: title },
+    description,
+    alternates: localeAlternates(`/study-in/${country}`, locale),
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: `${SITE_URL}/${locale}/study-in/${country}`,
+      siteName: 'UNIREAL',
+    },
+    twitter: { card: 'summary_large_image', title, description },
+  };
+}
+
+export default async function StudyInCountryPage({
+  params,
+}: {
+  params: Promise<{ locale: string; country: string }>;
+}) {
+  const { locale, country } = await params;
+  setRequestLocale(locale);
+  const data = await load(country);
+  if (!data) notFound();
+  const { c, items } = data;
+  const t = await getTranslations('StudyIn');
+  const name = countryName(c, locale);
+
+  // ItemList structured data helps Google understand this is a curated list of
+  // universities, and BreadcrumbList strengthens the site hierarchy.
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'UNIREAL',
+            item: `${SITE_URL}/${locale}`,
+          },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: t('heroTitle', { country: name }),
+            item: `${SITE_URL}/${locale}/study-in/${country}`,
+          },
+        ],
+      },
+      {
+        '@type': 'ItemList',
+        numberOfItems: items.length,
+        itemListElement: items.slice(0, 50).map((uni, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          url: `${SITE_URL}/${locale}/universities/${uni.slug}`,
+          name: universityName(uni, locale),
+        })),
+      },
+    ],
+  };
+
+  const others = STUDY_COUNTRIES.filter((x) => x.slug !== c.slug);
+
+  return (
+    <div className="mx-auto max-w-5xl px-4 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <nav className="text-sm text-muted-foreground">
+        <Link href="/" className="hover:text-primary">
+          UNIREAL
+        </Link>
+        <span className="px-1">/</span>
+        <Link href="/universities" className="hover:text-primary">
+          {t('browseAll')}
+        </Link>
+      </nav>
+
+      <h1 className="mt-3 text-3xl font-bold text-foreground">
+        {t('heroTitle', { country: name })}
+      </h1>
+      <p className="mt-2 max-w-3xl text-muted-foreground">
+        {t('heroSubtitle', { country: name })}
+      </p>
+
+      <Card className="mt-5 border-primary/30 bg-primary/5 p-4 text-sm text-foreground">
+        {t('intlNote')}
+      </Card>
+
+      <div className="mt-8 flex items-baseline justify-between">
+        <h2 className="text-xl font-bold text-foreground">
+          {t('listHeading', { country: name })}
+        </h2>
+        <span className="text-sm text-muted-foreground">
+          {t('count', { count: items.length })}
+        </span>
+      </div>
+
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        {items.map((uni) => (
+          <UniversityCard key={uni.id} university={uni} />
+        ))}
+      </div>
+
+      <h2 className="mt-12 text-lg font-bold text-foreground">
+        {t('otherDestinations')}
+      </h2>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {others.map((x) => (
+          <Link
+            key={x.slug}
+            href={`/study-in/${x.slug}`}
+            className="rounded-full border border-border bg-card px-3 py-1 text-sm text-muted-foreground hover:border-primary hover:text-primary"
+          >
+            {countryName(x, locale)}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}

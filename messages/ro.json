@@ -11,6 +11,18 @@
     "universityDescription": "{name} în {place}: Scorul UNIREAL, recenzii ale studenților, taxe, termene de admitere și programe. Profilul complet pe UNIREAL.",
     "universityDescriptionNoPlace": "{name}: Scorul UNIREAL, recenzii ale studenților, taxe, termene de admitere și programe. Profilul complet pe UNIREAL."
   },
+  "StudyIn": {
+    "metaTitle": "Studii în {country} — universități și admitere pentru studenți internaționali",
+    "metaDescription": "{count} universități în {country} pentru studenți internaționali: taxe, termene de admitere, programe în engleză, recenzii și Scoruri UNIREAL. Compară și aplică pe UNIREAL.",
+    "heroTitle": "Studii în {country}",
+    "heroSubtitle": "Găsește cele mai bune universități din {country} pentru studenți internaționali — taxe, termene de admitere, programe în engleză și recenzii verificate ale studenților, toate într-un singur loc.",
+    "intlNote": "Admiterea internațională este deschisă la multe universități. Deschide un profil pentru a vedea perioada de admitere și taxa pentru studenți internaționali.",
+    "listHeading": "Universități în {country}",
+    "count": "{count, plural, =0 {Nicio universitate încă} one {# universitate} other {# universități}}",
+    "viewProfile": "Vezi profilul",
+    "browseAll": "Vezi toate universitățile",
+    "otherDestinations": "Alte destinații de studiu"
+  },
   "Nav": {
     "home": "Acasă",
     "universities": "Universități",
@@ -250,6 +262,7 @@
   },
   "Footer": {
     "rights": "Toate drepturile rezervate.",
-    "dataCredit": "Date despre universități de la Hipolabs, ROR, OpenAlex, College Scorecard și Wikidata."
+    "dataCredit": "Date despre universități de la Hipolabs, ROR, OpenAlex, College Scorecard și Wikidata.",
+    "studyDestinations": "Destinații de studiu"
   }
 }

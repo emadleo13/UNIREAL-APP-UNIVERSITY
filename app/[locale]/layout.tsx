@@ -34,6 +34,21 @@ export async function generateMetadata({
     description: t('tagline'),
     applicationName: t('name'),
     manifest: '/manifest.webmanifest',
+    // Search Console / Webmaster verification — set these env vars in Vercel,
+    // then submit /sitemap.xml. Yandex matters for Persian-speaking users.
+    verification: {
+      google: process.env.GOOGLE_SITE_VERIFICATION,
+      yandex: process.env.YANDEX_VERIFICATION,
+      other: process.env.BING_VERIFICATION
+        ? { 'msvalidate.01': process.env.BING_VERIFICATION }
+        : {},
+    },
+    openGraph: {
+      type: 'website',
+      siteName: t('name'),
+      locale,
+    },
+    twitter: { card: 'summary_large_image' },
   };
 }
 

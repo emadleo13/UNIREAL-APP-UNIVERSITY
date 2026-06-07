@@ -1,10 +1,29 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Link } from '@/lib/i18n/navigation';
 import { listPosts } from '@/lib/blog/data';
+import { localeAlternates } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Blog' });
+  const title = t('title');
+  const description = t('subtitle');
+  return {
+    title,
+    description,
+    alternates: localeAlternates('/blog', locale),
+    openGraph: { title, description, type: 'website' },
+  };
+}
 
 export default async function BlogPage({
   params,

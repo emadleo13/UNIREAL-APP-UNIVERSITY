@@ -11,6 +11,18 @@
     "universityDescription": "{name} in {place}: UNIREAL Score, student reviews, tuition, admission deadlines and programs. See the full profile on UNIREAL.",
     "universityDescriptionNoPlace": "{name}: UNIREAL Score, student reviews, tuition, admission deadlines and programs. See the full profile on UNIREAL."
   },
+  "StudyIn": {
+    "metaTitle": "Study in {country} — universities & admission for international students",
+    "metaDescription": "{count} universities in {country} for international students: tuition, admission deadlines, English-taught programs, reviews and UNIREAL Scores. Compare and apply with UNIREAL.",
+    "heroTitle": "Study in {country}",
+    "heroSubtitle": "Find the best universities in {country} for international students — tuition, admission deadlines, English-taught programs and verified student reviews, all in one place.",
+    "intlNote": "International admissions are open at many universities. Open a profile to see its current intake dates and tuition for international students.",
+    "listHeading": "Universities in {country}",
+    "count": "{count, plural, =0 {No universities yet} one {# university} other {# universities}}",
+    "viewProfile": "View profile",
+    "browseAll": "Browse all universities",
+    "otherDestinations": "Other study destinations"
+  },
   "Nav": {
     "home": "Home",
     "universities": "Universities",
@@ -250,6 +262,7 @@
   },
   "Footer": {
     "rights": "All rights reserved.",
-    "dataCredit": "University data from Hipolabs, ROR, OpenAlex, College Scorecard and Wikidata."
+    "dataCredit": "University data from Hipolabs, ROR, OpenAlex, College Scorecard and Wikidata.",
+    "studyDestinations": "Study destinations"
   }
 }
