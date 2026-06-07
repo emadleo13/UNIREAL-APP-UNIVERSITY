@@ -1,4 +1,4 @@
-import type { DataRepository } from '../repository';
+import type { DataRepository, UniversityMatch } from '../repository';
 import type {
   AdmissionEvent,
   CreateAnswerInput,
@@ -147,6 +147,25 @@ export const supabaseRepository: DataRepository = {
       .maybeSingle();
     if (error) throw error;
     return data ? toUniversity(data) : null;
+  },
+
+  async searchUniversities(
+    latin: string,
+    original: string,
+    limit = 5
+  ): Promise<UniversityMatch[]> {
+    const supabase = await createSupabaseServerClient();
+    const { data, error } = await supabase.rpc('search_universities_fuzzy', {
+      q_latin: latin,
+      q_orig: original,
+      match_threshold: 0.4,
+      match_limit: limit,
+    });
+    if (error) throw error;
+    return ((data as any[]) ?? []).map((row) => ({
+      university: toUniversity(row.university),
+      score: row.score,
+    }));
   },
 
   async saveUniversityFresh(slug, data): Promise<void> {

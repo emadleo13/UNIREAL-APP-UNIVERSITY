@@ -1,15 +1,21 @@
 import { SUPPORT_EMAIL, SUPPORT_TELEGRAM_URL } from '../contact';
+import type { University } from '../data/types';
+import { computeUniversityScore } from '../data/score';
+import { universityName, universityDescription } from '../data/display';
 
 /**
- * UNIREAL ASSISTANT (placeholder brain).
+ * UNIREAL ASSISTANT (local brain — no external AI, no cost).
  * ------------------------------------------------------------------------
- * For now the assistant answers from a small, localized FAQ by keyword match.
- * The intent is to replace `answerQuestion` with a Claude call (claude-sonnet-4-6,
- * with web access + the site's university data as context) once the API key and
- * database are wired up — see lib/data/ai-provider.ts for the same pattern.
+ * The assistant answers in two layers, both fully local:
+ *   1. University lookup — if the message names a university (fuzzy-matched
+ *      against the site's own database, see app/chat-actions.ts), we answer
+ *      with that university's real data (score, tuition, deadlines, …).
+ *   2. FAQ — otherwise a small localized keyword FAQ handles "how does X work"
+ *      style questions. Only when neither matches do we show the contact
+ *      fallback.
  *
- * The public surface (ChatMessage + answerQuestion) stays the same, so swapping
- * the brain later is a drop-in change inside this file only.
+ * The pure helpers here (answerFromFaq, buildUniversityAnswer, fallbackAnswer)
+ * are orchestrated by the askAssistant server action, which owns the DB call.
  */
 
 export type ChatRole = 'user' | 'assistant';
@@ -80,10 +86,10 @@ export function greeting(locale: string): string {
 }
 
 /**
- * Answer a user message. PLACEHOLDER: keyword-matched FAQ.
- * TODO(ai): replace body with a Claude call using site data as context.
+ * Match a message against the localized keyword FAQ. Returns null on no match
+ * so the caller can try a university lookup / fallback instead.
  */
-export function answerQuestion(message: string, locale: string): string {
+export function answerFromFaq(message: string, locale: string): string | null {
   const loc = asLocale(locale);
   const text = message.toLowerCase();
   for (const entry of FAQ[loc]) {
@@ -91,5 +97,126 @@ export function answerQuestion(message: string, locale: string): string {
       return entry.answer;
     }
   }
-  return FALLBACK[loc];
+  return null;
+}
+
+/** The contact fallback, shown only when nothing else matched. */
+export function fallbackAnswer(locale: string): string {
+  return FALLBACK[asLocale(locale)];
+}
+
+const UNI_LABELS: Record<Locale, Record<string, string>> = {
+  en: {
+    score: 'UNIREAL Score',
+    ranking: 'World ranking',
+    tuition: 'Tuition',
+    intlTuition: 'International tuition',
+    intlDeadline: 'International deadline',
+    languages: 'Languages of instruction',
+    more: 'Full details, reviews and the score breakdown',
+    pickHeader: 'Closest matches I found — open the right one:',
+    notFound:
+      "I couldn't find a university matching that. Try the full name, or browse them on the Universities page.",
+  },
+  fa: {
+    score: 'امتیاز یونی‌ریل',
+    ranking: 'رتبه‌ی جهانی',
+    tuition: 'شهریه',
+    intlTuition: 'شهریه‌ی دانشجوی بین‌المللی',
+    intlDeadline: 'مهلت پذیرش بین‌المللی',
+    languages: 'زبان‌های تدریس',
+    more: 'جزئیات کامل، نقدها و تفکیک امتیاز',
+    pickHeader: 'نزدیک‌ترین دانشگاه‌هایی که پیدا کردم — درست را باز کن:',
+    notFound:
+      'دانشگاهی با این نام پیدا نکردم. اسم کامل‌ترش را بنویس یا از صفحه‌ی دانشگاه‌ها مرور کن.',
+  },
+  ro: {
+    score: 'Scor UNIREAL',
+    ranking: 'Clasament mondial',
+    tuition: 'Taxă',
+    intlTuition: 'Taxă pentru internaționali',
+    intlDeadline: 'Termen internațional',
+    languages: 'Limbi de predare',
+    more: 'Detalii complete, recenzii și detalierea scorului',
+    pickHeader: 'Cele mai apropiate universități găsite — deschide-o pe cea corectă:',
+    notFound:
+      'Nu am găsit o universitate cu acest nume. Încearcă numele complet sau caut-o în pagina Universități.',
+  },
+};
+
+function formatTuition(amount: number, currency?: 'EUR' | 'USD'): string {
+  const symbol = currency === 'USD' ? '$' : '€';
+  return `${symbol}${Math.round(amount).toLocaleString('en-US')}`;
+}
+
+/** No university matched: a localized "not found" hint (not the hard fallback). */
+export function universityNotFound(locale: string): string {
+  return UNI_LABELS[asLocale(locale)].notFound;
+}
+
+/**
+ * Build a rich, localized answer about one university from its real data.
+ * `siteUrl` is used to produce a link to the full page.
+ */
+export function buildUniversityAnswer(
+  uni: University,
+  locale: string,
+  siteUrl: string
+): string {
+  const loc = asLocale(locale);
+  const L = UNI_LABELS[loc];
+  const name = universityName(uni, loc);
+
+  const place = [uni.city, uni.country].filter(Boolean).join('، ');
+  const lines: string[] = [place ? `🎓 ${name} — ${place}` : `🎓 ${name}`];
+
+  const score = computeUniversityScore(uni);
+  if (score) lines.push(`⭐ ${L.score}: ${Math.round(score.total)}/100`);
+  if (uni.ranking != null) lines.push(`📊 ${L.ranking}: #${uni.ranking}`);
+  if (uni.tuition != null) {
+    lines.push(`💰 ${L.tuition}: ${formatTuition(uni.tuition, uni.tuitionCurrency)}`);
+  }
+  if (uni.international?.tuition != null) {
+    lines.push(`🌍 ${L.intlTuition}: ${formatTuition(uni.international.tuition, 'USD')}`);
+  }
+  const intlDeadline =
+    uni.international?.deadline || uni.international?.admissionPeriod;
+  if (intlDeadline) lines.push(`🗓️ ${L.intlDeadline}: ${intlDeadline}`);
+  if (uni.international?.languages?.length) {
+    lines.push(`🗣️ ${L.languages}: ${uni.international.languages.join(', ')}`);
+  }
+
+  const desc = universityDescription(uni, loc);
+  if (desc) {
+    const snippet = desc.length > 220 ? `${desc.slice(0, 217).trimEnd()}…` : desc;
+    lines.push('', snippet);
+  }
+
+  const base = siteUrl.replace(/\/$/, '');
+  lines.push('', `🔗 ${L.more}: ${base}/${loc}/universities/${uni.slug}`);
+
+  return lines.join('\n');
+}
+
+/**
+ * When the match is ambiguous (transliterated names are lossy), list the
+ * closest universities as clickable links instead of asserting one — so we
+ * never give confidently-wrong facts. `unis` should already be the top hits.
+ */
+export function buildUniversitySuggestions(
+  unis: University[],
+  locale: string,
+  siteUrl: string
+): string {
+  const loc = asLocale(locale);
+  const L = UNI_LABELS[loc];
+  const base = siteUrl.replace(/\/$/, '');
+  const lines = [L.pickHeader, ''];
+  for (const uni of unis) {
+    const name = universityName(uni, loc);
+    const place = [uni.city, uni.country].filter(Boolean).join('، ');
+    const label = place ? `${name} (${place})` : name;
+    lines.push(`• ${label}\n  ${base}/${loc}/universities/${uni.slug}`);
+  }
+  return lines.join('\n');
 }

@@ -11,5 +11,5 @@ export const repo: DataRepository =
     ? supabaseRepository
     : mockRepository;
 
-export type { DataRepository } from './repository';
+export type { DataRepository, UniversityMatch } from './repository';
 export * from './types';

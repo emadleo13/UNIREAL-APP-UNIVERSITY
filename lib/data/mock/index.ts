@@ -1,6 +1,6 @@
 import universitiesData from '@/data/universities.json';
 import detailsData from '@/data/university-details.json';
-import type { DataRepository } from '../repository';
+import type { DataRepository, UniversityMatch } from '../repository';
 import type {
   AdmissionEvent,
   CreateAnswerInput,
@@ -135,6 +135,27 @@ export const mockRepository: DataRepository = {
     // Returns cached data immediately; freshness is refreshed out-of-band by
     // the on-view refresh server action (see app/university-actions.ts).
     return bySlug.get(slug) ?? null;
+  },
+
+  async searchUniversities(
+    latin: string,
+    original: string,
+    limit = 5
+  ): Promise<UniversityMatch[]> {
+    const needleLatin = latin.toLowerCase().trim();
+    const needleOrig = original.trim();
+    if (!needleLatin) return [];
+    const matches: UniversityMatch[] = [];
+    for (const u of universities) {
+      const en = `${u.name} ${u.names_i18n?.en ?? ''} ${u.city ?? ''}`.toLowerCase();
+      const localized = `${u.names_i18n?.fa ?? ''} ${u.names_i18n?.ro ?? ''}`;
+      const hitLatin = needleLatin
+        .split(' ')
+        .some((t) => t.length >= 3 && en.includes(t));
+      const hitOrig = needleOrig.length >= 2 && localized.includes(needleOrig);
+      if (hitLatin || hitOrig) matches.push({ university: u, score: 1 });
+    }
+    return matches.slice(0, limit);
   },
 
   async saveUniversityFresh(slug, data): Promise<void> {
