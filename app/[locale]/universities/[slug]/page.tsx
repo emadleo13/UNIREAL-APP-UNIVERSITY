@@ -12,9 +12,7 @@ import { repo } from '@/lib/data';
 import { getEnrichedUniversity } from '@/lib/data/enrich-on-view';
 import { universityName, universityDescription } from '@/lib/data/display';
 import { computeUniversityScore, type ScoreComponent } from '@/lib/data/score';
-import { locales } from '@/lib/i18n/routing';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+import { SITE_URL, localeAlternates } from '@/lib/seo';
 
 // Allow time for the first-view AI enrichment to complete server-side so the
 // page is never rendered empty. Subsequent views are instant (cached in the DB).
@@ -28,29 +26,27 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const uni = await repo.getUniversityBySlug(slug);
   if (!uni) return {};
+  const t = await getTranslations({ locale, namespace: 'Seo' });
   const name = universityName(uni, locale);
-  const description = `${name} — ${[uni.city, uni.country]
-    .filter(Boolean)
-    .join(', ')}. Reviews, Q&A and key facts on UNIREAL.`;
-
-  const languages: Record<string, string> = {};
-  for (const loc of locales) {
-    languages[loc] = `${SITE_URL}/${loc}/universities/${slug}`;
-  }
+  const place = [uni.city, uni.country].filter(Boolean).join(', ');
+  // Keyword-rich title so "<name> <city>" queries match; template adds the brand.
+  const title = place ? `${name} — ${place}` : name;
+  const description = place
+    ? t('universityDescription', { name, place })
+    : t('universityDescriptionNoPlace', { name });
 
   return {
-    title: name,
+    title,
     description,
-    alternates: {
-      canonical: `${SITE_URL}/${locale}/universities/${slug}`,
-      languages,
-    },
+    alternates: localeAlternates(`/universities/${slug}`, locale),
     openGraph: {
-      title: name,
+      title,
       description,
       type: 'website',
-      images: uni.logoUrl ? [{ url: uni.logoUrl }] : undefined,
+      url: `${SITE_URL}/${locale}/universities/${slug}`,
+      siteName: 'UNIREAL',
     },
+    twitter: { card: 'summary_large_image', title, description },
   };
 }
 
@@ -92,6 +88,30 @@ export default async function UniversityDetailPage({
       })
     : null;
 
+  // Real ratings → AggregateRating + Review so Google can show ⭐ stars.
+  const ratings = reviews.map((r) => r.rating).filter((n) => n > 0);
+  const aggregateRating = ratings.length
+    ? {
+        '@type': 'AggregateRating',
+        ratingValue: (ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1),
+        reviewCount: ratings.length,
+        bestRating: 5,
+        worstRating: 1,
+      }
+    : undefined;
+  const reviewLd = reviews.slice(0, 5).map((r) => ({
+    '@type': 'Review',
+    author: { '@type': 'Person', name: r.authorName },
+    datePublished: r.createdAt,
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: r.rating,
+      bestRating: 5,
+      worstRating: 1,
+    },
+    reviewBody: r.body,
+  }));
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollegeOrUniversity',
@@ -118,6 +138,8 @@ export default async function UniversityDetailPage({
           longitude: uni.geo.lng,
         }
       : undefined,
+    aggregateRating,
+    review: reviewLd.length ? reviewLd : undefined,
   };
 
   const facts: Array<{ label: string; value: string | number | undefined }> = [

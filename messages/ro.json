@@ -3,6 +3,14 @@
     "name": "UNIREAL",
     "tagline": "Recenzii și răspunsuri reale despre universități din întreaga lume"
   },
+  "Seo": {
+    "homeTitle": "UNIREAL — Recenzii, scoruri și informații de admitere pentru universități",
+    "homeDescription": "Compară mii de universități din lume: recenzii reale ale studenților, Scorul UNIREAL, taxe, termene de admitere și programe în engleză — în română, engleză și persană.",
+    "universitiesTitle": "Universități — recenzii, scoruri și taxe",
+    "universitiesDescription": "Caută mii de universități după nume, țară, scor și taxă. Citește recenzii verificate ale studenților și compară informațiile de admitere pe UNIREAL.",
+    "universityDescription": "{name} în {place}: Scorul UNIREAL, recenzii ale studenților, taxe, termene de admitere și programe. Profilul complet pe UNIREAL.",
+    "universityDescriptionNoPlace": "{name}: Scorul UNIREAL, recenzii ale studenților, taxe, termene de admitere și programe. Profilul complet pe UNIREAL."
+  },
   "Nav": {
     "home": "Acasă",
     "universities": "Universități",

@@ -3,6 +3,14 @@
     "name": "UNIREAL",
     "tagline": "Real reviews and answers about universities worldwide"
   },
+  "Seo": {
+    "homeTitle": "UNIREAL — University reviews, scores & admission info worldwide",
+    "homeDescription": "Compare thousands of universities worldwide. Real student reviews, the UNIREAL Score, tuition, admission deadlines and English-taught programs — in English, Persian and Romanian.",
+    "universitiesTitle": "Browse universities — reviews, scores & tuition",
+    "universitiesDescription": "Search thousands of universities by name, country, score and tuition. Read verified student reviews and compare admission info on UNIREAL.",
+    "universityDescription": "{name} in {place}: UNIREAL Score, student reviews, tuition, admission deadlines and programs. See the full profile on UNIREAL.",
+    "universityDescriptionNoPlace": "{name}: UNIREAL Score, student reviews, tuition, admission deadlines and programs. See the full profile on UNIREAL."
+  },
   "Nav": {
     "home": "Home",
     "universities": "Universities",

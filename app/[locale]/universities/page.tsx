@@ -1,10 +1,36 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
 import { UniversityCard } from '@/components/university/UniversityCard';
 import { SearchFilters } from '@/components/university/SearchFilters';
 import { repo } from '@/lib/data';
+import { SITE_URL, localeAlternates } from '@/lib/seo';
 
 const PAGE_SIZE = 24;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Seo' });
+  const title = t('universitiesTitle');
+  const description = t('universitiesDescription');
+  return {
+    title,
+    description,
+    alternates: localeAlternates('/universities', locale),
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: `${SITE_URL}/${locale}/universities`,
+      siteName: 'UNIREAL',
+    },
+    twitter: { card: 'summary_large_image', title, description },
+  };
+}
 
 type SearchParams = {
   q?: string;

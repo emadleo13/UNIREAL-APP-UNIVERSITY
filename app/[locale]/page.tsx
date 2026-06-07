@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
 import { Button } from '@/components/ui/Button';
@@ -6,6 +7,32 @@ import { UniversityCard } from '@/components/university/UniversityCard';
 import { SubscribeButton } from '@/components/billing/SubscribeButton';
 import { repo } from '@/lib/data';
 import { EASTERN_EUROPE_COUNTRIES } from '@/lib/data/regions';
+import { SITE_URL, localeAlternates } from '@/lib/seo';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Seo' });
+  const title = t('homeTitle');
+  const description = t('homeDescription');
+  return {
+    // homeTitle already carries the brand, so skip the "· UNIREAL" template.
+    title: { absolute: title },
+    description,
+    alternates: localeAlternates('', locale),
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: `${SITE_URL}/${locale}`,
+      siteName: 'UNIREAL',
+    },
+    twitter: { card: 'summary_large_image', title, description },
+  };
+}
 
 export default async function HomePage({
   params,
