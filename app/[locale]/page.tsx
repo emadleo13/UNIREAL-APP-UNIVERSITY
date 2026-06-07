@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
 import { Button } from '@/components/ui/Button';
@@ -60,18 +61,28 @@ export default async function HomePage({
 
   return (
     <div>
-      <section className="bg-gradient-to-b from-accent to-background">
-        <div className="mx-auto max-w-6xl px-4 py-16 text-center sm:py-24">
+      <section className="relative overflow-hidden">
+        {/* Hero backdrop: the Radcliffe Camera, University of Oxford (Unsplash). */}
+        <Image
+          src="/hero-university.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/60 to-background" />
+        <div className="relative mx-auto max-w-6xl px-4 py-20 text-center sm:py-28">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/logo-unireal.png"
             alt=""
             className="mx-auto mb-6 h-24 w-24 rounded-2xl object-contain shadow-theme dark:bg-white dark:p-2"
           />
-          <h1 className="mx-auto max-w-3xl text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+          <h1 className="mx-auto max-w-3xl text-3xl font-bold tracking-tight text-white drop-shadow-lg sm:text-5xl">
             {t('heroTitle')}
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
+          <p className="mx-auto mt-4 max-w-2xl text-base text-white/85 drop-shadow sm:text-lg">
             {t('heroSubtitle')}
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

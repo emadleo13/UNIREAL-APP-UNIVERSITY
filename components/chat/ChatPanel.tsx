@@ -13,10 +13,18 @@ export function ChatPanel({ variant = 'widget' }: { variant?: 'widget' | 'page' 
   ]);
   const [input, setInput] = useState('');
   const [pending, startTransition] = useTransition();
-  const endRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const mountedRef = useRef(false);
 
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Scroll the message list itself (never the page) — and skip the first
+    // render so opening the Contact page doesn't jump the window to the chat.
+    if (!mountedRef.current) {
+      mountedRef.current = true;
+      return;
+    }
+    const el = listRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages, pending]);
 
   function send(text: string) {
@@ -36,6 +44,7 @@ export function ChatPanel({ variant = 'widget' }: { variant?: 'widget' | 'page' 
   return (
     <div className="flex flex-col">
       <div
+        ref={listRef}
         className={`${messagesHeight} space-y-3 overflow-y-auto p-3`}
         aria-live="polite"
       >
@@ -62,7 +71,6 @@ export function ChatPanel({ variant = 'widget' }: { variant?: 'widget' | 'page' 
             </div>
           </div>
         )}
-        <div ref={endRef} />
       </div>
 
       {messages.length <= 1 && (
