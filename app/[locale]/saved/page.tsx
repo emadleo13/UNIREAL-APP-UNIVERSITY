@@ -1,6 +1,6 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Link } from '@/lib/i18n/navigation';
 import { UniversityCard } from '@/components/university/UniversityCard';
+import { GuestSavedList } from '@/components/university/GuestSavedList';
 import { getCurrentUser } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { getMyFavorites } from '@/app/favorites-actions';
@@ -18,20 +18,9 @@ export default async function SavedPage({
 
   const user = isSupabaseConfigured() ? await getCurrentUser() : null;
 
-  if (!user) {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-        <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
-        <p className="mt-2 text-muted-foreground">{t('signInPrompt')}</p>
-        <Link
-          href="/auth"
-          className="mt-4 inline-block rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90"
-        >
-          {t('signIn')}
-        </Link>
-      </div>
-    );
-  }
+  // Guests see whatever they saved on this device (localStorage) plus the
+  // create-account nudge that unlocks more saves and deadline reminders.
+  if (!user) return <GuestSavedList />;
 
   const unis = await getMyFavorites();
 

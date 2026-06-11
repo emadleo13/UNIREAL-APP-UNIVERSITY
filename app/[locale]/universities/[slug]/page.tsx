@@ -8,6 +8,7 @@ import { QuestionSection } from '@/components/university/QuestionSection';
 import { FavoriteButton } from '@/components/university/FavoriteButton';
 import { MapCard } from '@/components/university/MapCard';
 import { FreshnessRefresher } from '@/components/university/FreshnessRefresher';
+import { LeadForm } from '@/components/university/LeadForm';
 import { repo } from '@/lib/data';
 import { getEnrichedUniversity } from '@/lib/data/enrich-on-view';
 import { universityName, universityDescription } from '@/lib/data/display';
@@ -410,6 +411,8 @@ export default async function UniversityDetailPage({
           </dl>
         </Card>
       )}
+
+      <LeadForm universityId={uni.id} universityName={name} />
 
       {uni.geo && (
         <Card className="mt-6 p-5">
