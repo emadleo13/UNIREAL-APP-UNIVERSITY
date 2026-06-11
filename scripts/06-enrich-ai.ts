@@ -23,6 +23,7 @@ import WebSocket from 'ws';
 import { createClient } from '@supabase/supabase-js';
 import Anthropic from '@anthropic-ai/sdk';
 import { researchUniversity, todayISO } from '../lib/data/enrich-core';
+import { researchUniversityGemini } from '../lib/data/enrich-gemini';
 import type { University } from '../lib/data/types';
 import { arg, sleep } from './_util';
 
@@ -40,12 +41,25 @@ for (const file of ['.env.local', '.env']) {
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const anthropicKey = process.env.ANTHROPIC_API_KEY;
+const geminiKey = process.env.GEMINI_API_KEY;
 if (!url || !serviceKey) {
   console.error('Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.');
   process.exit(1);
 }
-if (!anthropicKey) {
-  console.error('Set ANTHROPIC_API_KEY.');
+
+// --provider=claude (default) uses Anthropic + web_search;
+// --provider=gemini uses the free Gemini tier with Google Search grounding.
+const provider = (arg('provider', 'claude') as string).toLowerCase();
+if (provider !== 'claude' && provider !== 'gemini') {
+  console.error(`Unknown --provider=${provider} (use claude or gemini).`);
+  process.exit(1);
+}
+if (provider === 'claude' && !anthropicKey) {
+  console.error('Set ANTHROPIC_API_KEY (or use --provider=gemini).');
+  process.exit(1);
+}
+if (provider === 'gemini' && !geminiKey) {
+  console.error('Set GEMINI_API_KEY (or use --provider=claude).');
   process.exit(1);
 }
 
@@ -62,7 +76,10 @@ const supabase = createClient(url, serviceKey, {
   auth: { autoRefreshToken: false, persistSession: false },
   realtime: { transport: WebSocket as never },
 });
-const anthropic = new Anthropic({ apiKey: anthropicKey });
+const anthropic = provider === 'claude' ? new Anthropic({ apiKey: anthropicKey }) : null;
+
+// Free Gemini tier has a low requests-per-minute cap — pace accordingly.
+const paceMs = provider === 'gemini' ? 7000 : 500;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -98,7 +115,7 @@ function toRow(data: Partial<University>): Record<string, unknown> {
 async function main() {
   const today = todayISO();
   console.log(
-    `Enriching countries=[${countries.join(', ')}] concurrency=${concurrency}` +
+    `Enriching countries=[${countries.join(', ')}] provider=${provider} concurrency=${concurrency}` +
       `${limit ? ` limit=${limit}` : ''}${force ? ' force' : ''}${dryRun ? ' DRY-RUN' : ''}`
   );
 
@@ -129,7 +146,10 @@ async function main() {
       const uni = targets[cursor++];
       const n = ++done;
       try {
-        const fresh = await researchUniversity(anthropic, uni, today);
+        const fresh =
+          provider === 'gemini'
+            ? await researchUniversityGemini(geminiKey!, uni, today)
+            : await researchUniversity(anthropic!, uni, today);
         if (!fresh) {
           failed++;
           console.log(`[${n}/${targets.length}] ✗ ${uni.name} — no data`);
@@ -158,7 +178,7 @@ async function main() {
         console.log(`[${n}/${targets.length}] ✗ ${uni.name} — ${String(e)}`);
       }
       // Gentle pacing to stay under rate limits.
-      await sleep(500);
+      await sleep(paceMs);
     }
     void workerId;
   }
