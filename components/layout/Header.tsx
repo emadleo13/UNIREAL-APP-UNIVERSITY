@@ -15,6 +15,9 @@ export function Header() {
   const links = [
     { href: '/', label: t('Nav.home') },
     { href: '/universities', label: t('Nav.universities') },
+    { href: '/fields', label: t('Nav.fields') },
+    { href: '/scholarships', label: t('Nav.scholarships') },
+    { href: '/quiz', label: t('Nav.quiz') },
     { href: '/calendar', label: t('Nav.calendar') },
     { href: '/blog', label: t('Nav.blog') },
     ...(user ? [{ href: '/saved', label: t('Nav.saved') }] : []),

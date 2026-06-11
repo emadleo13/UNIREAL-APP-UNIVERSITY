@@ -11,6 +11,9 @@ import {
   findStudyCountry,
   countryName,
 } from '@/lib/data/countries';
+import { STUDY_FIELDS, fieldName } from '@/lib/data/fields';
+import { guideForCountry, guideText } from '@/lib/data/country-guides';
+import { scholarshipsForCountry, scholarshipSummary } from '@/lib/data/scholarships';
 import { SITE_URL, localeAlternates } from '@/lib/seo';
 import { locales } from '@/lib/i18n/routing';
 
@@ -77,12 +80,38 @@ export default async function StudyInCountryPage({
   const { c, items } = data;
   const t = await getTranslations('StudyIn');
   const name = countryName(c, locale);
+  const guide = guideForCountry(c.slug);
+  const scholarships = scholarshipsForCountry(c.slug).filter(
+    (s) => s.countrySlugs.length > 0
+  );
+
+  // Guide sections double as FAQPage rich-result data.
+  const guideSections = guide
+    ? ([
+        { q: t('guideVisaQ', { country: name }), a: guideText(guide, 'visa', locale) },
+        { q: t('guideCostsQ', { country: name }), a: guideText(guide, 'livingCosts', locale) },
+        { q: t('guideApplicationQ', { country: name }), a: guideText(guide, 'application', locale) },
+        { q: t('guideWorkQ', { country: name }), a: guideText(guide, 'work', locale) },
+      ] as const)
+    : [];
 
   // ItemList structured data helps Google understand this is a curated list of
   // universities, and BreadcrumbList strengthens the site hierarchy.
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
+      ...(guideSections.length
+        ? [
+            {
+              '@type': 'FAQPage',
+              mainEntity: guideSections.map((s) => ({
+                '@type': 'Question',
+                name: s.q,
+                acceptedAnswer: { '@type': 'Answer', text: s.a },
+              })),
+            },
+          ]
+        : []),
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
@@ -142,6 +171,103 @@ export default async function StudyInCountryPage({
       <Card className="mt-5 border-primary/30 bg-primary/5 p-4 text-sm text-foreground">
         {t('intlNote')}
       </Card>
+
+      <div className="mt-5 flex flex-wrap gap-2 text-sm font-medium">
+        <Link
+          href={`/rankings/${c.slug}`}
+          className="rounded-full border border-primary/40 bg-card px-3 py-1.5 text-primary hover:bg-primary/5"
+        >
+          {t('linkBest', { country: name })}
+        </Link>
+        <Link
+          href={`/rankings/${c.slug}/affordable`}
+          className="rounded-full border border-primary/40 bg-card px-3 py-1.5 text-primary hover:bg-primary/5"
+        >
+          {t('linkCheapest', { country: name })}
+        </Link>
+        <Link
+          href="/scholarships"
+          className="rounded-full border border-primary/40 bg-card px-3 py-1.5 text-primary hover:bg-primary/5"
+        >
+          {t('linkScholarships')}
+        </Link>
+        <Link
+          href="/quiz"
+          className="rounded-full border border-primary/40 bg-card px-3 py-1.5 text-primary hover:bg-primary/5"
+        >
+          {t('linkQuiz')}
+        </Link>
+      </div>
+
+      {guideSections.length > 0 && (
+        <section className="mt-10">
+          <h2 className="text-xl font-bold text-foreground">
+            {t('guideTitle', { country: name })}
+          </h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {guideSections.map((s) => (
+              <Card key={s.q} className="p-5">
+                <h3 className="font-semibold text-foreground">{s.q}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {s.a}
+                </p>
+              </Card>
+            ))}
+          </div>
+          <p className="mt-3 text-xs text-muted-foreground">{t('guideDisclaimer')}</p>
+        </section>
+      )}
+
+      {scholarships.length > 0 && (
+        <section className="mt-10">
+          <h2 className="text-xl font-bold text-foreground">
+            {t('scholarshipsTitle', { country: name })}
+          </h2>
+          <div className="mt-4 space-y-3">
+            {scholarships.map((s) => (
+              <Card key={s.id} className="p-4">
+                <div className="flex flex-wrap items-baseline justify-between gap-2">
+                  <h3 className="font-semibold text-foreground">{s.name}</h3>
+                  <a
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-medium text-primary hover:opacity-80"
+                  >
+                    {t('scholarshipOfficial')} ↗
+                  </a>
+                </div>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  {scholarshipSummary(s, locale)}
+                </p>
+              </Card>
+            ))}
+          </div>
+          <Link
+            href="/scholarships"
+            className="mt-3 inline-block text-sm font-medium text-primary hover:opacity-80"
+          >
+            {t('allScholarships')} →
+          </Link>
+        </section>
+      )}
+
+      <section className="mt-10">
+        <h2 className="text-lg font-bold text-foreground">
+          {t('fieldsHeading', { country: name })}
+        </h2>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {STUDY_FIELDS.map((f) => (
+            <Link
+              key={f.slug}
+              href={`/fields/${f.slug}/${c.slug}`}
+              className="rounded-full border border-border bg-card px-3 py-1 text-sm text-muted-foreground hover:border-primary hover:text-primary"
+            >
+              {fieldName(f, locale)}
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <div className="mt-8 flex items-baseline justify-between">
         <h2 className="text-xl font-bold text-foreground">

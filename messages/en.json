@@ -21,7 +21,84 @@
     "count": "{count, plural, =0 {No universities yet} one {# university} other {# universities}}",
     "viewProfile": "View profile",
     "browseAll": "Browse all universities",
-    "otherDestinations": "Other study destinations"
+    "otherDestinations": "Other study destinations",
+    "linkBest": "Best universities in {country}",
+    "linkCheapest": "Most affordable in {country}",
+    "linkScholarships": "Scholarships",
+    "linkQuiz": "University match quiz",
+    "guideTitle": "{country} study guide for international students",
+    "guideVisaQ": "Do I need a visa to study in {country}?",
+    "guideCostsQ": "How much does it cost to live in {country}?",
+    "guideApplicationQ": "How do I apply to universities in {country}?",
+    "guideWorkQ": "Can international students work in {country}?",
+    "guideDisclaimer": "Figures and rules are indicative and change over time — always confirm with the university and official government sources.",
+    "scholarshipsTitle": "Scholarships for {country}",
+    "scholarshipOfficial": "Official website",
+    "allScholarships": "All scholarships",
+    "fieldsHeading": "Find universities in {country} by field of study"
+  },
+  "Fields": {
+    "metaIndexTitle": "Fields of study in Eastern Europe — find universities by subject | UNIREAL",
+    "metaIndexDescription": "Browse universities in Eastern Europe by field of study: medicine, engineering, computer science, business and more. Tuition, deadlines and programs for international students.",
+    "indexTitle": "Browse universities by field of study",
+    "indexSubtitle": "Pick a subject to see which universities across Eastern Europe teach it — with tuition, admission deadlines and programs for international students.",
+    "countOnly": "{count, plural, =0 {No universities yet} one {# university} other {# universities}}",
+    "metaFieldTitle": "Study {field} in Eastern Europe — universities, tuition & deadlines | UNIREAL",
+    "metaFieldDescription": "{count} universities in Eastern Europe offer {field} programs. Compare tuition, admission deadlines and student reviews on UNIREAL.",
+    "fieldTitle": "Study {field} in Eastern Europe",
+    "fieldSubtitle": "{count, plural, =0 {Universities offering {field} are being added.} one {# university across Eastern Europe offers {field} programs.} other {# universities across Eastern Europe offer {field} programs — compare tuition, deadlines and reviews.}}",
+    "byCountry": "Universities by country",
+    "topUniversities": "Top universities for {field}",
+    "metaCountryTitle": "Study {field} in {country} — universities, tuition & admission | UNIREAL",
+    "metaCountryDescription": "{count} universities in {country} offer {field} programs for international students. Tuition, admission deadlines and reviews on UNIREAL.",
+    "countryTitle": "Study {field} in {country}",
+    "countrySubtitle": "{count, plural, =0 {Universities offering {field} in {country} are being added — check back soon.} one {# university in {country} offers {field} programs.} other {# universities in {country} offer {field} programs — sorted by UNIREAL Score.}}",
+    "emptyCountry": "No matching universities yet — our data is updated continuously, check back soon.",
+    "otherCountries": "Study {field} elsewhere",
+    "otherFields": "Other fields in {country}",
+    "allFieldsLink": "All fields of study"
+  },
+  "Rankings": {
+    "bestMetaTitle": "{count} best universities in {country} ({year}) — ranked | UNIREAL",
+    "bestMetaDescription": "The top universities in {country} in {year}, ranked by UNIREAL Score: research strength, rankings, awards and student excellence. Tuition and deadlines included.",
+    "bestTitle": "The {count} best universities in {country} ({year})",
+    "bestIntro": "Ranked by UNIREAL Score — a transparent blend of research output, international rankings, awards and student excellence. The list updates automatically as our data is refreshed.",
+    "cheapestMetaTitle": "Cheapest universities in {country} — tuition for international students | UNIREAL",
+    "cheapestMetaDescription": "The most affordable universities in {country} for international students, sorted by yearly tuition. Compare costs, programs and deadlines on UNIREAL.",
+    "cheapestTitle": "Most affordable universities in {country}",
+    "cheapestIntro": "Sorted by yearly tuition for international students, lowest first. Open a profile for current programs and admission deadlines.",
+    "perYear": "/year",
+    "scoreShort": "Score",
+    "seeAlsoBest": "Best universities in {country}",
+    "seeAlsoCheapest": "Most affordable universities in {country}",
+    "seeAlsoScholarships": "Scholarships in Eastern Europe"
+  },
+  "Quiz": {
+    "metaTitle": "University match quiz — find your university in Eastern Europe | UNIREAL",
+    "metaDescription": "Answer three quick questions — field, country and budget — and get a personalized list of Eastern European universities that fit you.",
+    "title": "Find your university in 30 seconds",
+    "subtitle": "Tell us what you want to study, where, and your budget — we'll match you with universities across Eastern Europe using live tuition and program data.",
+    "fieldLabel": "What do you want to study?",
+    "anyField": "Any field",
+    "countryLabel": "Preferred country",
+    "anyCountry": "Any country",
+    "budgetLabel": "Max yearly tuition",
+    "budgetAny": "No limit",
+    "submit": "Show my matches",
+    "searching": "Matching…",
+    "resultsTitle": "{count, plural, one {# university matches} other {# universities match}}",
+    "noResults": "No exact matches — try removing a filter or raising the budget.",
+    "saveHint": "Tap the heart on any result to save it and get application-deadline reminders."
+  },
+  "Scholarships": {
+    "metaTitle": "Scholarships for international students in Eastern Europe | UNIREAL",
+    "metaDescription": "Government and EU scholarships for studying in Poland, Hungary, Romania, Czech Republic and across Eastern Europe: Stipendium Hungaricum, NAWA, Erasmus+ and more.",
+    "title": "Scholarships in Eastern Europe",
+    "subtitle": "The major government and EU-funded scholarships for international students in the region — with official links. Most cover tuition and pay a monthly stipend.",
+    "regionWide": "Region-wide",
+    "official": "Official website",
+    "disclaimer": "Amounts, eligibility and deadlines change every year — always verify on the official website before applying.",
+    "browseTitle": "Browse study destinations"
   },
   "Nav": {
     "home": "Home",
@@ -35,7 +112,10 @@
     "questions": "Q&A",
     "account": "Account",
     "signIn": "Sign in",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "fields": "Fields",
+    "scholarships": "Scholarships",
+    "quiz": "Match quiz"
   },
   "Home": {
     "heroTitle": "Find the right university — with real student voices",
@@ -292,6 +372,7 @@
   "Footer": {
     "rights": "All rights reserved.",
     "dataCredit": "University data from Hipolabs, ROR, OpenAlex, College Scorecard and Wikidata.",
-    "studyDestinations": "Study destinations"
+    "studyDestinations": "Study destinations",
+    "explore": "Explore"
   }
 }

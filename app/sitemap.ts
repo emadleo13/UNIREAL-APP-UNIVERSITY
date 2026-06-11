@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { repo } from '@/lib/data';
 import { locales } from '@/lib/i18n/routing';
 import { STUDY_COUNTRIES } from '@/lib/data/countries';
+import { STUDY_FIELDS } from '@/lib/data/fields';
 import { listPosts } from '@/lib/blog/data';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
@@ -42,12 +43,44 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const path of ['/universities', '/calendar', '/blog', '/contact']) {
     entries.push(entry(path, { changeFrequency: 'weekly', priority: 0.8 }));
   }
+  entries.push(entry('/fields', { changeFrequency: 'weekly', priority: 0.8 }));
+  entries.push(entry('/scholarships', { changeFrequency: 'monthly', priority: 0.8 }));
+  entries.push(entry('/quiz', { changeFrequency: 'monthly', priority: 0.6 }));
 
   // Study-in country hubs — high-intent landing pages.
   for (const c of STUDY_COUNTRIES) {
     entries.push(
       entry(`/study-in/${c.slug}`, { changeFrequency: 'weekly', priority: 0.7 })
     );
+  }
+
+  // Per-country ranking pages ("10 best / cheapest universities in X").
+  for (const c of STUDY_COUNTRIES) {
+    entries.push(
+      entry(`/rankings/${c.slug}`, { changeFrequency: 'weekly', priority: 0.7 })
+    );
+    entries.push(
+      entry(`/rankings/${c.slug}/affordable`, {
+        changeFrequency: 'weekly',
+        priority: 0.7,
+      })
+    );
+  }
+
+  // Field-of-study hubs and field × country landing pages
+  // ("Study Medicine in Romania").
+  for (const f of STUDY_FIELDS) {
+    entries.push(
+      entry(`/fields/${f.slug}`, { changeFrequency: 'weekly', priority: 0.7 })
+    );
+    for (const c of STUDY_COUNTRIES) {
+      entries.push(
+        entry(`/fields/${f.slug}/${c.slug}`, {
+          changeFrequency: 'weekly',
+          priority: 0.65,
+        })
+      );
+    }
   }
 
   // University profiles.

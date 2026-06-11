@@ -21,7 +21,84 @@
     "count": "{count, plural, =0 {Nicio universitate încă} one {# universitate} other {# universități}}",
     "viewProfile": "Vezi profilul",
     "browseAll": "Vezi toate universitățile",
-    "otherDestinations": "Alte destinații de studiu"
+    "otherDestinations": "Alte destinații de studiu",
+    "linkBest": "Cele mai bune universități din {country}",
+    "linkCheapest": "Cele mai accesibile din {country}",
+    "linkScholarships": "Burse",
+    "linkQuiz": "Test de potrivire",
+    "guideTitle": "Ghid de studii în {country} pentru studenți internaționali",
+    "guideVisaQ": "Am nevoie de viză ca să studiez în {country}?",
+    "guideCostsQ": "Cât costă traiul în {country}?",
+    "guideApplicationQ": "Cum aplic la universitățile din {country}?",
+    "guideWorkQ": "Pot lucra studenții internaționali în {country}?",
+    "guideDisclaimer": "Cifrele și regulile sunt orientative și se schimbă — confirmă întotdeauna cu universitatea și sursele oficiale guvernamentale.",
+    "scholarshipsTitle": "Burse pentru {country}",
+    "scholarshipOfficial": "Site oficial",
+    "allScholarships": "Toate bursele",
+    "fieldsHeading": "Găsește universități din {country} după domeniu"
+  },
+  "Fields": {
+    "metaIndexTitle": "Domenii de studiu în Europa de Est — universități după domeniu | UNIREAL",
+    "metaIndexDescription": "Caută universități din Europa de Est după domeniu: medicină, inginerie, informatică, afaceri și altele. Taxe, termene și programe pentru studenți internaționali.",
+    "indexTitle": "Universități după domeniul de studiu",
+    "indexSubtitle": "Alege un domeniu ca să vezi care universități din Europa de Est îl predau — cu taxe, termene de admitere și programe internaționale.",
+    "countOnly": "{count, plural, =0 {Nicio universitate încă} one {# universitate} few {# universități} other {# de universități}}",
+    "metaFieldTitle": "Studiază {field} în Europa de Est — universități, taxe și termene | UNIREAL",
+    "metaFieldDescription": "{count} universități din Europa de Est oferă programe de {field}. Compară taxe, termene de admitere și recenzii pe UNIREAL.",
+    "fieldTitle": "Studiază {field} în Europa de Est",
+    "fieldSubtitle": "{count, plural, =0 {Universitățile cu programe de {field} sunt în curs de adăugare.} one {# universitate din Europa de Est oferă programe de {field}.} few {# universități din Europa de Est oferă programe de {field} — compară taxe, termene și recenzii.} other {# de universități din Europa de Est oferă programe de {field} — compară taxe, termene și recenzii.}}",
+    "byCountry": "Universități pe țări",
+    "topUniversities": "Cele mai bune universități pentru {field}",
+    "metaCountryTitle": "Studiază {field} în {country} — universități, taxe și admitere | UNIREAL",
+    "metaCountryDescription": "{count} universități din {country} oferă programe de {field} pentru studenți internaționali. Taxe, termene și recenzii pe UNIREAL.",
+    "countryTitle": "Studiază {field} în {country}",
+    "countrySubtitle": "{count, plural, =0 {Universitățile cu programe de {field} din {country} sunt în curs de adăugare.} one {# universitate din {country} oferă programe de {field}.} few {# universități din {country} oferă programe de {field} — ordonate după Scorul UNIREAL.} other {# de universități din {country} oferă programe de {field} — ordonate după Scorul UNIREAL.}}",
+    "emptyCountry": "Nicio universitate potrivită încă — datele se actualizează continuu, revino curând.",
+    "otherCountries": "Studiază {field} în altă parte",
+    "otherFields": "Alte domenii în {country}",
+    "allFieldsLink": "Toate domeniile de studiu"
+  },
+  "Rankings": {
+    "bestMetaTitle": "Cele mai bune {count} universități din {country} ({year}) | UNIREAL",
+    "bestMetaDescription": "Topul universităților din {country} în {year}, ordonate după Scorul UNIREAL: cercetare, clasamente, premii și excelența studenților. Cu taxe și termene.",
+    "bestTitle": "Cele mai bune {count} universități din {country} ({year})",
+    "bestIntro": "Ordonate după Scorul UNIREAL — un mix transparent de cercetare, clasamente internaționale, premii și excelența studenților. Lista se actualizează automat odată cu datele.",
+    "cheapestMetaTitle": "Cele mai ieftine universități din {country} — taxe pentru studenți internaționali | UNIREAL",
+    "cheapestMetaDescription": "Cele mai accesibile universități din {country} pentru studenți internaționali, ordonate după taxa anuală. Compară costuri, programe și termene pe UNIREAL.",
+    "cheapestTitle": "Cele mai accesibile universități din {country}",
+    "cheapestIntro": "Ordonate după taxa anuală pentru studenți internaționali, începând cu cea mai mică. Deschide un profil pentru programe și termene actuale.",
+    "perYear": "/an",
+    "scoreShort": "Scor",
+    "seeAlsoBest": "Cele mai bune universități din {country}",
+    "seeAlsoCheapest": "Cele mai accesibile universități din {country}",
+    "seeAlsoScholarships": "Burse în Europa de Est"
+  },
+  "Quiz": {
+    "metaTitle": "Test de potrivire — găsește-ți universitatea în Europa de Est | UNIREAL",
+    "metaDescription": "Răspunde la trei întrebări rapide — domeniu, țară și buget — și primește o listă personalizată de universități est-europene potrivite ție.",
+    "title": "Găsește-ți universitatea în 30 de secunde",
+    "subtitle": "Spune-ne ce vrei să studiezi, unde și cu ce buget — te potrivim cu universități din Europa de Est folosind date actuale despre taxe și programe.",
+    "fieldLabel": "Ce vrei să studiezi?",
+    "anyField": "Orice domeniu",
+    "countryLabel": "Țara preferată",
+    "anyCountry": "Orice țară",
+    "budgetLabel": "Taxa anuală maximă",
+    "budgetAny": "Fără limită",
+    "submit": "Arată-mi potrivirile",
+    "searching": "Se caută…",
+    "resultsTitle": "{count, plural, one {# universitate se potrivește} few {# universități se potrivesc} other {# de universități se potrivesc}}",
+    "noResults": "Nicio potrivire exactă — elimină un filtru sau mărește bugetul.",
+    "saveHint": "Apasă inima pe orice rezultat ca să-l salvezi și să primești mementouri pentru termene."
+  },
+  "Scholarships": {
+    "metaTitle": "Burse pentru studenți internaționali în Europa de Est | UNIREAL",
+    "metaDescription": "Burse guvernamentale și europene pentru studii în Polonia, Ungaria, România, Cehia și în toată Europa de Est: Stipendium Hungaricum, NAWA, Erasmus+ și altele.",
+    "title": "Burse în Europa de Est",
+    "subtitle": "Principalele burse guvernamentale și finanțate de UE pentru studenți internaționali din regiune — cu linkuri oficiale. Majoritatea acoperă taxele și oferă alocație lunară.",
+    "regionWide": "Toată regiunea",
+    "official": "Site oficial",
+    "disclaimer": "Sumele, eligibilitatea și termenele se schimbă în fiecare an — verifică întotdeauna pe site-ul oficial înainte să aplici.",
+    "browseTitle": "Vezi destinațiile de studiu"
   },
   "Nav": {
     "home": "Acasă",
@@ -35,7 +112,10 @@
     "questions": "Întrebări",
     "account": "Cont",
     "signIn": "Autentificare",
-    "signOut": "Deconectare"
+    "signOut": "Deconectare",
+    "fields": "Domenii",
+    "scholarships": "Burse",
+    "quiz": "Test potrivire"
   },
   "Home": {
     "heroTitle": "Găsește universitatea potrivită — cu voci reale ale studenților",
@@ -292,6 +372,7 @@
   "Footer": {
     "rights": "Toate drepturile rezervate.",
     "dataCredit": "Date despre universități de la Hipolabs, ROR, OpenAlex, College Scorecard și Wikidata.",
-    "studyDestinations": "Destinații de studiu"
+    "studyDestinations": "Destinații de studiu",
+    "explore": "Explorează"
   }
 }

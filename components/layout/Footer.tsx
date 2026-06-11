@@ -46,6 +46,32 @@ export function Footer() {
         </div>
 
         <div>
+          <p className="font-semibold text-foreground">{t('Footer.explore')}</p>
+          <ul className="mt-2 space-y-1.5">
+            <li>
+              <Link href="/fields" className="hover:text-primary">
+                {t('Nav.fields')}
+              </Link>
+            </li>
+            <li>
+              <Link href="/scholarships" className="hover:text-primary">
+                {t('Nav.scholarships')}
+              </Link>
+            </li>
+            <li>
+              <Link href="/quiz" className="hover:text-primary">
+                {t('Nav.quiz')}
+              </Link>
+            </li>
+            <li>
+              <Link href="/universities" className="hover:text-primary">
+                {t('Nav.universities')}
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
           <p className="font-semibold text-foreground">{t('Nav.contact')}</p>
           <ul className="mt-2 space-y-1.5">
             <li>
