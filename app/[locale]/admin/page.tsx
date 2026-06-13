@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 function StatusBadge({ status }: { status: string }) {
   const tone =
     status === 'active' || status === 'trialing'
-      ? 'green'
+      ? 'success'
       : status === 'past_due'
         ? 'primary'
         : 'muted';

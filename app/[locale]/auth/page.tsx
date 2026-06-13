@@ -46,7 +46,7 @@ export default function AuthPage() {
           <div className="mt-4 flex items-center justify-center gap-2">
             <span className="text-sm text-muted-foreground">{t('plan')}:</span>
             {sub?.isActive ? (
-              <Badge tone="green">{t('proPlan')}</Badge>
+              <Badge tone="success">{t('proPlan')}</Badge>
             ) : (
               <Badge tone="muted">{t('freePlan')}</Badge>
             )}

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
 import { Card } from '@/components/ui/Card';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { UniversityCard } from '@/components/university/UniversityCard';
 import { repo } from '@/lib/data';
 import { STUDY_COUNTRIES, countryName } from '@/lib/data/countries';
@@ -150,8 +151,16 @@ export default async function FieldPage({
         {t('topUniversities', { field: name })}
       </h2>
       {top.length === 0 ? (
-        <Card className="mt-4 p-5 text-sm text-muted-foreground">
-          {t('emptyCountry')}
+        <Card className="mt-4">
+          <EmptyState
+            icon={
+              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M22 10 12 5 2 10l10 5 10-5Z" />
+                <path d="M6 12v5c3 3 9 3 12 0v-5" />
+              </svg>
+            }
+            title={t('emptyCountry')}
+          />
         </Card>
       ) : (
         <div className="mt-4 grid gap-4 sm:grid-cols-2">

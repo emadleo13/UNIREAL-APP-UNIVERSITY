@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { Link } from '@/lib/i18n/navigation';
 import { listPosts } from '@/lib/blog/data';
 import { localeAlternates } from '@/lib/seo';
@@ -48,7 +49,17 @@ export default async function BlogPage({
       <p className="mt-1 text-muted-foreground">{t('subtitle')}</p>
 
       {posts.length === 0 ? (
-        <p className="mt-8 text-muted-foreground">{t('empty')}</p>
+        <EmptyState
+          className="mt-8"
+          icon={
+            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M4 19.5V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v13.5" />
+              <path d="M4 19.5A1.5 1.5 0 0 1 5.5 18h13a1.5 1.5 0 0 1 1.5 1.5v0a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19.5Z" />
+              <path d="M8 8h8M8 11h8" />
+            </svg>
+          }
+          title={t('empty')}
+        />
       ) : (
         <div className="mt-6 space-y-4">
           {posts.map((p) => (

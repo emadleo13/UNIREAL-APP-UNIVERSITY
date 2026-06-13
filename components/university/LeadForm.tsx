@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { FormField } from '@/components/ui/FormField';
 import { Input, Select, Textarea } from '@/components/ui/Input';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { submitLead } from '@/app/lead-actions';
@@ -86,45 +87,38 @@ export function LeadForm({
 
       <form onSubmit={submit} className="mt-4 space-y-3">
         <div className="grid gap-3 sm:grid-cols-2">
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder={t('name')}
-            required
-          />
-          <Input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={t('email')}
-            required
-          />
+          <FormField label={t('name')}>
+            <Input value={name} onChange={(e) => setName(e.target.value)} required />
+          </FormField>
+          <FormField label={t('email')}>
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </FormField>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Select value={level} onChange={(e) => setLevel(e.target.value)}>
-            <option value="">{t('level')}</option>
-            <option value="bachelor">{t('levelBachelor')}</option>
-            <option value="master">{t('levelMaster')}</option>
-            <option value="phd">{t('levelPhd')}</option>
-            <option value="other">{t('levelOther')}</option>
-          </Select>
-          <Input
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-            placeholder={t('country')}
-          />
+          <FormField label={t('level')}>
+            <Select value={level} onChange={(e) => setLevel(e.target.value)}>
+              <option value="">—</option>
+              <option value="bachelor">{t('levelBachelor')}</option>
+              <option value="master">{t('levelMaster')}</option>
+              <option value="phd">{t('levelPhd')}</option>
+              <option value="other">{t('levelOther')}</option>
+            </Select>
+          </FormField>
+          <FormField label={t('country')}>
+            <Input value={country} onChange={(e) => setCountry(e.target.value)} />
+          </FormField>
         </div>
-        <Input
-          value={field}
-          onChange={(e) => setField(e.target.value)}
-          placeholder={t('field')}
-        />
-        <Textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder={t('message')}
-          rows={2}
-        />
+        <FormField label={t('field')}>
+          <Input value={field} onChange={(e) => setField(e.target.value)} />
+        </FormField>
+        <FormField label={t('message')}>
+          <Textarea value={message} onChange={(e) => setMessage(e.target.value)} rows={2} />
+        </FormField>
 
         <label className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
           <input

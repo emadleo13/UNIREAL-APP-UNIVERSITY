@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/lib/i18n/navigation';
 import { UniversityCard } from '@/components/university/UniversityCard';
 import { SearchFilters } from '@/components/university/SearchFilters';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { repo } from '@/lib/data';
 import { SITE_URL, localeAlternates } from '@/lib/seo';
 
@@ -99,7 +100,16 @@ export default async function UniversitiesPage({
       </p>
 
       {items.length === 0 ? (
-        <p className="mt-12 text-center text-muted-foreground">{t('noResults')}</p>
+        <EmptyState
+          className="mt-12"
+          icon={
+            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <circle cx="11" cy="11" r="7" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          }
+          title={t('noResults')}
+        />
       ) : (
         <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {items.map((u) => (

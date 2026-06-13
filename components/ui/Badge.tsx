@@ -1,12 +1,12 @@
 import type { HTMLAttributes } from 'react';
 
 type Props = HTMLAttributes<HTMLSpanElement> & {
-  tone?: 'primary' | 'green' | 'muted';
+  tone?: 'primary' | 'success' | 'muted';
 };
 
 const tones = {
   primary: 'bg-accent text-accent-foreground',
-  green: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300',
+  success: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300',
   muted: 'bg-muted text-muted-foreground',
 };
 
@@ -21,7 +21,7 @@ export function Badge({ tone = 'muted', className = '', ...props }: Props) {
 
 export function VerifiedBadge({ label }: { label: string }) {
   return (
-    <Badge tone="green" title={label}>
+    <Badge tone="success" title={label}>
       <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5" aria-hidden>
         <path
           fillRule="evenodd"

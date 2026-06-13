@@ -193,7 +193,7 @@ export function Calendar({ events }: { events: AdmissionEvent[] }) {
               </Link>
               <div className="mt-0.5 flex items-center gap-2 text-muted-foreground">
                 <span>{fmtEventDate(e.date)}</span>
-                <Badge tone={e.kind === 'international' ? 'green' : 'primary'}>
+                <Badge tone={e.kind === 'international' ? 'success' : 'primary'}>
                   {e.kind === 'international' ? t('international') : t('domestic')}
                 </Badge>
               </div>

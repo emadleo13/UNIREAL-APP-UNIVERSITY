@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { Link } from '@/lib/i18n/navigation';
 import { repo } from '@/lib/data';
 import { universityName } from '@/lib/data/display';
@@ -30,13 +31,26 @@ export default async function ComparePage({
     return (
       <div className="mx-auto max-w-4xl px-4 py-16 text-center">
         <h1 className="text-2xl font-bold text-foreground">{t('title')}</h1>
-        <p className="mt-2 text-muted-foreground">{t('empty')}</p>
-        <Link
-          href="/universities"
-          className="mt-4 inline-block text-sm font-medium text-primary hover:opacity-80"
-        >
-          ← {t('browse')}
-        </Link>
+        <EmptyState
+          className="mt-2"
+          icon={
+            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <circle cx="18" cy="18" r="3" />
+              <circle cx="6" cy="6" r="3" />
+              <path d="M13 6h3a2 2 0 0 1 2 2v7" />
+              <path d="M11 18H8a2 2 0 0 1-2-2V9" />
+            </svg>
+          }
+          title={t('empty')}
+          action={
+            <Link
+              href="/universities"
+              className="text-sm font-medium text-primary hover:opacity-80"
+            >
+              ← {t('browse')}
+            </Link>
+          }
+        />
       </div>
     );
   }

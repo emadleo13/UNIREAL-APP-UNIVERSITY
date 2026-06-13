@@ -83,7 +83,7 @@ export default async function ScholarshipsPage({
                 <h2 className="font-semibold text-foreground">{s.name}</h2>
                 <p className="mt-0.5 text-sm text-muted-foreground">{s.provider}</p>
               </div>
-              <Badge tone={s.countrySlugs.length === 0 ? 'green' : 'muted'}>
+              <Badge tone={s.countrySlugs.length === 0 ? 'success' : 'muted'}>
                 {s.countrySlugs.length === 0
                   ? t('regionWide')
                   : countryLabel(s.countrySlugs)}
