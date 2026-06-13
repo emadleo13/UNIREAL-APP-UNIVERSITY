@@ -34,7 +34,7 @@ export function Stars({ value, onChange, size = 18 }: Props) {
             type="button"
             onClick={() => onChange!(star)}
             aria-label={`${star}`}
-            className="p-0.5"
+            className="rounded p-2"
           >
             {Star}
           </button>

@@ -123,9 +123,14 @@ export default async function HomePage({
                 {t('subscribeBody')}
               </p>
               <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
-                <li>✓ {t('subscribePerk1')}</li>
-                <li>✓ {t('subscribePerk2')}</li>
-                <li>✓ {t('subscribePerk3')}</li>
+                {[t('subscribePerk1'), t('subscribePerk2'), t('subscribePerk3')].map((perk) => (
+                  <li key={perk} className="flex items-center gap-2">
+                    <svg viewBox="0 0 24 24" className="h-4 w-4 flex-none text-primary" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    {perk}
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="flex-none">

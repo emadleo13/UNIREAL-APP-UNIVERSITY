@@ -28,7 +28,7 @@ export default async function ContactPage({
           href={SUPPORT_TELEGRAM_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="group block"
+          className="group block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <Card className="flex h-full items-start gap-3 p-5 transition-all hover:border-primary hover:shadow-md">
             <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-accent text-accent-foreground">
@@ -48,7 +48,7 @@ export default async function ContactPage({
           </Card>
         </a>
 
-        <a href={SUPPORT_EMAIL_URL} className="group block">
+        <a href={SUPPORT_EMAIL_URL} className="group block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
           <Card className="flex h-full items-start gap-3 p-5 transition-all hover:border-primary hover:shadow-md">
             <span className="flex h-10 w-10 flex-none items-center justify-center rounded-full bg-accent text-accent-foreground">
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

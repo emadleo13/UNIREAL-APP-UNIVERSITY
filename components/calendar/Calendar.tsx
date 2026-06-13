@@ -136,11 +136,14 @@ export function Calendar({ events }: { events: AdmissionEvent[] }) {
             const iso = isoDate(view.year, view.month, day);
             const dayEvents = eventsByDate.get(iso);
             const isToday = iso === todayIso;
+            const eventNames = dayEvents?.map((e) => e.universityName).join(', ');
             return (
               <div
                 key={iso}
-                title={dayEvents?.map((e) => e.universityName).join(', ')}
-                className={`flex min-h-[3rem] flex-col items-center rounded-md border p-1 text-sm ${
+                tabIndex={dayEvents ? 0 : -1}
+                title={eventNames}
+                aria-label={eventNames ? `${fmtNum(day)}: ${eventNames}` : undefined}
+                className={`flex min-h-[3rem] flex-col items-center rounded-md border p-1 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                   isToday
                     ? 'border-primary bg-accent font-bold text-primary'
                     : 'border-transparent text-foreground hover:border-border'

@@ -255,7 +255,7 @@ export default async function UniversityDetailPage({
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={uni.logoUrl}
-            alt=""
+            alt={name}
             className="h-16 w-16 flex-none rounded-lg object-contain"
           />
         ) : (
@@ -332,7 +332,14 @@ export default async function UniversityDetailPage({
                     {Math.round(c.value)}
                   </dd>
                 </div>
-                <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                <div
+                  className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-muted"
+                  role="progressbar"
+                  aria-valuenow={Math.round(c.value)}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={t(SCORE_LABEL_KEY[c.key])}
+                >
                   <div
                     className="h-full rounded-full bg-primary"
                     style={{ width: `${Math.round(c.value)}%` }}

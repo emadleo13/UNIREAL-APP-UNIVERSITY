@@ -21,7 +21,7 @@ export function FavoriteButton({
       aria-pressed={active}
       aria-label={active ? t('remove') : t('save')}
       title={active ? t('remove') : t('save')}
-      className={`inline-flex items-center justify-center rounded-full p-1.5 transition-colors ${
+      className={`inline-flex items-center justify-center rounded-full p-2.5 transition-colors ${
         active
           ? 'text-rose-500'
           : 'text-muted-foreground hover:text-rose-500'
