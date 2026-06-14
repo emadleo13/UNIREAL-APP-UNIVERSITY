@@ -7,6 +7,26 @@ import { listPosts } from '@/lib/blog/data';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
+// Supabase/PostgREST caps each response at 1000 rows regardless of the
+// requested range, so the full catalogue must be fetched page by page.
+const DB_PAGE_SIZE = 1000;
+
+// Regenerate at most once a day instead of on every crawler hit.
+export const revalidate = 86400;
+
+async function listAllUniversities() {
+  const all: Awaited<ReturnType<typeof repo.listUniversities>>['items'] = [];
+  for (let page = 1; ; page++) {
+    const { items, total } = await repo.listUniversities({
+      page,
+      pageSize: DB_PAGE_SIZE,
+    });
+    all.push(...items);
+    if (items.length < DB_PAGE_SIZE || all.length >= total) break;
+  }
+  return all;
+}
+
 function withLocales(path: string) {
   const languages: Record<string, string> = {};
   for (const loc of locales) languages[loc] = `${SITE_URL}/${loc}${path}`;
@@ -31,8 +51,8 @@ function entry(
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [{ items }, posts] = await Promise.all([
-    repo.listUniversities({ page: 1, pageSize: 100000 }),
+  const [items, posts] = await Promise.all([
+    listAllUniversities(),
     listPosts(1000),
   ]);
 
