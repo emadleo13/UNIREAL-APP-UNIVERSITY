@@ -1,9 +1,9 @@
 import type { MetadataRoute } from 'next';
-import { repo } from '@/lib/data';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { locales } from '@/lib/i18n/routing';
 import { STUDY_COUNTRIES } from '@/lib/data/countries';
 import { STUDY_FIELDS } from '@/lib/data/fields';
-import { listPosts } from '@/lib/blog/data';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
@@ -12,19 +12,57 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 const DB_PAGE_SIZE = 1000;
 
 // Regenerate at most once a day instead of on every crawler hit.
+//
+// IMPORTANT: this `revalidate` only takes effect while the route stays
+// statically renderable. The data below is therefore read through the
+// service-role ADMIN client, NOT the cookie-bound server client — reading
+// `cookies()` would opt the whole sitemap into dynamic rendering and silently
+// disable this ISR cache (which is exactly what used to make the 5.4 MB sitemap
+// regenerate on every request and tip the uptime monitor over its threshold).
 export const revalidate = 86400;
 
-async function listAllUniversities() {
-  const all: Awaited<ReturnType<typeof repo.listUniversities>>['items'] = [];
-  for (let page = 1; ; page++) {
-    const { items, total } = await repo.listUniversities({
-      page,
-      pageSize: DB_PAGE_SIZE,
-    });
-    all.push(...items);
-    if (items.length < DB_PAGE_SIZE || all.length >= total) break;
+type SlugRow = { slug: string; updated_at?: string | null; created_at?: string | null };
+
+/** All university slugs + last-modified, paged through with the admin client. */
+async function listAllUniversitySlugs(): Promise<
+  { slug: string; updatedAt?: string }[]
+> {
+  if (!isSupabaseConfigured()) return [];
+  const admin = createSupabaseAdminClient();
+  const all: { slug: string; updatedAt?: string }[] = [];
+  for (let page = 0; ; page++) {
+    const from = page * DB_PAGE_SIZE;
+    const { data, error } = await admin
+      .from('universities')
+      .select('slug, updated_at')
+      .order('slug', { ascending: true })
+      .range(from, from + DB_PAGE_SIZE - 1);
+    if (error) throw error;
+    const rows = (data ?? []) as SlugRow[];
+    for (const r of rows) {
+      if (r.slug) all.push({ slug: r.slug, updatedAt: r.updated_at ?? undefined });
+    }
+    if (rows.length < DB_PAGE_SIZE) break;
   }
   return all;
+}
+
+/** Published blog post slugs + creation date, via the admin client. */
+async function listPublishedPostSlugs(): Promise<
+  { slug: string; createdAt?: string }[]
+> {
+  if (!isSupabaseConfigured()) return [];
+  const admin = createSupabaseAdminClient();
+  const { data, error } = await admin
+    .from('posts')
+    .select('slug, created_at')
+    .eq('published', true)
+    .order('created_at', { ascending: false })
+    .limit(1000);
+  if (error) throw error;
+  return ((data ?? []) as SlugRow[])
+    .filter((r) => r.slug)
+    .map((r) => ({ slug: r.slug, createdAt: r.created_at ?? undefined }));
 }
 
 function withLocales(path: string) {
@@ -51,9 +89,9 @@ function entry(
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [items, posts] = await Promise.all([
-    listAllUniversities(),
-    listPosts(1000),
+  const [universities, posts] = await Promise.all([
+    listAllUniversitySlugs(),
+    listPublishedPostSlugs(),
   ]);
 
   const entries: MetadataRoute.Sitemap = [];
@@ -104,7 +142,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // University profiles.
-  for (const uni of items) {
+  for (const uni of universities) {
     entries.push(
       entry(`/universities/${uni.slug}`, {
         changeFrequency: 'monthly',
