@@ -17,3 +17,24 @@ export function localeAlternates(path: string, locale: string) {
     languages,
   };
 }
+
+/**
+ * Turn a unique source string (e.g. an AI-enriched profile blurb) into a
+ * search-friendly meta description: whitespace-collapsed and truncated to ~155
+ * chars on a word boundary. Returns `undefined` when there is no usable text so
+ * callers can fall back to a keyword template — this is what lets each profile
+ * carry a distinct description instead of one shared, duplicate-looking line.
+ */
+export function clampDescription(
+  text: string | undefined | null,
+  max = 155
+): string | undefined {
+  if (!text) return undefined;
+  const clean = text.replace(/\s+/g, ' ').trim();
+  if (!clean) return undefined;
+  if (clean.length <= max) return clean;
+  const slice = clean.slice(0, max);
+  const lastSpace = slice.lastIndexOf(' ');
+  const cut = lastSpace > max * 0.6 ? slice.slice(0, lastSpace) : slice;
+  return `${cut.replace(/[\s.,;:!?-]+$/, '')}…`;
+}

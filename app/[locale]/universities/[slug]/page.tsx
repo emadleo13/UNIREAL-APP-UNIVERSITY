@@ -14,7 +14,7 @@ import { getEnrichedUniversity } from '@/lib/data/enrich-on-view';
 import { universityName, universityDescription } from '@/lib/data/display';
 import { computeUniversityScore, type ScoreComponent } from '@/lib/data/score';
 import { STUDY_COUNTRIES, countryName } from '@/lib/data/countries';
-import { SITE_URL, localeAlternates } from '@/lib/seo';
+import { SITE_URL, localeAlternates, clampDescription } from '@/lib/seo';
 import { Link } from '@/lib/i18n/navigation';
 
 // Allow time for the first-view AI enrichment to complete server-side so the
@@ -34,9 +34,16 @@ export async function generateMetadata({
   const place = [uni.city, uni.country].filter(Boolean).join(', ');
   // Keyword-rich title so "<name> <city>" queries match; template adds the brand.
   const title = place ? `${name} — ${place}` : name;
-  const description = place
-    ? t('universityDescription', { name, place })
-    : t('universityDescriptionNoPlace', { name });
+  // Prefer the unique AI-enriched blurb so each of the ~10k profiles has a
+  // distinct meta description. The keyword template is only a fallback for
+  // not-yet-enriched records — using it everywhere made every page look like
+  // duplicate/thin content to Google (a likely driver of "discovered, not
+  // indexed"). Fall back to the template when there's no enriched text yet.
+  const description =
+    clampDescription(universityDescription(uni, locale)) ??
+    (place
+      ? t('universityDescription', { name, place })
+      : t('universityDescriptionNoPlace', { name }));
 
   return {
     title,
