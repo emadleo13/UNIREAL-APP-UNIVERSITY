@@ -22,10 +22,12 @@ import {
 
 /**
  * Free-tier models with Google Search grounding, in preference order. The
- * 2.5 model is better but its free pool is often congested (503) — fall back
- * to 2.0-flash instead of failing the university.
+ * 2.5 model is well-tuned for this extraction task but its free pool is often
+ * congested (503/429) — fall back to 3.6-flash instead of failing the
+ * university. (The old 2.0-flash fallback was retired by Google — its endpoint
+ * now 404s with "use models/gemini-3.6-flash".)
  */
-export const GEMINI_ENRICH_MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash'];
+export const GEMINI_ENRICH_MODELS = ['gemini-2.5-flash', 'gemini-3.6-flash'];
 
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 
@@ -94,9 +96,9 @@ async function callGemini(
       generationConfig: {
         temperature: 0.2,
         maxOutputTokens: 4096,
-        // 2.5 models think by default and the thoughts eat the output budget,
+        // 2.5+ models think by default and the thoughts eat the output budget,
         // leaving an empty answer — disable thinking for this extraction task.
-        ...(model.startsWith('gemini-2.5')
+        ...(model.startsWith('gemini-2.5') || model.startsWith('gemini-3')
           ? { thinkingConfig: { thinkingBudget: 0 } }
           : {}),
       },
