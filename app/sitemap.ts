@@ -3,7 +3,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { locales } from '@/lib/i18n/routing';
 import { STUDY_COUNTRIES } from '@/lib/data/countries';
-import { STUDY_FIELDS } from '@/lib/data/fields';
+import { STUDY_FIELDS, universityMatchesField } from '@/lib/data/fields';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
@@ -21,30 +21,78 @@ const DB_PAGE_SIZE = 1000;
 // regenerate on every request and tip the uptime monitor over its threshold).
 export const revalidate = 86400;
 
-type SlugRow = { slug: string; updated_at?: string | null; created_at?: string | null };
+type SlugRow = {
+  slug: string;
+  updated_at?: string | null;
+  created_at?: string | null;
+  country?: string | null;
+  programs?: string[] | null;
+};
 
-/** All university slugs + last-modified, paged through with the admin client. */
-async function listAllUniversitySlugs(): Promise<
-  { slug: string; updatedAt?: string }[]
-> {
+type UniversityRow = {
+  slug: string;
+  updatedAt?: string;
+  country?: string;
+  programs?: string[];
+};
+
+/**
+ * All universities (slug + last-modified, plus country + programs so field
+ * coverage can be computed in-memory), paged through with the admin client.
+ */
+async function listAllUniversities(): Promise<UniversityRow[]> {
   if (!isSupabaseConfigured()) return [];
   const admin = createSupabaseAdminClient();
-  const all: { slug: string; updatedAt?: string }[] = [];
+  const all: UniversityRow[] = [];
   for (let page = 0; ; page++) {
     const from = page * DB_PAGE_SIZE;
     const { data, error } = await admin
       .from('universities')
-      .select('slug, updated_at')
+      .select('slug, updated_at, country, programs')
       .order('slug', { ascending: true })
       .range(from, from + DB_PAGE_SIZE - 1);
     if (error) throw error;
     const rows = (data ?? []) as SlugRow[];
     for (const r of rows) {
-      if (r.slug) all.push({ slug: r.slug, updatedAt: r.updated_at ?? undefined });
+      if (r.slug)
+        all.push({
+          slug: r.slug,
+          updatedAt: r.updated_at ?? undefined,
+          country: r.country ?? undefined,
+          programs: r.programs ?? undefined,
+        });
     }
     if (rows.length < DB_PAGE_SIZE) break;
   }
   return all;
+}
+
+/**
+ * Which field / field×country landing pages actually have ≥1 matching
+ * university (only enriched rows carry `programs`, and only matched rows are
+ * shown) — so the sitemap advertises only non-empty pages. Empty combos are
+ * noindex at the page level (see fields/[field]*), so omitting them here just
+ * avoids "submitted URL marked noindex" notices in Search Console.
+ */
+function computeFieldCoverage(unis: UniversityRow[]) {
+  const countryToStudy = new Map<string, string>();
+  for (const c of STUDY_COUNTRIES)
+    for (const name of c.match) countryToStudy.set(name, c.slug);
+
+  const fieldCountry = new Map<string, Set<string>>(); // fieldSlug → studyCountry slugs
+  const fieldAny = new Set<string>(); // fieldSlug with ≥1 match anywhere
+  for (const f of STUDY_FIELDS) fieldCountry.set(f.slug, new Set());
+
+  for (const u of unis) {
+    if (!u.programs?.length) continue;
+    const studySlug = u.country ? countryToStudy.get(u.country) : undefined;
+    for (const f of STUDY_FIELDS) {
+      if (!universityMatchesField(u, f)) continue;
+      fieldAny.add(f.slug);
+      if (studySlug) fieldCountry.get(f.slug)!.add(studySlug);
+    }
+  }
+  return { fieldCountry, fieldAny };
 }
 
 /** Published blog post slugs + creation date, via the admin client. */
@@ -90,9 +138,10 @@ function entry(
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [universities, posts] = await Promise.all([
-    listAllUniversitySlugs(),
+    listAllUniversities(),
     listPublishedPostSlugs(),
   ]);
+  const { fieldCountry, fieldAny } = computeFieldCoverage(universities);
 
   const entries: MetadataRoute.Sitemap = [];
 
@@ -126,12 +175,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // Field-of-study hubs and field × country landing pages
-  // ("Study Medicine in Romania").
+  // ("Study Medicine in Romania") — only the ones that currently have matching
+  // universities; empty combos are noindex, so listing them would only add
+  // "submitted URL marked noindex" notices. They rejoin the sitemap on the next
+  // daily rebuild once enrichment gives them a match.
   for (const f of STUDY_FIELDS) {
-    entries.push(
-      entry(`/fields/${f.slug}`, { changeFrequency: 'weekly', priority: 0.7 })
-    );
+    if (fieldAny.has(f.slug)) {
+      entries.push(
+        entry(`/fields/${f.slug}`, { changeFrequency: 'weekly', priority: 0.7 })
+      );
+    }
+    const coveredCountries = fieldCountry.get(f.slug) ?? new Set<string>();
     for (const c of STUDY_COUNTRIES) {
+      if (!coveredCountries.has(c.slug)) continue;
       entries.push(
         entry(`/fields/${f.slug}/${c.slug}`, {
           changeFrequency: 'weekly',
