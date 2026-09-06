@@ -50,6 +50,11 @@ export async function generateMetadata({
   return {
     title: { absolute: title },
     description,
+    // No matching universities yet → empty page reads as a soft 404 to Google.
+    // noindex,follow keeps it out of the index (still crawling its links) until
+    // enrichment fills it, then it becomes indexable automatically.
+    robots:
+      data.matches.length === 0 ? { index: false, follow: true } : undefined,
     alternates: localeAlternates(`/fields/${fieldSlug}`, locale),
     openGraph: {
       title,

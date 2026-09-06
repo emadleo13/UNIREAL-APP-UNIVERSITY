@@ -55,6 +55,12 @@ export async function generateMetadata({
   return {
     title: { absolute: title },
     description,
+    // No matching universities yet → the page renders an empty state, which
+    // Google treats as a soft 404. noindex,follow keeps it out of the index
+    // (crawling its cross-links) until enrichment fills it, at which point it
+    // becomes indexable automatically. Populated combos stay indexable.
+    robots:
+      data.matches.length === 0 ? { index: false, follow: true } : undefined,
     alternates: localeAlternates(`/fields/${fieldSlug}/${countrySlug}`, locale),
     openGraph: {
       title,
