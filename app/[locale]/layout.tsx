@@ -11,6 +11,7 @@ import { BottomNav } from '@/components/layout/BottomNav';
 import { CompareBar } from '@/components/university/CompareBar';
 import { ChatWidget } from '@/components/chat/ChatWidget';
 import { ServiceWorkerRegister } from '@/components/ServiceWorkerRegister';
+import { brandJsonLd } from '@/lib/seo';
 import '../globals.css';
 
 export function generateStaticParams() {
@@ -65,6 +66,14 @@ export default async function LocaleLayout({
   }
   setRequestLocale(locale);
   const messages = await getMessages();
+  const tBrand = await getTranslations('Brand');
+
+  // Brand entity graph (Organization + WebSite) on every page — see brandJsonLd.
+  const brandLd = brandJsonLd({
+    locale,
+    name: tBrand('name'),
+    tagline: tBrand('tagline'),
+  });
 
   return (
     <html lang={locale} dir={dirForLocale(locale)} suppressHydrationWarning>
@@ -73,6 +82,10 @@ export default async function LocaleLayout({
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('unireal.theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark');}}catch(e){}})();`,
           }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(brandLd) }}
         />
       </head>
       <body className="flex min-h-screen flex-col">

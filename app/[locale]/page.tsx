@@ -45,46 +45,6 @@ export default async function HomePage({
   setRequestLocale(locale);
   const t = await getTranslations('Home');
   const tStudy = await getTranslations('StudyIn');
-  const tSeo = await getTranslations('Seo');
-
-  // Brand-entity structured data. Tells Google that "UNIREAL" is an
-  // organization published at this domain (a Knowledge-Graph signal that helps
-  // the site rank for its own name against same-name entities like the UniReal
-  // AI paper / UniRely), and exposes a sitelinks search box via WebSite
-  // SearchAction. Fill SOCIAL_PROFILES once the official accounts exist so
-  // `sameAs` can link the brand to them.
-  const orgId = `${SITE_URL}/#organization`;
-  const SOCIAL_PROFILES: string[] = [];
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'Organization',
-        '@id': orgId,
-        name: 'UNIREAL',
-        url: SITE_URL,
-        logo: `${SITE_URL}/logo-unireal.png`,
-        description: tSeo('homeDescription'),
-        ...(SOCIAL_PROFILES.length ? { sameAs: SOCIAL_PROFILES } : {}),
-      },
-      {
-        '@type': 'WebSite',
-        '@id': `${SITE_URL}/#website`,
-        name: 'UNIREAL',
-        url: SITE_URL,
-        inLanguage: locale,
-        publisher: { '@id': orgId },
-        potentialAction: {
-          '@type': 'SearchAction',
-          target: {
-            '@type': 'EntryPoint',
-            urlTemplate: `${SITE_URL}/${locale}/universities?q={search_term_string}`,
-          },
-          'query-input': 'required name=search_term_string',
-        },
-      },
-    ],
-  };
 
   // Homepage focuses on Eastern-European universities.
   const { items: featured } = await repo.listUniversities({
@@ -101,10 +61,6 @@ export default async function HomePage({
 
   return (
     <div>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
       <section className="relative overflow-hidden">
         {/* Hero backdrop: the Radcliffe Camera, University of Oxford (Unsplash). */}
         <Image

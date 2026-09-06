@@ -19,6 +19,56 @@ export function localeAlternates(path: string, locale: string) {
 }
 
 /**
+ * Site-wide brand entity graph (Organization + WebSite). Emitted on EVERY page
+ * via the locale layout so Google consolidates the brand as one organization at
+ * this domain — a Knowledge-Graph signal that helps the site rank for its own
+ * name against same-name entities (the UniReal AI paper, the UniRely platform).
+ * Every page asserting the same `@id` is how the entity is reinforced sitewide.
+ * The WebSite SearchAction exposes a sitelinks search box (Google reads it from
+ * the homepage). Fill `socialProfiles` once the official accounts exist so
+ * `sameAs` links the brand to them.
+ */
+export function brandJsonLd(opts: {
+  locale: string;
+  name: string;
+  tagline: string;
+}) {
+  const { locale, name, tagline } = opts;
+  const orgId = `${SITE_URL}/#organization`;
+  const socialProfiles: string[] = [];
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': orgId,
+        name,
+        url: SITE_URL,
+        logo: `${SITE_URL}/logo-unireal.png`,
+        description: tagline,
+        ...(socialProfiles.length ? { sameAs: socialProfiles } : {}),
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${SITE_URL}/#website`,
+        name,
+        url: SITE_URL,
+        inLanguage: locale,
+        publisher: { '@id': orgId },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${SITE_URL}/${locale}/universities?q={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
+        },
+      },
+    ],
+  };
+}
+
+/**
  * Turn a unique source string (e.g. an AI-enriched profile blurb) into a
  * search-friendly meta description: whitespace-collapsed and truncated to ~155
  * chars on a word boundary. Returns `undefined` when there is no usable text so
