@@ -29,8 +29,13 @@ export const maxDuration = 300;
  * Protected by CRON_SECRET, like the other cron routes.
  */
 
-/** How many universities one run enriches. Kept under maxDuration. */
-const DEFAULT_BATCH = 25;
+/**
+ * Upper bound on how many universities one run fetches. The real limiter is
+ * TIME_BUDGET_MS below: a grounded research call takes roughly 15-25s, so a
+ * 240s window fits about 10-15. Fetching a few more than that costs one cheap
+ * query and lets a fast run use the whole window instead of finishing early.
+ */
+const DEFAULT_BATCH = 15;
 /** Stop starting new work this close to the function timeout (ms). */
 const TIME_BUDGET_MS = 240_000;
 /**

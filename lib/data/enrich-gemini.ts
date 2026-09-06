@@ -36,13 +36,44 @@ const RETRY_DELAYS_MS = [15_000, 45_000];
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
+/**
+ * Per-model cooldown, shared across calls in one process.
+ *
+ * The free tier limits requests per minute per model, and 429 responses carry
+ * a `retryDelay`. Without remembering that, a bulk run re-discovers the same
+ * throttle for every university: two retries (15s + 45s) on the throttled
+ * model before falling through to the one that works — a minute of dead wait
+ * per record, which is what made a 5-university run exceed five minutes.
+ * Recording when a model becomes usable again lets the rest of the batch skip
+ * straight to a model that can answer.
+ */
+const modelCooldownUntil = new Map<string, number>();
+
+function isCoolingDown(model: string): boolean {
+  const until = modelCooldownUntil.get(model);
+  return until !== undefined && Date.now() < until;
+}
+
+/** Google returns `retryDelay: "42.1s"` in the 429 body; fall back to 60s. */
+function parseRetryDelayMs(errText: string): number {
+  const m = errText.match(/"retryDelay":\s*"([\d.]+)s"/);
+  const secs = m ? Number(m[1]) : NaN;
+  return Number.isFinite(secs) ? Math.ceil(secs * 1000) : 60_000;
+}
+
+function markCooldown(model: string, errText: string) {
+  const ms = parseRetryDelayMs(errText);
+  modelCooldownUntil.set(model, Date.now() + ms);
+  console.log(`  · ${model} rate-limited — skipping it for ${Math.round(ms / 1000)}s`);
+}
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 async function callModel(
   apiKey: string,
   model: string,
   body: unknown
-): Promise<{ text: string | null; transient: boolean }> {
+): Promise<{ text: string | null; transient: boolean; rateLimited: boolean }> {
   for (let attempt = 0; ; attempt++) {
     const res = await fetch(`${API_BASE}/${model}:generateContent`, {
       method: 'POST',
@@ -55,6 +86,14 @@ async function callModel(
 
     // 429 = rate limit, 503 = free-pool congestion — both worth retrying.
     if ((res.status === 429 || res.status === 503) && attempt < RETRY_DELAYS_MS.length) {
+      // A 429 on the FIRST attempt means the per-minute pool is spent, not that
+      // this one request was unlucky: stop and let the caller try another model
+      // rather than sleeping a minute to ask the same exhausted pool again.
+      if (res.status === 429 && attempt === 0) {
+        const errText = await res.text().catch(() => '');
+        markCooldown(model, errText);
+        return { text: null, transient: true, rateLimited: true };
+      }
       console.log(
         `  · ${model} ${res.status} — waiting ${RETRY_DELAYS_MS[attempt] / 1000}s…`
       );
@@ -65,17 +104,22 @@ async function callModel(
     if (!res.ok) {
       const errText = await res.text().catch(() => '');
       console.error(`Gemini ${model} error ${res.status}: ${errText.slice(0, 200)}`);
-      return { text: null, transient: res.status === 429 || res.status === 503 };
+      if (res.status === 429) markCooldown(model, errText);
+      return {
+        text: null,
+        transient: res.status === 429 || res.status === 503,
+        rateLimited: res.status === 429,
+      };
     }
 
     const data: any = await res.json();
     const parts = data?.candidates?.[0]?.content?.parts;
-    if (!Array.isArray(parts)) return { text: null, transient: false };
+    if (!Array.isArray(parts)) return { text: null, transient: false, rateLimited: false };
     const text = parts
       .map((p: any) => (typeof p?.text === 'string' ? p.text : ''))
       .join('\n')
       .trim();
-    return { text: text || null, transient: false };
+    return { text: text || null, transient: false, rateLimited: false };
   }
 }
 
@@ -90,7 +134,23 @@ async function callGemini(
     tools: [{ google_search: {} }],
   };
 
-  for (const model of GEMINI_ENRICH_MODELS) {
+  const usable = GEMINI_ENRICH_MODELS.filter((m) => !isCoolingDown(m));
+  // Everything is throttled — wait out the shortest cooldown rather than
+  // failing the university outright.
+  if (usable.length === 0) {
+    const soonest = Math.min(
+      ...GEMINI_ENRICH_MODELS.map((m) => modelCooldownUntil.get(m) ?? 0)
+    );
+    const waitMs = Math.max(0, soonest - Date.now());
+    if (waitMs > 0 && waitMs <= 90_000) {
+      console.log(`  · all models cooling down — waiting ${Math.round(waitMs / 1000)}s`);
+      await sleep(waitMs);
+    } else {
+      return null;
+    }
+  }
+
+  for (const model of usable.length ? usable : GEMINI_ENRICH_MODELS) {
     const body = {
       ...baseBody,
       generationConfig: {
