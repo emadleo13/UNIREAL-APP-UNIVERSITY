@@ -11,6 +11,12 @@ import { EASTERN_EUROPE_COUNTRIES } from '@/lib/data/regions';
 import { STUDY_COUNTRIES, countryName } from '@/lib/data/countries';
 import { SITE_URL, localeAlternates } from '@/lib/seo';
 
+// Cache the homepage (ISR) so crawlers hit prebuilt HTML instead of a live DB
+// read on every request — faster, and it avoids the intermittent Googlebot
+// "crawl failed" timeouts a fully-dynamic homepage can cause. Works because the
+// featured list is fetched with `noAuth` (no cookies → statically renderable).
+export const revalidate = 3600;
+
 export async function generateMetadata({
   params,
 }: {
@@ -51,6 +57,7 @@ export default async function HomePage({
     countries: EASTERN_EUROPE_COUNTRIES,
     page: 1,
     pageSize: 6,
+    noAuth: true,
   });
 
   const features = [

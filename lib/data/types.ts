@@ -177,6 +177,13 @@ export type ListUniversitiesOptions = {
   sort?: UniversitySort;
   page?: number;
   pageSize?: number;
+  /**
+   * Read via the service-role (cookie-free) client instead of the cookie-bound
+   * server client, so the calling route can be statically rendered / ISR-cached
+   * (reading cookies would force dynamic rendering). Safe only for public
+   * content reads with no per-user filtering — e.g. the homepage's featured list.
+   */
+  noAuth?: boolean;
 };
 
 export type Paginated<T> = {

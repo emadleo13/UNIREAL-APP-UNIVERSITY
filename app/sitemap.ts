@@ -4,6 +4,7 @@ import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { locales } from '@/lib/i18n/routing';
 import { STUDY_COUNTRIES } from '@/lib/data/countries';
 import { STUDY_FIELDS, universityMatchesField } from '@/lib/data/fields';
+import { isExcludedCountry } from '@/lib/data/regions';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
@@ -197,8 +198,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // University profiles.
+  // University profiles — excluding non-EU/Schengen countries we no longer
+  // feature (so Google stops discovering/crawling those pages).
   for (const uni of universities) {
+    if (isExcludedCountry(uni.country)) continue;
     entries.push(
       entry(`/universities/${uni.slug}`, {
         changeFrequency: 'monthly',

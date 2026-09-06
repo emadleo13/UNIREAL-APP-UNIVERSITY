@@ -6,7 +6,12 @@
  * included so the filter is robust to either spelling.
  */
 
-/** Central + Eastern Europe and the Balkans (incl. the Baltics). */
+/**
+ * Central + Eastern Europe, EU + Schengen members only. Non-member neighbours
+ * (Western Balkans, Moldova, Ukraine, Belarus) are intentionally excluded —
+ * enriching them is not worthwhile, since international students target the
+ * free-movement EU/Schengen area. See EXCLUDED_COUNTRIES.
+ */
 export const EASTERN_EUROPE_COUNTRIES: string[] = [
   'Romania',
   'Bulgaria',
@@ -17,6 +22,19 @@ export const EASTERN_EUROPE_COUNTRIES: string[] = [
   'Slovakia',
   'Slovenia',
   'Croatia',
+  'Lithuania',
+  'Latvia',
+  'Estonia',
+];
+
+/**
+ * Eastern-European countries removed from the product because they are neither
+ * EU nor Schengen members (so enriching/featuring them is not worthwhile).
+ * Their universities are hidden site-wide: excluded from public listings
+ * (`listUniversities`) and from the sitemap. Values are the exact `country`
+ * strings stored on the universities. Reversible — just clear this list.
+ */
+export const EXCLUDED_COUNTRIES: string[] = [
   'Serbia',
   'Bosnia and Herzegovina',
   'Montenegro',
@@ -26,7 +44,11 @@ export const EASTERN_EUROPE_COUNTRIES: string[] = [
   'Moldova',
   'Ukraine',
   'Belarus',
-  'Lithuania',
-  'Latvia',
-  'Estonia',
 ];
+
+const EXCLUDED_SET = new Set(EXCLUDED_COUNTRIES);
+
+/** True when a university's `country` is on the excluded (non-EU/Schengen) list. */
+export function isExcludedCountry(country: string | null | undefined): boolean {
+  return !!country && EXCLUDED_SET.has(country);
+}

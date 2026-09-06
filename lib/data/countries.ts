@@ -24,9 +24,9 @@ export const STUDY_COUNTRIES: StudyCountry[] = [
   { slug: 'slovakia', name: 'Slovakia', match: ['Slovakia'], names: { en: 'Slovakia', ro: 'Slovacia', fa: 'اسلواکی' } },
   { slug: 'slovenia', name: 'Slovenia', match: ['Slovenia'], names: { en: 'Slovenia', ro: 'Slovenia', fa: 'اسلوونی' } },
   { slug: 'croatia', name: 'Croatia', match: ['Croatia'], names: { en: 'Croatia', ro: 'Croația', fa: 'کرواسی' } },
-  { slug: 'serbia', name: 'Serbia', match: ['Serbia'], names: { en: 'Serbia', ro: 'Serbia', fa: 'صربستان' } },
-  { slug: 'moldova', name: 'Moldova', match: ['Moldova'], names: { en: 'Moldova', ro: 'Moldova', fa: 'مولداوی' } },
-  { slug: 'ukraine', name: 'Ukraine', match: ['Ukraine'], names: { en: 'Ukraine', ro: 'Ucraina', fa: 'اوکراین' } },
+  // Only EU + Schengen destinations are curated here. Serbia, Moldova and
+  // Ukraine were removed (EU candidates, not Schengen) — see EXCLUDED_COUNTRIES
+  // in lib/data/regions.ts, which also hides their universities site-wide.
   { slug: 'lithuania', name: 'Lithuania', match: ['Lithuania'], names: { en: 'Lithuania', ro: 'Lituania', fa: 'لیتوانی' } },
   { slug: 'latvia', name: 'Latvia', match: ['Latvia'], names: { en: 'Latvia', ro: 'Letonia', fa: 'لتونی' } },
   { slug: 'estonia', name: 'Estonia', match: ['Estonia'], names: { en: 'Estonia', ro: 'Estonia', fa: 'استونی' } },

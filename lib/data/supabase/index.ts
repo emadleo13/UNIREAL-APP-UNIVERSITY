@@ -11,8 +11,14 @@ import type {
   University,
 } from '../types';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
+import { createSupabaseAdminClient } from '@/lib/supabase/admin';
+import { EXCLUDED_COUNTRIES } from '../regions';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
+// PostgREST NOT-IN list for the hidden (non-EU/Schengen) countries. Values are
+// quoted because several contain spaces (e.g. "North Macedonia").
+const EXCLUDED_IN_LIST = `(${EXCLUDED_COUNTRIES.map((c) => `"${c}"`).join(',')})`;
 
 /** Map a DB universities row (snake_case) to the app University model. */
 function toUniversity(r: any): University {
@@ -99,10 +105,18 @@ export const supabaseRepository: DataRepository = {
       sort = 'score',
       page = 1,
       pageSize = 24,
+      noAuth = false,
     } = opts;
-    const supabase = await createSupabaseServerClient();
+    // Cookie-free client when the caller wants the route statically cached.
+    const supabase = noAuth
+      ? createSupabaseAdminClient()
+      : await createSupabaseServerClient();
     let query = supabase.from('universities').select('*', { count: 'exact' });
 
+    // Hide non-EU/Schengen countries we no longer feature (see EXCLUDED_COUNTRIES).
+    if (EXCLUDED_COUNTRIES.length) {
+      query = query.not('country', 'in', EXCLUDED_IN_LIST);
+    }
     if (country) query = query.eq('country', country);
     if (countries?.length) query = query.in('country', countries);
     if (q && q.trim()) query = query.ilike('name', `%${q.trim()}%`);
