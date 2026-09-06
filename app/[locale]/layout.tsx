@@ -11,7 +11,7 @@ import { BottomNav } from '@/components/layout/BottomNav';
 import { CompareBar } from '@/components/university/CompareBar';
 import { ChatWidget } from '@/components/chat/ChatWidget';
 import { ServiceWorkerRegister } from '@/components/ServiceWorkerRegister';
-import { brandJsonLd } from '@/lib/seo';
+import { brandJsonLd, jsonLdScript } from '@/lib/seo';
 import '../globals.css';
 
 export function generateStaticParams() {
@@ -85,7 +85,7 @@ export default async function LocaleLayout({
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(brandLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(brandLd) }}
         />
       </head>
       <body className="flex min-h-screen flex-col">

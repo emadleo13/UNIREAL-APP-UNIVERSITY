@@ -14,7 +14,7 @@ import {
 import { STUDY_FIELDS, fieldName } from '@/lib/data/fields';
 import { guideForCountry, guideText } from '@/lib/data/country-guides';
 import { scholarshipsForCountry, scholarshipSummary } from '@/lib/data/scholarships';
-import { SITE_URL, localeAlternates } from '@/lib/seo';
+import { SITE_URL, localeAlternates, jsonLdScript } from '@/lib/seo';
 import { locales } from '@/lib/i18n/routing';
 
 // Rebuild daily so new universities / data appear without a redeploy.
@@ -149,7 +149,7 @@ export default async function StudyInCountryPage({
     <div className="mx-auto max-w-5xl px-4 py-8">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <nav className="text-sm text-muted-foreground">

@@ -4,6 +4,7 @@ import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { isSupabaseConfigured } from '@/lib/supabase/env';
 import { isEmailConfigured, sendLeadNotificationEmail } from '@/lib/email';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export type LeadInput = {
   universityId: string;
@@ -38,6 +39,9 @@ const clean = (v: unknown, max: number): string | null => {
 export async function submitLead(input: LeadInput): Promise<LeadResult> {
   try {
     if (!isSupabaseConfigured()) return { status: 'error' };
+
+    // This action sends mail from our verified domain — the strictest limit.
+    if (!(await checkRateLimit('lead'))) return { status: 'error' };
 
     const name = clean(input.name, 120);
     const email = clean(input.email, 200)?.toLowerCase() ?? null;

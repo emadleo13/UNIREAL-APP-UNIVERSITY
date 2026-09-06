@@ -43,6 +43,7 @@ export function ReviewSection({
   const [rating, setRating] = useState(5);
   const [name, setName] = useState('');
   const [body, setBody] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   const avg =
@@ -53,19 +54,30 @@ export function ReviewSection({
   function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!body.trim()) return;
-    const authorName = user?.name || name || 'Anonymous';
+    // Posting requires an account (the server enforces this too — the check
+    // here only saves a round-trip and gives a clearer message).
+    if (!user) {
+      setError(t('signInRequired'));
+      return;
+    }
+    setError(null);
+    const authorName = user.name || name || 'Anonymous';
     startTransition(async () => {
-      const next = await addReview({
-        universityId,
-        authorName,
-        rating,
-        body: body.trim(),
-        authorEmail: user?.email,
-      });
-      setReviews(next);
-      setBody('');
-      setName('');
-      setRating(5);
+      try {
+        const next = await addReview({
+          universityId,
+          authorName,
+          rating,
+          body: body.trim(),
+          authorEmail: user.email,
+        });
+        setReviews(next);
+        setBody('');
+        setName('');
+        setRating(5);
+      } catch {
+        setError(t('submitFailed'));
+      }
     });
   }
 
@@ -102,6 +114,11 @@ export function ReviewSection({
             placeholder={t('bodyPlaceholder')}
             rows={3}
           />
+          {error && (
+            <p className="text-sm text-destructive" role="alert">
+              {error}
+            </p>
+          )}
           <div className="flex items-center justify-between">
             <p className="text-xs text-muted-foreground">{t('demoNotice')}</p>
             <Button type="submit" disabled={pending}>

@@ -215,7 +215,9 @@
     "averageRating": "Average rating",
     "aggregatedNotice": "Reviews gathered from across the web. Live aggregation arrives once the database is connected.",
     "viaSource": "via {source}",
-    "demoNotice": "Demo mode: reviews are stored in memory and reset on reload."
+    "demoNotice": "Demo mode: reviews are stored in memory and reset on reload.",
+    "signInRequired": "Please sign in to post.",
+    "submitFailed": "Could not post that. Please try again."
   },
   "Calendar": {
     "title": "Calendar",
@@ -238,7 +240,9 @@
     "submitAnswer": "Post answer",
     "empty": "No questions yet. Ask the first one.",
     "answersCount": "{count, plural, =0 {No answers} one {# answer} other {# answers}}",
-    "demoNotice": "Demo mode: questions are stored in memory and reset on reload."
+    "demoNotice": "Demo mode: questions are stored in memory and reset on reload.",
+    "signInRequired": "Please sign in to post.",
+    "submitFailed": "Could not post that. Please try again."
   },
   "Auth": {
     "signInTitle": "Sign in to UNIREAL",

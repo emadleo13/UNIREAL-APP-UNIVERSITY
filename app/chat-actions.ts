@@ -9,6 +9,7 @@ import {
 } from '@/lib/chat/assistant';
 import { extractUniversityQuery } from '@/lib/chat/translit';
 import { repo } from '@/lib/data';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://unireal.study';
 
@@ -32,6 +33,10 @@ export async function askAssistant(
   message: string,
   locale: string
 ): Promise<string> {
+  if (!(await checkRateLimit('chat'))) {
+    return fallbackAnswer(locale);
+  }
+
   // 1. Keyword FAQ first — feature questions ("how does the score work",
   //    "شهریه چقدر است") get a direct answer and never get mistaken for a
   //    university name.

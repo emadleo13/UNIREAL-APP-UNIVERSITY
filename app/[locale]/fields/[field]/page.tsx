@@ -14,7 +14,7 @@ import {
   universityMatchesField,
 } from '@/lib/data/fields';
 import { universityName } from '@/lib/data/display';
-import { SITE_URL, localeAlternates } from '@/lib/seo';
+import { SITE_URL, localeAlternates, jsonLdScript } from '@/lib/seo';
 
 export const revalidate = 86400;
 
@@ -115,7 +115,7 @@ export default async function FieldPage({
     <div className="mx-auto max-w-5xl px-4 py-8">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <nav className="text-sm text-muted-foreground">

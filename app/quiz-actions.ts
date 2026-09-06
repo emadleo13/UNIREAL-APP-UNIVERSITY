@@ -4,6 +4,7 @@ import { repo } from '@/lib/data';
 import { STUDY_COUNTRIES, findStudyCountry } from '@/lib/data/countries';
 import { findStudyField, universityMatchesField } from '@/lib/data/fields';
 import type { University } from '@/lib/data/types';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export type QuizInput = {
   fieldSlug?: string;
@@ -19,6 +20,8 @@ export type QuizInput = {
  */
 export async function matchUniversities(input: QuizInput): Promise<University[]> {
   try {
+    if (!(await checkRateLimit('quiz'))) return [];
+
     const country = input.countrySlug ? findStudyCountry(input.countrySlug) : null;
     const field = input.fieldSlug ? findStudyField(input.fieldSlug) : null;
     const countries = country

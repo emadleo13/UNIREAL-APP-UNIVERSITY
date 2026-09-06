@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { createSupabaseAdminClient } from '@/lib/supabase/admin';
 import { getStripe, isStripeConfigured } from '@/lib/stripe';
 import { getMySubscription, type MySubscription } from '@/lib/subscription';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 /** Client-callable wrapper to read the current user's subscription. */
 export async function fetchMySubscription(): Promise<MySubscription | null> {
@@ -15,7 +16,6 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 type ActionResult = {
   url?: string;
   error?: 'auth' | 'config' | 'unknown';
-  message?: string;
 };
 
 /** Create a Stripe Checkout session for the signed-in user, return its URL. */
@@ -27,6 +27,17 @@ export async function createCheckoutSession(): Promise<ActionResult> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: 'auth' };
+
+  // Already paying? Creating a second Checkout Session would bill the same
+  // person twice: Stripe happily opens two subscriptions for one customer,
+  // while `subscriptions.user_id` is unique here, so the second webhook
+  // overwrites the first row and the extra paid subscription becomes
+  // invisible to the app. Send them to the billing portal instead.
+  const existing = await getMySubscription();
+  if (existing?.isActive) return createPortalSession();
+
+  // Each call creates a Stripe Customer/Session — cap the churn.
+  if (!(await checkRateLimit('billing', user.id))) return { error: 'unknown' };
 
   try {
     const stripe = getStripe();
@@ -66,11 +77,10 @@ export async function createCheckoutSession(): Promise<ActionResult> {
 
     return { url: session.url ?? undefined };
   } catch (e) {
+    // Log the detail server-side; the client gets a generic code. Stripe
+    // messages can name price IDs / key modes, which is internal wiring.
     console.error('createCheckoutSession failed:', e);
-    return {
-      error: 'unknown',
-      message: e instanceof Error ? e.message : String(e),
-    };
+    return { error: 'unknown' };
   }
 }
 

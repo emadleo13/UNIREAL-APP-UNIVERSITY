@@ -15,7 +15,7 @@ import { universityName, universityDescription } from '@/lib/data/display';
 import { computeUniversityScore, type ScoreComponent } from '@/lib/data/score';
 import { STUDY_COUNTRIES, countryName } from '@/lib/data/countries';
 import { STUDY_FIELDS, fieldName, universityMatchesField } from '@/lib/data/fields';
-import { SITE_URL, localeAlternates, clampDescription } from '@/lib/seo';
+import { SITE_URL, localeAlternates, clampDescription, jsonLdScript } from '@/lib/seo';
 import { Link } from '@/lib/i18n/navigation';
 
 // Allow time for the first-view AI enrichment to complete server-side so the
@@ -240,7 +240,7 @@ export default async function UniversityDetailPage({
     <div className="mx-auto max-w-4xl px-4 py-8">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <FreshnessRefresher slug={uni.slug} />

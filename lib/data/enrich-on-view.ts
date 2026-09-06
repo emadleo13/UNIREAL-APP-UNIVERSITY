@@ -1,6 +1,7 @@
 import 'server-only';
 import { repo } from '@/lib/data';
 import { fetchFreshUniversityInfo } from './ai-provider';
+import { acquireEnrichLock, claimAiBudget } from '@/lib/rate-limit';
 import type { University } from './types';
 
 /**
@@ -18,6 +19,14 @@ import type { University } from './types';
  *
  * Always falls back to the cached record (or null) when AI is unavailable or the
  * research call fails, so the page still renders.
+ *
+ * COST CONTROL. This runs during render, so a crawler walking all ~10k
+ * university URLs would otherwise trigger one paid Claude web-search call per
+ * URL. Two atomic guards sit in front of the model: a per-slug lock so
+ * simultaneous first visitors pay once, and a site-wide daily budget. There is
+ * deliberately NO per-caller rate limit here — Googlebot must be able to reach
+ * enriched pages — so the budget is the ceiling. When either guard says no we
+ * return the cached record rather than an empty page.
  */
 export async function getEnrichedUniversity(
   slug: string
@@ -27,6 +36,11 @@ export async function getEnrichedUniversity(
 
   // Already has editorial data — render immediately.
   if (uni.updatedAt) return uni;
+
+  // Someone else is already researching this one, or today's budget is spent:
+  // serve what we have instead of paying twice (or without limit).
+  if (!(await acquireEnrichLock(slug))) return uni;
+  if (!(await claimAiBudget())) return uni;
 
   const fresh = await fetchFreshUniversityInfo(uni);
   if (!fresh) return uni;

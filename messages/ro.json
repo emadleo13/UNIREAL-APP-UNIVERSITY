@@ -215,7 +215,9 @@
     "averageRating": "Evaluare medie",
     "aggregatedNotice": "Recenzii adunate din tot webul. Agregarea live va fi disponibilă după conectarea bazei de date.",
     "viaSource": "prin {source}",
-    "demoNotice": "Mod demo: recenziile sunt păstrate în memorie și se resetează la reîncărcare."
+    "demoNotice": "Mod demo: recenziile sunt păstrate în memorie și se resetează la reîncărcare.",
+    "signInRequired": "Autentifică-te pentru a publica.",
+    "submitFailed": "Publicarea a eșuat. Încearcă din nou."
   },
   "Calendar": {
     "title": "Calendar",
@@ -238,7 +240,9 @@
     "submitAnswer": "Publică răspunsul",
     "empty": "Încă nu există întrebări. Pune prima.",
     "answersCount": "{count, plural, =0 {Niciun răspuns} one {# răspuns} other {# răspunsuri}}",
-    "demoNotice": "Mod demo: întrebările sunt păstrate în memorie și se resetează la reîncărcare."
+    "demoNotice": "Mod demo: întrebările sunt păstrate în memorie și se resetează la reîncărcare.",
+    "signInRequired": "Autentifică-te pentru a publica.",
+    "submitFailed": "Publicarea a eșuat. Încearcă din nou."
   },
   "Auth": {
     "signInTitle": "Autentifică-te în UNIREAL",

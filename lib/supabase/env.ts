@@ -28,9 +28,12 @@ export function requireSupabaseEnv() {
  * ADMIN_EMAILS is the server-side source of truth for the /admin gate.
  */
 export function getAdminEmails(): string[] {
+  // ADMIN_EMAILS first: NEXT_PUBLIC_* is inlined into the JS bundle, so
+  // preferring it published the admin address to every visitor. It stays as a
+  // fallback only so the header link keeps working in the browser.
   const raw =
-    process.env.NEXT_PUBLIC_ADMIN_EMAILS ||
     process.env.ADMIN_EMAILS ||
+    process.env.NEXT_PUBLIC_ADMIN_EMAILS ||
     'emadcomircom@gmail.com';
   return raw
     .split(',')

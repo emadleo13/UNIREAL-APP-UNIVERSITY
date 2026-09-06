@@ -4,7 +4,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Badge } from '@/components/ui/Badge';
 import { Link } from '@/lib/i18n/navigation';
 import { getPost } from '@/lib/blog/data';
-import { SITE_URL, localeAlternates } from '@/lib/seo';
+import { SITE_URL, localeAlternates, jsonLdScript } from '@/lib/seo';
 
 export const dynamic = 'force-dynamic';
 
@@ -68,7 +68,7 @@ export default async function BlogPostPage({
     <article className="mx-auto max-w-3xl px-4 py-8">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
       <Link href="/blog" className="text-sm font-medium text-primary hover:opacity-80">
         ← {t('back')}

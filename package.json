@@ -16,7 +16,8 @@
     "data:seed": "tsx scripts/05-seed-supabase.ts",
     "data:enrich-ai": "tsx scripts/06-enrich-ai.ts",
     "data:names": "tsx scripts/07-backfill-names-db.ts",
-    "data:enrich-demand": "tsx scripts/08-enrich-by-demand.ts"
+    "data:enrich-demand": "tsx scripts/08-enrich-by-demand.ts",
+    "check:ratelimit": "tsx scripts/check-rate-limit.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.1",

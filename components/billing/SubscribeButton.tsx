@@ -32,8 +32,8 @@ export function SubscribeButton({
       } else if (res.error === 'auth') {
         router.push('/auth');
       } else {
-        // Surface the real failure instead of silently doing nothing.
-        alert(res.message || 'Could not start checkout. Please try again.');
+        // Generic message only — the real cause is logged server-side.
+        alert('Could not start checkout. Please try again.');
       }
     });
   }

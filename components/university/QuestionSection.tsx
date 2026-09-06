@@ -22,22 +22,33 @@ export function QuestionSection({
   const [questions, setQuestions] = useState(initialQuestions);
   const [name, setName] = useState('');
   const [body, setBody] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   function submitQuestion(e: React.FormEvent) {
     e.preventDefault();
     if (!body.trim()) return;
-    const authorName = user?.name || name || 'Anonymous';
+    // Posting requires an account (enforced server-side too).
+    if (!user) {
+      setError(t('signInRequired'));
+      return;
+    }
+    setError(null);
+    const authorName = user.name || name || 'Anonymous';
     startTransition(async () => {
-      const next = await addQuestion({
-        universityId,
-        authorName,
-        body: body.trim(),
-        authorEmail: user?.email,
-      });
-      setQuestions(next);
-      setBody('');
-      setName('');
+      try {
+        const next = await addQuestion({
+          universityId,
+          authorName,
+          body: body.trim(),
+          authorEmail: user.email,
+        });
+        setQuestions(next);
+        setBody('');
+        setName('');
+      } catch {
+        setError(t('submitFailed'));
+      }
     });
   }
 
@@ -60,6 +71,11 @@ export function QuestionSection({
             placeholder={t('questionPlaceholder')}
             rows={2}
           />
+          {error && (
+            <p className="text-sm text-destructive" role="alert">
+              {error}
+            </p>
+          )}
           <div className="flex items-center justify-between">
             <p className="text-xs text-muted-foreground">{t('demoNotice')}</p>
             <Button type="submit" disabled={pending}>
@@ -101,26 +117,36 @@ function QuestionItem({
   const [open, setOpen] = useState(false);
   const [answer, setAnswer] = useState('');
   const [name, setName] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   function submitAnswer(e: React.FormEvent) {
     e.preventDefault();
     if (!answer.trim()) return;
-    const authorName = user?.name || name || 'Anonymous';
+    if (!user) {
+      setError(t('signInRequired'));
+      return;
+    }
+    setError(null);
+    const authorName = user.name || name || 'Anonymous';
     startTransition(async () => {
-      const next = await addAnswer(
-        {
-          questionId: question.id,
-          authorName,
-          body: answer.trim(),
-          authorEmail: user?.email,
-        },
-        universityId
-      );
-      onUpdated(next);
-      setAnswer('');
-      setName('');
-      setOpen(false);
+      try {
+        const next = await addAnswer(
+          {
+            questionId: question.id,
+            authorName,
+            body: answer.trim(),
+            authorEmail: user.email,
+          },
+          universityId
+        );
+        onUpdated(next);
+        setAnswer('');
+        setName('');
+        setOpen(false);
+      } catch {
+        setError(t('submitFailed'));
+      }
     });
   }
 
@@ -158,6 +184,11 @@ function QuestionItem({
             placeholder={t('answerPlaceholder')}
             rows={2}
           />
+          {error && (
+            <p className="text-sm text-destructive" role="alert">
+              {error}
+            </p>
+          )}
           <Button type="submit" size="sm" disabled={pending}>
             {t('submitAnswer')}
           </Button>

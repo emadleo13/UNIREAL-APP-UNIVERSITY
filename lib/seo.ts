@@ -88,3 +88,23 @@ export function clampDescription(
   const cut = lastSpace > max * 0.6 ? slice.slice(0, lastSpace) : slice;
   return `${cut.replace(/[\s.,;:!?-]+$/, '')}…`;
 }
+
+/**
+ * Serialize a JSON-LD object for embedding in a <script> tag.
+ *
+ * `JSON.stringify` does NOT escape `<`, so any string that reaches the graph
+ * containing `</script>` closes the tag early and everything after it is
+ * parsed as HTML — stored XSS, because user-submitted reviews (author name and
+ * body) are part of the university graph. Escaping `<`, `>` and `&` as JSON
+ * unicode escapes keeps the payload valid JSON (Google parses it identically)
+ * while making it impossible to break out of the tag. U+2028/U+2029 are
+ * escaped too: they are legal in JSON but are line terminators in JS.
+ */
+export function jsonLdScript(data: unknown): string {
+  return JSON.stringify(data)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}
