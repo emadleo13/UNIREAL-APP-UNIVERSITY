@@ -30,6 +30,7 @@ async function load(fieldSlug: string, countrySlug: string) {
     countries: country.match,
     sort: 'score',
     pageSize: 500,
+    noAuth: true,
   });
   const matches = items.filter((u) => universityMatchesField(u, field));
   return { field, country, matches };

@@ -19,6 +19,7 @@ async function load(countrySlug: string) {
     countries: country.match,
     sort: 'tuition',
     pageSize: 100,
+    noAuth: true,
   });
   // Only universities with known tuition belong on a "cheapest" list.
   const withTuition = items.filter((u) => u.tuition != null).slice(0, LIST_SIZE);

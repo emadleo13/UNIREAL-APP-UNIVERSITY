@@ -19,6 +19,7 @@ async function load(countrySlug: string) {
     countries: country.match,
     sort: 'score',
     pageSize: LIST_SIZE,
+    noAuth: true,
   });
   return { country, items };
 }

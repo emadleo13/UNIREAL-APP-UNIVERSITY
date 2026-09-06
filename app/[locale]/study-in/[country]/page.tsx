@@ -34,6 +34,7 @@ async function load(slug: string) {
     sort: 'score',
     page: 1,
     pageSize: 200,
+    noAuth: true,
   });
   return { c, items };
 }

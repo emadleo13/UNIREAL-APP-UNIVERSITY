@@ -48,6 +48,7 @@ export default async function FieldsIndexPage({
     countries: ALL_COUNTRY_VALUES,
     sort: 'score',
     pageSize: 1000,
+    noAuth: true,
   });
 
   const fields = STUDY_FIELDS.map((f) => ({

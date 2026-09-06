@@ -27,6 +27,7 @@ async function load(fieldSlug: string) {
     countries: ALL_COUNTRY_VALUES,
     sort: 'score',
     pageSize: 1000,
+    noAuth: true,
   });
   const matches = items.filter((u) => universityMatchesField(u, field));
   return { field, matches };
