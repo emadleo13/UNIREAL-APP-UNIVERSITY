@@ -14,12 +14,20 @@ import { getEnrichedUniversity } from '@/lib/data/enrich-on-view';
 import { universityName, universityDescription } from '@/lib/data/display';
 import { computeUniversityScore, type ScoreComponent } from '@/lib/data/score';
 import { STUDY_COUNTRIES, countryName } from '@/lib/data/countries';
+import { STUDY_FIELDS, fieldName, universityMatchesField } from '@/lib/data/fields';
 import { SITE_URL, localeAlternates, clampDescription } from '@/lib/seo';
 import { Link } from '@/lib/i18n/navigation';
 
 // Allow time for the first-view AI enrichment to complete server-side so the
 // page is never rendered empty. Subsequent views are instant (cached in the DB).
 export const maxDuration = 60;
+
+// ISR: cache each rendered profile (all reads are cookie-free public reads).
+// First view of an un-enriched page still runs enrichment, then the result is
+// cached; already-enriched pages are served from cache — fast, crawl-friendly,
+// and far less DB load. Revalidates hourly so new reviews / refreshed data
+// flow through.
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,
@@ -82,6 +90,7 @@ export default async function UniversityDetailPage({
 
   const t = await getTranslations('University');
   const tStudy = await getTranslations('StudyIn');
+  const tFields = await getTranslations('Fields');
   const name = universityName(uni, locale);
   const description = universityDescription(uni, locale);
   const score = computeUniversityScore(uni);
@@ -90,10 +99,15 @@ export default async function UniversityDetailPage({
     repo.listReviews(uni.id),
     repo.listQuestions(uni.id),
     // Related universities in the same country → internal-link hub-and-spoke.
-    repo.listUniversities({ country: uni.country, sort: 'score', pageSize: 9 }),
+    repo.listUniversities({ country: uni.country, sort: 'score', pageSize: 9, noAuth: true }),
   ]);
   const siblings = siblingsPage.items.filter((u) => u.slug !== uni.slug).slice(0, 6);
   const studyCountry = STUDY_COUNTRIES.find((c) => c.match.includes(uni.country));
+  // Fields this university actually teaches → contextual links to the matching
+  // "Study <field> in <country>" hubs (internal linking / topical clustering).
+  const matchedFields = studyCountry
+    ? STUDY_FIELDS.filter((f) => universityMatchesField(uni, f)).slice(0, 4)
+    : [];
 
   const updatedLabel = uni.updatedAt
     ? new Date(uni.updatedAt).toLocaleDateString(locale, {
@@ -466,6 +480,46 @@ export default async function UniversityDetailPage({
               {tStudy('heroTitle', { country: countryName(studyCountry, locale) })} →
             </Link>
           )}
+        </section>
+      )}
+
+      {studyCountry && (
+        <section className="mt-10">
+          <h2 className="font-semibold text-foreground">
+            {tStudy('fieldsHeading', { country: countryName(studyCountry, locale) })}
+          </h2>
+          <div className="mt-3 flex flex-wrap gap-2 text-sm font-medium">
+            <Link
+              href={`/rankings/${studyCountry.slug}`}
+              className="rounded-full border border-primary/40 bg-card px-3 py-1.5 text-primary hover:bg-primary/5"
+            >
+              {tStudy('linkBest', { country: countryName(studyCountry, locale) })}
+            </Link>
+            <Link
+              href={`/rankings/${studyCountry.slug}/affordable`}
+              className="rounded-full border border-primary/40 bg-card px-3 py-1.5 text-primary hover:bg-primary/5"
+            >
+              {tStudy('linkCheapest', { country: countryName(studyCountry, locale) })}
+            </Link>
+            {matchedFields.map((f) => (
+              <Link
+                key={f.slug}
+                href={`/fields/${f.slug}/${studyCountry.slug}`}
+                className="rounded-full border border-primary/40 bg-card px-3 py-1.5 text-primary hover:bg-primary/5"
+              >
+                {tFields('countryTitle', {
+                  field: fieldName(f, locale),
+                  country: countryName(studyCountry, locale),
+                })}
+              </Link>
+            ))}
+            <Link
+              href="/scholarships"
+              className="rounded-full border border-primary/40 bg-card px-3 py-1.5 text-primary hover:bg-primary/5"
+            >
+              {tStudy('linkScholarships')}
+            </Link>
+          </div>
         </section>
       )}
     </div>

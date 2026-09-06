@@ -153,7 +153,9 @@ export const supabaseRepository: DataRepository = {
   },
 
   async getUniversityBySlug(slug: string): Promise<University | null> {
-    const supabase = await createSupabaseServerClient();
+    // Public read (no per-user filtering) — use the cookie-free client so pages
+    // that call this (the university profile) can be statically cached / ISR.
+    const supabase = createSupabaseAdminClient();
     const { data, error } = await supabase
       .from('universities')
       .select('*')
@@ -238,7 +240,9 @@ export const supabaseRepository: DataRepository = {
   },
 
   async listReviews(universityId: string): Promise<Review[]> {
-    const supabase = await createSupabaseServerClient();
+    // Reviews are public (RLS: select using(true)); cookie-free read keeps the
+    // profile page statically cacheable.
+    const supabase = createSupabaseAdminClient();
     const { data, error } = await supabase
       .from('reviews')
       .select('*')
@@ -278,7 +282,9 @@ export const supabaseRepository: DataRepository = {
   },
 
   async listQuestions(universityId: string): Promise<Question[]> {
-    const supabase = await createSupabaseServerClient();
+    // Questions + answers are public (RLS: select using(true)); cookie-free read
+    // keeps the profile page statically cacheable.
+    const supabase = createSupabaseAdminClient();
     const { data, error } = await supabase
       .from('questions')
       .select('*, answers(*)')
