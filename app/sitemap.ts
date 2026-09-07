@@ -199,9 +199,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // University profiles — excluding non-EU/Schengen countries we no longer
-  // feature (so Google stops discovering/crawling those pages).
+  // feature (so Google stops discovering/crawling those pages), and excluding
+  // profiles that have not been enriched yet.
+  //
+  // Only a record with `updated_at` carries a description, programs, tuition or
+  // deadlines; without it the page is just a name and a country, which Google
+  // treats as thin. Nearly all ~10k profiles start in that state, so submitting
+  // them all spent the crawl budget on empty pages and pulled the site's
+  // quality signal down — the same reason the empty field pages were pulled out
+  // above. Those pages are noindex at the page level (see universities/[slug]),
+  // so omitting them here also avoids "submitted URL marked noindex" in Search
+  // Console. Each one returns to the sitemap by itself once enrichment fills it.
   for (const uni of universities) {
     if (isExcludedCountry(uni.country)) continue;
+    if (!uni.updatedAt) continue;
     entries.push(
       entry(`/universities/${uni.slug}`, {
         changeFrequency: 'monthly',

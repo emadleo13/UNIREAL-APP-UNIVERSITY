@@ -56,6 +56,14 @@ export async function generateMetadata({
   return {
     title,
     description,
+    // Not yet enriched → the page carries only name/country/city, which reads
+    // as thin content to Google. Nearly every one of the ~10k profiles is in
+    // that state, and advertising them all is what wastes crawl budget and
+    // drags the whole domain's quality signal down. Same treatment the empty
+    // field pages already get: noindex,follow keeps them out of the index
+    // while still following their links, and the moment enrichment fills a
+    // record it becomes indexable again on its own — no manual step.
+    robots: uni.updatedAt ? undefined : { index: false, follow: true },
     alternates: localeAlternates(`/universities/${slug}`, locale),
     openGraph: {
       title,
