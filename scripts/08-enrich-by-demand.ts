@@ -83,8 +83,9 @@ const supabase = createClient(url, serviceKey, {
 });
 const anthropic = provider === 'claude' ? new Anthropic({ apiKey: anthropicKey }) : null;
 
-// Free Gemini tier has a low requests-per-minute cap — pace accordingly.
-const paceMs = provider === 'gemini' ? 7000 : 500;
+// The free Gemini tier caps requests per minute, so the default paces hard.
+// On a paid tier that wait is pure delay — override with --pace=<ms>.
+const paceMs = Number(arg('pace', provider === 'gemini' ? '7000' : '500')) || 0;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
