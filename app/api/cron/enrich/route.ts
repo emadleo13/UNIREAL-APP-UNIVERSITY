@@ -101,11 +101,23 @@ export async function GET(req: Request) {
     Math.max(1, Number(url.searchParams.get('limit')) || DEFAULT_BATCH)
   );
 
+  // Two queues. Default: profiles that have never been enriched. Backfill:
+  // profiles that were enriched before the researcher prompt asked for a
+  // description, so they carry facts but no prose — which is exactly what the
+  // page body and the per-page meta description are built from. Backfill is
+  // opt-in because the default queue is ~10k long and would never reach it.
+  const mode = url.searchParams.get('mode') === 'backfill' ? 'backfill' : 'new';
+
   const admin = createSupabaseAdminClient();
-  const { data: rows, error } = await admin
+  let query = admin
     .from('universities')
-    .select('id, slug, name, country, country_code, city, website, domains, source')
-    .is('updated_at', null)
+    .select('id, slug, name, country, country_code, city, website, domains, source');
+  query =
+    mode === 'backfill'
+      ? query.not('updated_at', 'is', null).is('description_i18n', null)
+      : query.is('updated_at', null);
+
+  const { data: rows, error } = await query
     .order('research_score', { ascending: false, nullsFirst: false })
     .limit(batch);
 
@@ -114,7 +126,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'query failed' }, { status: 500 });
   }
   if (!rows?.length) {
-    return NextResponse.json({ ok: true, remaining: 0, filled: 0, note: 'nothing left to enrich' });
+    return NextResponse.json({ ok: true, mode, remaining: 0, filled: 0, note: 'nothing left to enrich' });
   }
 
   const today = todayISO();
@@ -184,6 +196,7 @@ export async function GET(req: Request) {
 
   return NextResponse.json({
     ok: true,
+    mode,
     provider: useGemini ? 'gemini' : 'claude',
     filled,
     failed,

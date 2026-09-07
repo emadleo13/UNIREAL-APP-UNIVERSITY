@@ -180,7 +180,8 @@ const GEMINI_FORMAT_RULES = `
 STRICT FORMAT RULES:
 - "tuitionEur", "size" and "programsCount" must be plain JSON numbers — never ranges, never strings.
 - "admissionDeadline" must be exactly YYYY-MM-DD (no time part) and must be the NEAREST upcoming deadline.
-- "admissionPeriod" must be short, e.g. "July – September" — one intake window only, max 8 words.`;
+- "admissionPeriod" must be short, e.g. "July – September" — one intake window only, max 8 words.
+- "description" must be an OBJECT with the three keys "en", "fa" and "ro", each a plain string of 2-3 sentences — never a single string, never markdown.`;
 
 function toNum(v: unknown): number | undefined {
   if (typeof v === 'number' && Number.isFinite(v)) return v;
@@ -195,6 +196,23 @@ function toNum(v: unknown): number | undefined {
 
 function sanitize(j: Record<string, unknown>): FreshJson {
   const out: FreshJson = {};
+
+  // sanitize() is an allow-list: a key it does not copy is silently dropped, so
+  // the description has to be handled here or it never reaches the database.
+  const d = j.description;
+  if (d && typeof d === 'object' && !Array.isArray(d)) {
+    const src = d as Record<string, unknown>;
+    const desc: { en?: string; fa?: string; ro?: string } = {};
+    for (const loc of ['en', 'fa', 'ro'] as const) {
+      const v = src[loc];
+      if (typeof v === 'string' && v.trim()) desc[loc] = v.trim();
+    }
+    if (Object.keys(desc).length) out.description = desc;
+  } else if (typeof d === 'string' && d.trim()) {
+    // Some responses collapse it to a bare string — treat that as English.
+    out.description = { en: d.trim() };
+  }
+
   const tuition = toNum(j.tuitionEur);
   if (tuition) out.tuitionEur = tuition;
   const size = toNum(j.size);

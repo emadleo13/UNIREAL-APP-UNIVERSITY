@@ -38,6 +38,11 @@ Today's date is ${today}. For admission, focus on the NEXT upcoming intake (the 
 
 Return ONLY a single JSON object (no prose, no markdown) with these optional keys — omit any you cannot verify:
 {
+  "description": {                  // 2-3 sentences, factual, specific to THIS university
+    "en": string,                   // English
+    "fa": string,                   // Persian (فارسی)
+    "ro": string                    // Romanian
+  },
   "admissionPeriod": string,        // e.g. "May – September"
   "admissionDeadline": string,      // ISO YYYY-MM-DD, MUST be in the future
   "tuitionEur": number,             // typical yearly tuition in EUR (euros) — convert if the source uses another currency
@@ -45,6 +50,11 @@ Return ONLY a single JSON object (no prose, no markdown) with these optional key
   "programsCount": number,          // number of degree programs offered
   "programs": string[]              // up to 10 notable programs/majors offered
 }
+
+The description is the most important field — always return it, in all three
+languages. Mention what the university is known for, its academic strengths and
+its city, so the text is unmistakably about this university and not a generic
+blurb. Do not repeat the university's name more than once per language.
 Be conservative — never invent figures; omit unknown fields. Deadlines must be ISO YYYY-MM-DD and strictly after ${today}.`;
 }
 
@@ -57,6 +67,8 @@ Today is ${today}. Research this university and return the JSON object as instru
 }
 
 export type FreshJson = {
+  /** 2-3 sentence blurb per locale — the source of each page's meta description. */
+  description?: { en?: string; fa?: string; ro?: string };
   admissionPeriod?: string;
   admissionDeadline?: string;
   /** Yearly tuition in EUR. */
@@ -78,6 +90,19 @@ export function toPartialUniversity(
   today: string = todayISO()
 ): Partial<University> {
   const out: Partial<University> = {};
+
+  // description_i18n is what universityDescription() reads for both the page
+  // body and the per-page meta description, so keep only non-empty strings —
+  // an empty locale key would beat the keyword fallback and yield a blank.
+  if (j.description) {
+    const desc: Record<string, string> = {};
+    for (const loc of ['en', 'fa', 'ro'] as const) {
+      const v = j.description[loc];
+      if (typeof v === 'string' && v.trim()) desc[loc] = v.trim().slice(0, 1200);
+    }
+    if (Object.keys(desc).length) out.description_i18n = desc;
+  }
+
   if (j.tuitionEur != null) {
     out.tuition = j.tuitionEur;
     out.tuitionCurrency = 'EUR';
