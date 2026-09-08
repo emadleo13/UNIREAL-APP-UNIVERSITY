@@ -17,7 +17,17 @@ export async function GET(req: Request) {
   const provided =
     req.headers.get('authorization')?.replace('Bearer ', '') ??
     url.searchParams.get('secret');
-  if (!secret || provided !== secret) {
+  if (!secret) {
+    // Vercel only sends `Authorization: Bearer <CRON_SECRET>` when that env var
+    // exists, so a missing one makes every scheduled run 401 — silently, and
+    // for every cron at once. Say so in the logs; the response stays generic.
+    console.error(
+      'cron: CRON_SECRET is not set in this environment — every scheduled run will 401.'
+    );
+    return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
+  }
+  if (provided !== secret) {
+    console.warn('cron: rejected a request with a missing or wrong secret.');
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
   if (!isBlogGenerationConfigured()) {
