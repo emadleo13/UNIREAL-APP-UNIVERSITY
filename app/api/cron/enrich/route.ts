@@ -4,6 +4,7 @@ import { researchUniversity, todayISO } from '@/lib/data/enrich-core';
 import { researchUniversityGemini } from '@/lib/data/enrich-gemini';
 import { getAnthropic, isAIConfigured } from '@/lib/ai/anthropic';
 import type { University } from '@/lib/data/types';
+import { EXCLUDED_COUNTRIES } from '@/lib/data/regions';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -126,6 +127,17 @@ export async function GET(req: Request) {
     mode === 'backfill'
       ? query.not('updated_at', 'is', null).is('description_i18n', null)
       : query.is('updated_at', null);
+
+  // Countries dropped from the product are hidden from the listings and the
+  // sitemap, so researching them buys nothing — skip them rather than pay for
+  // pages no visitor can reach.
+  if (EXCLUDED_COUNTRIES.length) {
+    query = query.not(
+      'country',
+      'in',
+      `(${EXCLUDED_COUNTRIES.map((c) => `"${c}"`).join(',')})`
+    );
+  }
 
   const { data: rows, error } = await query
     .order('research_score', { ascending: false, nullsFirst: false })

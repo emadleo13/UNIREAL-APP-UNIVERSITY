@@ -26,6 +26,7 @@ import { researchUniversity, todayISO } from '../lib/data/enrich-core';
 import { researchUniversityGemini } from '../lib/data/enrich-gemini';
 import type { University } from '../lib/data/types';
 import { arg, sleep } from './_util';
+import { EXCLUDED_COUNTRIES } from '../lib/data/regions';
 
 // Load .env.local so you can just run the script with no inline vars.
 for (const file of ['.env.local', '.env']) {
@@ -63,10 +64,16 @@ if (provider === 'gemini' && !geminiKey) {
   process.exit(1);
 }
 
-const countries = (arg('countries', 'Romania') as string)
-  .split(',')
-  .map((c) => c.trim())
-  .filter(Boolean);
+// `--countries=all` enriches the whole catalogue in research_score order
+// instead of one country at a time — the right shape once the provider is paid
+// and the bottleneck is budget rather than a per-country queue.
+const allCountries = (arg('countries', 'Romania') as string).trim().toLowerCase() === 'all';
+const countries = allCountries
+  ? []
+  : (arg('countries', 'Romania') as string)
+      .split(',')
+      .map((c) => c.trim())
+      .filter(Boolean);
 const limit = Number(arg('limit', '0')) || 0; // 0 = no limit
 const concurrency = Math.max(1, Number(arg('concurrency', '3')) || 3);
 const force = process.argv.includes('--force');
@@ -78,8 +85,9 @@ const supabase = createClient(url, serviceKey, {
 });
 const anthropic = provider === 'claude' ? new Anthropic({ apiKey: anthropicKey }) : null;
 
-// Free Gemini tier has a low requests-per-minute cap — pace accordingly.
-const paceMs = provider === 'gemini' ? 7000 : 500;
+// The free Gemini tier caps requests per minute, so the default paces hard.
+// On a paid tier that wait is pure delay — override with --pace=<ms>.
+const paceMs = Number(arg('pace', provider === 'gemini' ? '7000' : '500')) || 0;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -121,9 +129,21 @@ async function main() {
 
   let query = supabase
     .from('universities')
-    .select('id, slug, name, country, country_code, city, website, domains, source')
-    .in('country', countries)
-    .order('research_score', { ascending: false, nullsFirst: false });
+    .select('id, slug, name, country, country_code, city, website, domains, source');
+  if (allCountries) {
+    // Countries dropped from the product are hidden from the site, so paying to
+    // research them buys nothing.
+    if (EXCLUDED_COUNTRIES.length) {
+      query = query.not(
+        'country',
+        'in',
+        `(${EXCLUDED_COUNTRIES.map((c) => `"${c}"`).join(',')})`
+      );
+    }
+  } else {
+    query = query.in('country', countries);
+  }
+  query = query.order('research_score', { ascending: false, nullsFirst: false });
   if (!force) query = query.is('updated_at', null);
   if (limit) query = query.limit(limit);
 
