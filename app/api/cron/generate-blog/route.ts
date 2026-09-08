@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { generateLatestPost } from '@/lib/blog/generate';
-import { isAIConfigured } from '@/lib/ai/anthropic';
+import { generateLatestPost, isBlogGenerationConfigured } from '@/lib/blog/generate';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,7 +20,7 @@ export async function GET(req: Request) {
   if (!secret || provided !== secret) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
-  if (!isAIConfigured()) {
+  if (!isBlogGenerationConfigured()) {
     return NextResponse.json({ error: 'AI not configured' }, { status: 500 });
   }
 

@@ -123,6 +123,27 @@ async function callModel(
   }
 }
 
+/** True when the Gemini provider can be used. */
+export function isGeminiConfigured(): boolean {
+  return Boolean(process.env.GEMINI_API_KEY);
+}
+
+/**
+ * One grounded (Google Search) generation, returning the model's raw text.
+ *
+ * This is the provider primitive: the university researcher below is one
+ * caller, the blog generator is another. Exported so anything that needs
+ * web-grounded text can use Gemini instead of Anthropic, which matters
+ * because the two are billed to different accounts.
+ */
+export async function researchWithGemini(
+  apiKey: string,
+  system: string,
+  prompt: string
+): Promise<string | null> {
+  return callGemini(apiKey, system, prompt);
+}
+
 async function callGemini(
   apiKey: string,
   system: string,
