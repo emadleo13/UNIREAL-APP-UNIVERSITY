@@ -177,6 +177,16 @@ async function main() {
         }
         const row = toRow(fresh);
         const fields = Object.keys(row).filter((k) => k !== 'updated_at');
+        // The model sometimes answers with a well-formed object that carries no
+        // usable facts. Writing that stamps updated_at on an otherwise empty
+        // row, which marks the profile "enriched": it leaves the retry queue,
+        // enters the sitemap and gets indexed as a blank page. Treat it as a
+        // failure so the university stays in line for another attempt.
+        if (fields.length === 0) {
+          failed++;
+          console.log(`[${n}/${targets.length}] \u2717 ${uni.name} \u2014 no usable fields`);
+          continue;
+        }
         if (!dryRun) {
           const { error: upErr } = await supabase
             .from('universities')

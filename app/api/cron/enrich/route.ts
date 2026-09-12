@@ -182,7 +182,11 @@ export async function GET(req: Request) {
         continue;
       }
       const update = toRow(fresh);
-      if (Object.keys(update).length === 0) {
+      // updated_at alone is not enrichment. A well-formed but factless answer
+      // would otherwise stamp the row as done: it drops out of this queue and
+      // into the sitemap as an indexable blank page. Count it as a failure and
+      // leave it for a later run.
+      if (Object.keys(update).filter((k) => k !== 'updated_at').length === 0) {
         failed++;
         consecutiveFailures++;
         continue;
